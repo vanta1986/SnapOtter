@@ -497,6 +497,7 @@ function SystemSection() {
           className="px-3 py-1.5 rounded-lg border border-border bg-background text-sm text-foreground"
         >
           <option value="en">English</option>
+          <option value="zh">中文</option>
         </select>
       </SettingRow>
 
