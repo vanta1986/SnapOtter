@@ -1,12 +1,11 @@
-import { en } from "@snapotter/shared";
 import { Shield } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAnalyticsStore } from "@/stores/analytics-store";
-
-const t = en.analytics;
+import { useTranslation } from "@/stores/locale-store";
 
 export function AnalyticsConsentPage() {
+  const t = useTranslation().analytics;
   const navigate = useNavigate();
   const { config, configLoaded, fetchConfig, acceptAnalytics, declineAnalytics, remindLater } =
     useAnalyticsStore();

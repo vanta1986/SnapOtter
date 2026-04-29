@@ -5,6 +5,8 @@ import { Toaster } from "sonner";
 import { ConnectionMonitor } from "./components/common/connection-monitor";
 import { KeyboardShortcutProvider } from "./components/common/keyboard-shortcut-provider";
 import { useAuth } from "./hooks/use-auth";
+import { useLocaleStore } from "./stores/locale-store";
+import { apiGet } from "./lib/api";
 import { identify, initAnalytics } from "./lib/analytics";
 import { useAnalyticsStore } from "./stores/analytics-store";
 
@@ -173,10 +175,20 @@ export function App() {
   const analyticsConfigLoaded = useAnalyticsStore((s) => s.configLoaded);
   const fetchAnalyticsConfig = useAnalyticsStore((s) => s.fetchConfig);
   const analyticsConsent = useAnalyticsStore((s) => s.consent);
+  const applyServerDefault = useLocaleStore((s) => s.applyServerDefault);
 
   useEffect(() => {
     fetchAnalyticsConfig();
   }, [fetchAnalyticsConfig]);
+
+  useEffect(() => {
+    apiGet<{ settings: Record<string, string> }>("/v1/settings")
+      .then((data) => {
+        const locale = (data.settings.defaultLocale as "en" | "zh") || "en";
+        applyServerDefault(locale);
+      })
+      .catch(() => {});
+  }, [applyServerDefault]);
 
   useEffect(() => {
     if (

@@ -33,6 +33,7 @@ import { cn, copyToClipboard } from "@/lib/utils";
 import { useAnalyticsStore } from "@/stores/analytics-store";
 import { useSettingsStore } from "@/stores/settings-store";
 import { useThemeStore } from "@/stores/theme-store";
+import { useLocaleStore } from "@/stores/locale-store";
 import { OtterLogo } from "../common/otter-logo";
 import { AiFeaturesSection } from "./ai-features-section";
 
@@ -361,6 +362,9 @@ function SystemSection() {
 
   const updateSetting = useCallback((key: string, value: string) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
+    if (key === "defaultLocale") {
+      useLocaleStore.getState().setLocale(value as "en" | "zh");
+    }
   }, []);
 
   const handleSave = useCallback(async () => {
