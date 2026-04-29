@@ -1,1 +1,5 @@
-
+on:
+  push:
+    branches:
+      - i18n/zh
+  workflow_dispatch:   # ← 加这一行
