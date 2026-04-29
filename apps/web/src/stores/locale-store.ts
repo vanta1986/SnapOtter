@@ -37,5 +37,3 @@ export function useTranslation() {
   const locale = useLocaleStore((s) => s.resolvedLocale);
   return translations[locale];
 }
-
-export type { Locale };
