@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type CompressMode = "quality" | "targetSize";
 
@@ -12,6 +13,7 @@ export interface CompressControlsProps {
 }
 
 export function CompressControls({ settings: initialSettings, onChange }: CompressControlsProps) {
+  const t = useTranslation().tools;
   const [mode, setMode] = useState<CompressMode>("quality");
   const [quality, setQuality] = useState(75);
   const [targetSizeKb, setTargetSizeKb] = useState("");
@@ -42,21 +44,21 @@ export function CompressControls({ settings: initialSettings, onChange }: Compre
     <div className="space-y-4">
       {/* Mode toggle */}
       <div>
-        <p className="text-sm font-medium text-muted-foreground">Compression Mode</p>
+        <p className="text-sm font-medium text-muted-foreground">{t.compress?.compressionMode || "Compression Mode"}</p>
         <div className="flex gap-1 mt-1">
           <button
             type="button"
             onClick={() => setMode("quality")}
             className={`flex-1 text-xs py-1.5 rounded ${mode === "quality" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
           >
-            Quality
+            {t.compress?.bestQuality || "Quality"}
           </button>
           <button
             type="button"
             onClick={() => setMode("targetSize")}
             className={`flex-1 text-xs py-1.5 rounded ${mode === "targetSize" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
           >
-            Target Size
+            {t.compress?.smallestFile || "Target Size"}
           </button>
         </div>
       </div>
@@ -65,7 +67,7 @@ export function CompressControls({ settings: initialSettings, onChange }: Compre
         <div>
           <div className="flex justify-between items-center">
             <label htmlFor="compress-quality" className="text-xs text-muted-foreground">
-              Quality
+              {t.compress?.bestQuality || "Quality"}
             </label>
             <span className="text-xs font-mono text-foreground">{quality}</span>
           </div>
@@ -79,8 +81,8 @@ export function CompressControls({ settings: initialSettings, onChange }: Compre
             className="w-full mt-1"
           />
           <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-            <span>Smallest file</span>
-            <span>Best quality</span>
+            <span>{t.compress?.smallestFile || "Smallest file"}</span>
+            <span>{t.compress?.bestQuality || "Best quality"}</span>
           </div>
         </div>
       ) : (
@@ -104,6 +106,8 @@ export function CompressControls({ settings: initialSettings, onChange }: Compre
 }
 
 export function CompressSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const {
     processFiles,
@@ -158,7 +162,7 @@ export function CompressSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Compressing"
+          label={t.compress?.name || "Compressing"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -170,7 +174,7 @@ export function CompressSettings() {
           disabled={!hasFile || !canProcess || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Compress (${files.length} files)` : "Compress"}
+          {files.length > 1 ? `${t.compress?.name || "Compress"} (${files.length} files)` : (t.compress?.name || "Compress")}
         </button>
       )}
 
@@ -183,7 +187,7 @@ export function CompressSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </form>
