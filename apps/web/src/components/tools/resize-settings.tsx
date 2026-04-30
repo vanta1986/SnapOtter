@@ -402,6 +402,7 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
 }
 
 export function ResizeSettings() {
+  const t = useTranslation().tools;
   const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const standardResize = useToolProcessor("resize");

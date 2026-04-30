@@ -629,6 +629,12 @@ export const zh = {
       enhanced: "已增强",
       enhancing: "增强中",
       enhance: "增强",
+      auto: "自动",
+      portrait: "人像",
+      landscape: "风景",
+      lowLight: "弱光",
+      food: "美食",
+      document: "文档",
     },
     "noise-removal": {
       name: "降噪",

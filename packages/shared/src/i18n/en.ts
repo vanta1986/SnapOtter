@@ -635,6 +635,12 @@ export const en = {
       enhanced: "Enhanced",
       enhancing: "Enhancing",
       enhance: "Enhance",
+      auto: "Auto",
+      portrait: "Portrait",
+      landscape: "Landscape",
+      lowLight: "Low Light",
+      food: "Food",
+      document: "Document",
     },
     "noise-removal": {
       name: "Noise Removal",

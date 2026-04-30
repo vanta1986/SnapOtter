@@ -1245,6 +1245,7 @@ function PeopleSection() {
 /* ────────────────────── API Keys ────────────────────── */
 
 function ApiKeysSection() {
+  const t = useTranslation().common;
   const [keys, setKeys] = useState<ApiKeyEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [newKey, setNewKey] = useState<string | null>(null);
@@ -1666,13 +1667,13 @@ function TeamsSection() {
         {teams.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">{t.noTeamsFound || "No teams found."}</div>
         ) : (
-          teams.map((t) => (
+          teams.map((team) => (
             <div
-              key={t.id}
+              key={team.id}
               className="grid grid-cols-[1fr_100px_60px] gap-2 items-center px-4 py-3 border-b border-border last:border-0 hover:bg-muted/20 transition-colors"
             >
               <div className="min-w-0">
-                {editingTeamId === t.id ? (
+                {editingTeamId === team.id ? (
                   <div className="flex items-center gap-2">
                     <input
                       type="text"
@@ -1681,13 +1682,13 @@ function TeamsSection() {
                       className="px-2 py-1 rounded border border-border bg-background text-sm text-foreground w-40"
                       ref={(el) => el?.focus()}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") handleRename(t.id);
+                        if (e.key === "Enter") handleRename(team.id);
                         if (e.key === "Escape") setEditingTeamId(null);
                       }}
                     />
                     <button
                       type="button"
-                      onClick={() => handleRename(t.id)}
+                      onClick={() => handleRename(team.id)}
                       className="text-xs text-primary hover:underline"
                     >
                       Save
@@ -1701,22 +1702,22 @@ function TeamsSection() {
                     </button>
                   </div>
                 ) : (
-                  <span className="text-sm font-medium text-foreground truncate">{t.name}</span>
+                  <span className="text-sm font-medium text-foreground truncate">{team.name}</span>
                 )}
               </div>
-              <span className="text-sm text-muted-foreground">{t.memberCount}</span>
+              <span className="text-sm text-muted-foreground">{team.memberCount}</span>
               <div className="flex items-center gap-1 justify-end relative">
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setOpenMenuId(openMenuId === t.id ? null : t.id);
+                    setOpenMenuId(openMenuId === team.id ? null : team.id);
                   }}
                   className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <MoreVertical className="h-4 w-4" />
                 </button>
-                {openMenuId === t.id && (
+                {openMenuId === team.id && (
                   <div
                     role="menu"
                     className="absolute right-0 top-8 z-50 w-36 rounded-lg border border-border bg-background shadow-lg py-1"
@@ -1724,8 +1725,8 @@ function TeamsSection() {
                     <button
                       type="button"
                       onClick={() => {
-                        setEditingTeamId(t.id);
-                        setEditingTeamName(t.name);
+                        setEditingTeamId(team.id);
+                        setEditingTeamName(team.name);
                         setOpenMenuId(null);
                       }}
                       className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
@@ -1736,7 +1737,7 @@ function TeamsSection() {
                     <div className="border-t border-border my-1" />
                     <button
                       type="button"
-                      onClick={() => handleDelete(t.id, t.name)}
+                      onClick={() => handleDelete(team.id, team.name)}
                       className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
