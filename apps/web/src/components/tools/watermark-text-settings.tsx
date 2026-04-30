@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type Position = "center" | "top-left" | "top-right" | "bottom-left" | "bottom-right" | "tiled";
 
@@ -15,6 +16,8 @@ export function WatermarkTextControls({
   settings: initialSettings,
   onChange,
 }: WatermarkTextControlsProps) {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const [text, setText] = useState("Sample Watermark");
   const [fontSize, setFontSize] = useState(48);
   const [color, setColor] = useState("#000000");
@@ -47,7 +50,7 @@ export function WatermarkTextControls({
     <div className="space-y-4">
       <div>
         <label htmlFor="watermark-text-text" className="text-xs text-muted-foreground">
-          Watermark Text
+          {t["watermark-text"].watermarkText || "Watermark Text"}
         </label>
         <input
           id="watermark-text-text"
@@ -61,7 +64,7 @@ export function WatermarkTextControls({
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="watermark-text-font-size" className="text-xs text-muted-foreground">
-            Font Size
+            {tCommon.fontSize || "Font Size"}
           </label>
           <span className="text-xs font-mono text-foreground">{fontSize}px</span>
         </div>
@@ -79,7 +82,7 @@ export function WatermarkTextControls({
       <div className="flex gap-2">
         <div className="flex-1">
           <label htmlFor="watermark-text-color" className="text-xs text-muted-foreground">
-            Color
+            {tCommon.color || "Color"}
           </label>
           <input
             id="watermark-text-color"
@@ -92,7 +95,7 @@ export function WatermarkTextControls({
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <label htmlFor="watermark-text-opacity" className="text-xs text-muted-foreground">
-              Opacity
+              {tCommon.opacity || "Opacity"}
             </label>
             <span className="text-xs font-mono text-foreground">{opacity}%</span>
           </div>
@@ -110,7 +113,7 @@ export function WatermarkTextControls({
 
       <div>
         <label htmlFor="watermark-text-position" className="text-xs text-muted-foreground">
-          Position
+          {tCommon.position || "Position"}
         </label>
         <select
           id="watermark-text-position"
@@ -118,19 +121,19 @@ export function WatermarkTextControls({
           onChange={(e) => setPosition(e.target.value as Position)}
           className="w-full mt-0.5 px-2 py-1.5 rounded border border-border bg-background text-sm text-foreground"
         >
-          <option value="center">Center</option>
-          <option value="top-left">Top Left</option>
-          <option value="top-right">Top Right</option>
-          <option value="bottom-left">Bottom Left</option>
-          <option value="bottom-right">Bottom Right</option>
-          <option value="tiled">Tiled (Repeating)</option>
+          <option value="center">{t["watermark-text"].center || "Center"}</option>
+          <option value="top-left">{t["watermark-text"].topLeft || "Top Left"}</option>
+          <option value="top-right">{t["watermark-text"].topRight || "Top Right"}</option>
+          <option value="bottom-left">{t["watermark-text"].bottomLeft || "Bottom Left"}</option>
+          <option value="bottom-right">{t["watermark-text"].bottomRight || "Bottom Right"}</option>
+          <option value="tiled">{t["watermark-text"].tiled || "Tiled (Repeating)"}</option>
         </select>
       </div>
 
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="watermark-text-rotation" className="text-xs text-muted-foreground">
-            Rotation
+            {tCommon.rotation || "Rotation"}
           </label>
           <span className="text-xs font-mono text-foreground">{rotation}&deg;</span>
         </div>
@@ -149,6 +152,8 @@ export function WatermarkTextControls({
 }
 
 export function WatermarkTextSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const {
     processFiles,
@@ -181,8 +186,12 @@ export function WatermarkTextSettings() {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Processed: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {tCommon.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -190,7 +199,7 @@ export function WatermarkTextSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Adding watermark"
+          label={t["watermark-text"].addingWatermark || "Adding watermark"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -203,7 +212,11 @@ export function WatermarkTextSettings() {
           disabled={!hasFile || processing || !settings.text}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Apply Watermark (${files.length} files)` : "Apply Watermark"}
+          {files.length > 1
+            ? `${t["watermark-text"].applyWatermark || "Apply Watermark"} (${
+                files.length
+              } ${tCommon.files || "files"})`
+            : t["watermark-text"].applyWatermark || "Apply Watermark"}
         </button>
       )}
 
@@ -215,7 +228,7 @@ export function WatermarkTextSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </div>
