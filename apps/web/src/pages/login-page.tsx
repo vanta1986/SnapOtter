@@ -1,7 +1,9 @@
 import { type FormEvent, useState } from "react";
 import { setToken } from "@/lib/api";
+import { useTranslation } from "@/stores/locale-store";
 
 export function LoginPage() {
+  const t = useTranslation().common;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -19,7 +21,7 @@ export function LoginPage() {
       });
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setError(data.error || "Invalid username or password");
+        setError(data.error || t.invalidCredentials || "Invalid username or password");
         return;
       }
       const data = await res.json();
@@ -33,7 +35,7 @@ export function LoginPage() {
         window.location.href = "/";
       }
     } catch {
-      setError("Connection error");
+      setError(t.connectionError || "Connection error");
     } finally {
       setLoading(false);
     }
@@ -47,12 +49,12 @@ export function LoginPage() {
             <h1 className="text-3xl font-bold text-foreground">
               <span className="text-primary">SnapOtter</span>
             </h1>
-            <h2 className="text-2xl font-bold mt-4 text-foreground">Login</h2>
+            <h2 className="text-2xl font-bold mt-4 text-foreground">{t.login || "Login"}</h2>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium mb-1 text-foreground">
-                Username
+                {t.username || "Username"}
               </label>
               <input
                 id="username"
@@ -61,14 +63,14 @@ export function LoginPage() {
                 autoComplete="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
+                placeholder={t.enterUsername || "Enter username"}
                 className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
                 required
               />
             </div>
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-1 text-foreground">
-                Password
+                {t.password || "Password"}
               </label>
               <input
                 id="password"
@@ -77,7 +79,7 @@ export function LoginPage() {
                 autoComplete="current-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder={t.enterPassword || "Enter your password"}
                 className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
                 required
               />
@@ -88,17 +90,16 @@ export function LoginPage() {
               disabled={loading || !username || !password}
               className="w-full py-3 rounded-lg bg-primary/80 text-primary-foreground font-medium hover:bg-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading ? (t.loggingIn || "Logging in...") : (t.login || "Login")}
             </button>
           </form>
         </div>
       </div>
       <div className="hidden lg:flex flex-1 bg-primary/90 items-center justify-center p-12 text-white rounded-l-3xl">
         <div className="max-w-lg space-y-6 text-center">
-          <h2 className="text-3xl font-bold">Your one-stop-shop for all your image needs.</h2>
+          <h2 className="text-3xl font-bold">{t.oneStopShopImageNeeds || "Your one-stop-shop for all your image needs."}</h2>
           <p className="text-lg text-white/80">
-            A privacy-first image suite that lets you resize, compress, convert, and process images
-            with 33+ powerful tools.
+            {t.privacyFirstImageSuite || "A privacy-first image suite that lets you resize, compress, convert, and process images with 47+ powerful tools."}
           </p>
         </div>
       </div>

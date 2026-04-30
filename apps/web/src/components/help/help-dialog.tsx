@@ -2,6 +2,7 @@ import { APP_VERSION } from "@snapotter/shared";
 import { BookOpen, ExternalLink, Github, Keyboard, X } from "lucide-react";
 import { useEffect } from "react";
 import { formatShortcut } from "@/hooks/use-keyboard-shortcuts";
+import { useTranslation } from "@/stores/locale-store";
 
 interface HelpDialogProps {
   open: boolean;
@@ -9,20 +10,21 @@ interface HelpDialogProps {
 }
 
 const SHORTCUTS = [
-  { keys: "mod+k", description: "Focus search bar" },
-  { keys: "mod+/", description: "Go to tools" },
-  { keys: "mod+shift+d", description: "Toggle theme" },
-  { keys: "mod+alt+1", description: "Go to Resize" },
-  { keys: "mod+alt+2", description: "Go to Crop" },
-  { keys: "mod+alt+3", description: "Go to Compress" },
-  { keys: "mod+alt+4", description: "Go to Convert" },
-  { keys: "mod+alt+5", description: "Go to Remove Background" },
-  { keys: "mod+alt+6", description: "Go to Watermark Text" },
-  { keys: "mod+alt+7", description: "Go to Strip Metadata" },
-  { keys: "mod+alt+8", description: "Go to Image Info" },
+  { keys: "mod+k", descKey: "shortcutFocusSearch" },
+  { keys: "mod+/", descKey: "shortcutGoToTools" },
+  { keys: "mod+shift+d", descKey: "shortcutToggleTheme" },
+  { keys: "mod+alt+1", descKey: "shortcutGoToResize" },
+  { keys: "mod+alt+2", descKey: "shortcutGoToCrop" },
+  { keys: "mod+alt+3", descKey: "shortcutGoToCompress" },
+  { keys: "mod+alt+4", descKey: "shortcutGoToConvert" },
+  { keys: "mod+alt+5", descKey: "shortcutGoToRemoveBg" },
+  { keys: "mod+alt+6", descKey: "shortcutGoToWatermark" },
+  { keys: "mod+alt+7", descKey: "shortcutGoToStripMeta" },
+  { keys: "mod+alt+8", descKey: "shortcutGoToImageInfo" },
 ];
 
 export function HelpDialog({ open, onClose }: HelpDialogProps) {
+  const t = useTranslation().common;
   useEffect(() => {
     if (!open) return;
     const handler = (e: KeyboardEvent) => {
@@ -45,7 +47,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
       <div className="relative bg-background border border-border rounded-xl shadow-2xl w-full max-w-lg max-h-[85vh] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
-          <h2 className="text-lg font-semibold text-foreground">Help</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t.help || "Help"}</h2>
           <button
             type="button"
             onClick={onClose}
@@ -61,7 +63,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
           <section className="space-y-2">
             <div className="flex items-center gap-2 text-foreground">
               <BookOpen className="h-4 w-4" />
-              <h3 className="text-sm font-semibold">Getting Started</h3>
+              <h3 className="text-sm font-semibold">{t.gettingStarted || "Getting Started"}</h3>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Select a tool from the sidebar or search for one with <Kbd keys="mod+k" />. Upload an
@@ -74,7 +76,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
           <section className="space-y-3">
             <div className="flex items-center gap-2 text-foreground">
               <Keyboard className="h-4 w-4" />
-              <h3 className="text-sm font-semibold">Keyboard Shortcuts</h3>
+              <h3 className="text-sm font-semibold">{t.keyboardShortcuts || "Keyboard Shortcuts"}</h3>
             </div>
             <div className="rounded-lg border border-border overflow-hidden">
               {SHORTCUTS.map((s, i) => (
@@ -84,7 +86,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
                     i !== SHORTCUTS.length - 1 ? "border-b border-border" : ""
                   }`}
                 >
-                  <span className="text-muted-foreground">{s.description}</span>
+                  <span className="text-muted-foreground">{(t as Record<string, string>)[s.descKey] || s.descKey}</span>
                   <Kbd keys={s.keys} />
                 </div>
               ))}
@@ -95,7 +97,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
           <section className="space-y-2">
             <div className="flex items-center gap-2 text-foreground">
               <Github className="h-4 w-4" />
-              <h3 className="text-sm font-semibold">Resources</h3>
+              <h3 className="text-sm font-semibold">{t.resources || "Resources"}</h3>
             </div>
             <div className="flex flex-col gap-1.5">
               <a
@@ -104,7 +106,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-sm text-primary hover:underline"
               >
-                GitHub Repository
+                {t.githubRepo || "GitHub Repository"}
                 <ExternalLink className="h-3 w-3" />
               </a>
               <a
@@ -113,7 +115,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-sm text-primary hover:underline"
               >
-                Report an Issue
+                {t.reportIssue || "Report an Issue"}
                 <ExternalLink className="h-3 w-3" />
               </a>
               <a
@@ -122,7 +124,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-sm text-primary hover:underline"
               >
-                Documentation
+                {t.documentation || "Documentation"}
                 <ExternalLink className="h-3 w-3" />
               </a>
               <a
@@ -131,7 +133,7 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
                 rel="noopener noreferrer"
                 className="flex items-center gap-1.5 text-sm text-primary hover:underline"
               >
-                API Reference (Swagger)
+                {t.apiReference || "API Reference (Swagger)"}
                 <ExternalLink className="h-3 w-3" />
               </a>
             </div>
