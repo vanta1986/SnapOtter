@@ -2,7 +2,11 @@ import { Download, Loader2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
+
 export function ComposeSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files, processing, error, setProcessing, setError, setProcessedUrl, setSizes, setJobId } =
     useFileStore();
   const [overlayFile, setOverlayFile] = useState<File | null>(null);
@@ -166,7 +170,7 @@ export function ComposeSettings() {
         className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {processing && <Loader2 className="h-4 w-4 animate-spin" />}
-        {processing ? "Processing..." : "Compose"}
+        {processing ? (t.compose.processing || "Processing...") : (t.compose.compose || "Compose")}
       </button>
 
       {downloadUrl && (
