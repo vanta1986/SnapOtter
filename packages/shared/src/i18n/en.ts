@@ -42,6 +42,11 @@ export const en = {
     passwordTooShort: "Password must be at least 4 characters",
     passwordChanged: "Password changed successfully",
     currentPasswordIncorrect: "Current password is incorrect",
+    changePasswordHint: "You need to set a new password before continuing. Your password must be at least 8 characters with uppercase, lowercase, and a number.",
+    generateStrongPassword: "Generate strong password",
+    passwordMinChars: "At least 8 characters",
+    almostThere: "Almost there",
+    setStrongPassword: "Set a strong password to secure your account, then you are good to go.",
     // Settings
     general: "General",
     systemSettings: "System Settings",

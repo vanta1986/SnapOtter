@@ -39,6 +39,11 @@ export const zh = {
     passwordTooShort: "密码长度至少4个字符",
     passwordChanged: "密码修改成功",
     currentPasswordIncorrect: "当前密码错误",
+    changePasswordHint: "需要先设置新密码才能继续。密码至少8个字符，包含大小写字母和数字。",
+    generateStrongPassword: "生成强密码",
+    passwordMinChars: "至少8个字符",
+    almostThere: "即将完成",
+    setStrongPassword: "设置一个强密码来保护您的账户，然后就可以开始了。",
     // Settings
     general: "通用",
     systemSettings: "系统设置",

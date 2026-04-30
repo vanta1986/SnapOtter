@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from "react";
 import { formatHeaders } from "@/lib/api";
+import { useTranslation } from "@/stores/locale-store";
 
 /**
  * Trigger the browser's "Save Password" prompt by submitting a real form
@@ -61,6 +62,7 @@ function generatePassword(): string {
 }
 
 export function ChangePasswordPage() {
+  const t = useTranslation().common;
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -80,7 +82,7 @@ export function ChangePasswordPage() {
     setError("");
 
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match");
+      setError(t.passwordsDoNotMatch || "Passwords do not match");
       return;
     }
 
@@ -94,7 +96,7 @@ export function ChangePasswordPage() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        setError(data.error || "Failed to change password");
+        setError(data.error || (t.failedToSaveSettings || "Failed to change password"));
         return;
       }
 
@@ -103,7 +105,7 @@ export function ChangePasswordPage() {
       triggerBrowserPasswordSave(username, newPassword);
       return; // navigation happens inside triggerBrowserPasswordSave
     } catch {
-      setError("Connection error");
+      setError(t.connectionError || "Connection error");
     } finally {
       setLoading(false);
     }
@@ -117,16 +119,15 @@ export function ChangePasswordPage() {
             <h1 className="text-3xl font-bold text-foreground">
               <span className="text-primary">SnapOtter</span>
             </h1>
-            <h2 className="text-2xl font-bold mt-4 text-foreground">Change your password</h2>
+            <h2 className="text-2xl font-bold mt-4 text-foreground">{t.changePassword || "Change your password"}</h2>
             <p className="text-sm text-muted-foreground mt-2">
-              You need to set a new password before continuing. Your password must be at least 8
-              characters with uppercase, lowercase, and a number.
+              {t.changePasswordHint || "You need to set a new password before continuing. Your password must be at least 8 characters with uppercase, lowercase, and a number."}
             </p>
           </div>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium mb-1 text-foreground">
-                Username
+                {t.username || "Username"}
               </label>
               <input
                 id="username"
@@ -143,7 +144,7 @@ export function ChangePasswordPage() {
                 htmlFor="current-password"
                 className="block text-sm font-medium mb-1 text-foreground"
               >
-                Current password
+                {t.currentPassword || "Current password"}
               </label>
               <input
                 id="current-password"
@@ -151,7 +152,7 @@ export function ChangePasswordPage() {
                 autoComplete="current-password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
-                placeholder="Enter current password"
+                placeholder={t.enterPassword || "Enter current password"}
                 className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
                 required
               />
@@ -159,14 +160,14 @@ export function ChangePasswordPage() {
             <div>
               <div className="flex items-center justify-between mb-1">
                 <label htmlFor="new-password" className="text-sm font-medium text-foreground">
-                  New password
+                  {t.newPassword || "New password"}
                 </label>
                 <button
                   type="button"
                   onClick={handleGenerate}
                   className="text-xs text-primary hover:text-primary/80 font-medium"
                 >
-                  Generate strong password
+                  {t.generateStrongPassword || "Generate strong password"}
                 </button>
               </div>
               <input
@@ -178,7 +179,7 @@ export function ChangePasswordPage() {
                   setNewPassword(e.target.value);
                   setShowGenerated(false);
                 }}
-                placeholder="At least 8 characters"
+                placeholder={t.passwordMinChars || "At least 8 characters"}
                 className={`w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 ${showGenerated ? "font-mono text-sm" : ""}`}
                 required
                 minLength={8}
@@ -189,7 +190,7 @@ export function ChangePasswordPage() {
                 htmlFor="confirm-password"
                 className="block text-sm font-medium mb-1 text-foreground"
               >
-                Confirm new password
+                {t.confirmPassword || "Confirm new password"}
               </label>
               <input
                 id="confirm-password"
@@ -200,7 +201,7 @@ export function ChangePasswordPage() {
                   setConfirmPassword(e.target.value);
                   setShowGenerated(false);
                 }}
-                placeholder="Repeat new password"
+                placeholder={t.confirmPassword || "Repeat new password"}
                 className={`w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 ${showGenerated ? "font-mono text-sm" : ""}`}
                 required
                 minLength={8}
@@ -212,16 +213,16 @@ export function ChangePasswordPage() {
               disabled={loading || !currentPassword || !newPassword || !confirmPassword}
               className="w-full py-3 rounded-lg bg-primary/80 text-primary-foreground font-medium hover:bg-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Changing..." : "Change password"}
+              {loading ? (t.loading || "Changing...") : (t.changePassword || "Change password")}
             </button>
           </form>
         </div>
       </div>
       <div className="hidden lg:flex flex-1 bg-primary/90 items-center justify-center p-12 text-white rounded-l-3xl">
         <div className="max-w-lg space-y-6 text-center">
-          <h2 className="text-3xl font-bold">Almost there</h2>
+          <h2 className="text-3xl font-bold">{t.almostThere || "Almost there"}</h2>
           <p className="text-lg text-white/80">
-            Set a strong password to secure your account, then you are good to go.
+            {t.setStrongPassword || "Set a strong password to secure your account, then you are good to go."}
           </p>
         </div>
       </div>
