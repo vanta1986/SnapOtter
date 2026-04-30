@@ -4,15 +4,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type ResizeTab = "presets" | "custom" | "scale";
 type FitMode = "cover" | "contain" | "fill";
 
-const FIT_LABELS: Record<FitMode, string> = {
-  cover: "Crop to fit",
-  contain: "Fit inside",
-  fill: "Stretch",
-};
+const FIT_LABELS = (t: ReturnType<typeof useTranslation>["tools"]>): Record<FitMode, string> => ({
+  cover: t.resize?.cropToFit || "Crop to fit",
+  contain: t.resize?.fitInside || "Fit inside",
+  fill: t.resize?.stretch || "Stretch",
+});
 
 // Group presets by platform
 const platforms = [...new Set(SOCIAL_MEDIA_PRESETS.map((p) => p.platform))];
@@ -34,6 +35,7 @@ export interface ResizeControlsProps {
 }
 
 export function ResizeControls({ settings: initialSettings, onChange }: ResizeControlsProps) {
+  const t = useTranslation().tools;
   const [tab, setTab] = useState<ResizeTab>("custom");
   const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
   const [width, setWidth] = useState<string>("");
@@ -131,14 +133,14 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
     <div className="flex items-end gap-2">
       <div className="flex-1">
         <label htmlFor="resize-width" className="text-xs text-muted-foreground">
-          Width (px)
+          {t.resize?.widthPx || "Width (px)"}
         </label>
         <input
           id="resize-width"
           type="number"
           value={width}
           onChange={(e) => setWidth(e.target.value)}
-          placeholder="Auto"
+          placeholder={t.resize?.auto || "Auto"}
           disabled={squareMode && contentAware}
           className="w-full mt-0.5 px-2 py-1.5 rounded border border-border bg-background text-sm text-foreground disabled:opacity-50"
         />
@@ -147,20 +149,20 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
         type="button"
         onClick={() => setLockAspect(!lockAspect)}
         className="p-1.5 rounded border border-border text-muted-foreground hover:text-foreground"
-        title={lockAspect ? "Unlock aspect ratio" : "Lock aspect ratio"}
+        title={lockAspect ? (t.resize?.unlockAspect || "Unlock aspect ratio") : (t.resize?.lockAspect || "Lock aspect ratio")}
       >
         {lockAspect ? <Link className="h-4 w-4" /> : <Unlink className="h-4 w-4" />}
       </button>
       <div className="flex-1">
         <label htmlFor="resize-height" className="text-xs text-muted-foreground">
-          Height (px)
+          {t.resize?.heightPx || "Height (px)"}
         </label>
         <input
           id="resize-height"
           type="number"
           value={height}
           onChange={(e) => setHeight(e.target.value)}
-          placeholder="Auto"
+          placeholder={t.resize?.auto || "Auto"}
           disabled={squareMode && contentAware}
           className="w-full mt-0.5 px-2 py-1.5 rounded border border-border bg-background text-sm text-foreground disabled:opacity-50"
         />
@@ -176,7 +178,7 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
         onChange={(e) => setWithoutEnlargement(e.target.checked)}
         className="rounded"
       />
-      <span>Limit to original size</span>
+      <span>{t.resize?.limitOriginal || "Limit to original size"}</span>
       <HintIcon text="If your image is already smaller than the target, keep it as-is instead of scaling it up" />
     </label>
   );
@@ -190,17 +192,17 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
           <div>
             <div className="flex gap-1">
               <button type="button" onClick={() => setTab("custom")} className={tabClass("custom")}>
-                Custom Size
+                {t.resize?.customSize || "Custom Size"}
               </button>
               <button type="button" onClick={() => setTab("scale")} className={tabClass("scale")}>
-                Scale
+                {t.resize?.scale || "Scale"}
               </button>
               <button
                 type="button"
                 onClick={() => setTab("presets")}
                 className={tabClass("presets")}
               >
-                Presets
+                {t.resize?.presets || "Presets"}
               </button>
             </div>
           </div>
@@ -248,16 +250,16 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
 
               {/* Fit mode */}
               <div>
-                <p className="text-xs text-muted-foreground">Fit Mode</p>
+                <p className="text-xs text-muted-foreground">{t.resize?.fitMode || "Fit Mode"}</p>
                 <div className="flex gap-1 mt-1">
-                  {(Object.keys(FIT_LABELS) as FitMode[]).map((f) => (
+                  {(Object.keys(FIT_LABELS(t)) as FitMode[]).map((f) => (
                     <button
                       key={f}
                       type="button"
                       onClick={() => setFit(f)}
                       className={`flex-1 text-xs py-1.5 rounded ${fit === f ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
                     >
-                      {FIT_LABELS[f]}
+                      {FIT_LABELS(t)[f]}
                     </button>
                   ))}
                 </div>
@@ -272,7 +274,7 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
             <div className="space-y-3">
               <div>
                 <label htmlFor="resize-scale" className="text-xs text-muted-foreground">
-                  Scale (%)
+                  {t.resize?.scale || "Scale"} (%)
                 </label>
                 <input
                   id="resize-scale"
@@ -308,7 +310,7 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
       <div className="border-t border-border pt-3">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-xs font-medium text-muted-foreground">Content-aware</span>
+            <span className="text-xs font-medium text-muted-foreground">{t.resize?.contentAware || "Content-aware"}</span>
           </div>
           <button
             type="button"
@@ -341,7 +343,7 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
                 onChange={(e) => setSquareMode(e.target.checked)}
                 className="rounded"
               />
-              Resize to square
+              {t.resize?.resizeSquare || "Resize to square"}
             </label>
 
             {/* Face protection */}
@@ -352,14 +354,14 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
                 onChange={(e) => setProtectFaces(e.target.checked)}
                 className="rounded"
               />
-              Protect faces
+              {t.resize?.protectFaces || "Protect faces"}
             </label>
 
             {/* Blur radius */}
             <div>
               <div className="flex items-center justify-between">
                 <label htmlFor="blur-radius" className="text-xs text-muted-foreground">
-                  Smoothing
+                  {t.resize?.smoothing || "Smoothing"}
                 </label>
                 <span className="text-xs tabular-nums text-muted-foreground">{blurRadius}</span>
               </div>
@@ -378,7 +380,7 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
             <div>
               <div className="flex items-center justify-between">
                 <label htmlFor="sobel-threshold" className="text-xs text-muted-foreground">
-                  Edge sensitivity
+                  {t.resize?.edgeSensitivity || "Edge sensitivity"}
                 </label>
                 <span className="text-xs tabular-nums text-muted-foreground">{sobelThreshold}</span>
               </div>
@@ -400,6 +402,7 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
 }
 
 export function ResizeSettings() {
+  const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const standardResize = useToolProcessor("resize");
   const contentAwareResize = useToolProcessor("content-aware-resize");
@@ -451,7 +454,7 @@ export function ResizeSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Resizing"
+          label={t.resize?.resizing || "Resizing"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -463,7 +466,7 @@ export function ResizeSettings() {
           disabled={!canProcess}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Resize (${files.length} files)` : "Resize"}
+          {files.length > 1 ? `${t.resize?.resize || "Resize"} (${files.length} files)` : (t.resize?.resize || "Resize")}
         </button>
       )}
 
@@ -476,7 +479,7 @@ export function ResizeSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </form>

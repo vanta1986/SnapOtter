@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 export interface PreviewTransform {
   rotate: number;
@@ -23,6 +24,7 @@ export function RotateControls({
   onPreviewTransform,
   resetSignal,
 }: RotateControlsProps) {
+  const t = useTranslation().tools;
   // Quick rotation in 90° steps: 0, 90, 180, 270
   const [rotation, setRotation] = useState(0);
   // Fine straighten adjustment: -45 to +45
@@ -104,14 +106,14 @@ export function RotateControls({
     <div className="space-y-4">
       {/* Quick rotate presets */}
       <div>
-        <p className="text-xs text-muted-foreground">Rotate</p>
+        <p className="text-xs text-muted-foreground">{t.rotate?.rotate || "Rotate"}</p>
         <div className="flex gap-1.5 mt-1">
           <button
             type="button"
             data-testid="rotate-left"
             onClick={rotateLeft}
             className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors text-xs font-medium"
-            title="Rotate 90° counter-clockwise"
+            title={t.rotate?.rotateCcw || "Rotate 90° counter-clockwise"}
           >
             <RotateCcw className="h-3.5 w-3.5" />
             -90°
@@ -120,7 +122,7 @@ export function RotateControls({
             type="button"
             onClick={() => setRotation((r) => r + 180)}
             className="flex-1 flex items-center justify-center py-2 rounded-lg bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors text-xs font-medium"
-            title="Rotate 180°"
+            title={t.rotate?.rotate180 || "Rotate 180°"}
           >
             180°
           </button>
@@ -129,7 +131,7 @@ export function RotateControls({
             data-testid="rotate-right"
             onClick={rotateRight}
             className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors text-xs font-medium"
-            title="Rotate 90° clockwise"
+            title={t.rotate?.rotateCw || "Rotate 90° clockwise"}
           >
             +90°
             <RotateCw className="h-3.5 w-3.5" />
@@ -139,13 +141,13 @@ export function RotateControls({
 
       {/* Custom angle */}
       <div>
-        <p className="text-xs text-muted-foreground">Angle</p>
+        <p className="text-xs text-muted-foreground">{t.rotate?.angle || "Angle"}</p>
         <div className="flex items-center justify-center gap-1.5 mt-1">
           <button
             type="button"
             onClick={() => setRotation((r) => r - 1)}
             className="p-2 rounded-lg bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-            title="Decrease 1°"
+            title={t.rotate?.decrease || "Decrease 1°"}
           >
             <Minus className="h-3.5 w-3.5" />
           </button>
@@ -172,7 +174,7 @@ export function RotateControls({
             type="button"
             onClick={() => setRotation((r) => r + 1)}
             className="p-2 rounded-lg bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-            title="Increase 1°"
+            title={t.rotate?.increase || "Increase 1°"}
           >
             <Plus className="h-3.5 w-3.5" />
           </button>
@@ -183,7 +185,7 @@ export function RotateControls({
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="rotate-straighten" className="text-xs text-muted-foreground">
-            Straighten
+            {t.rotate?.straighten || "Straighten"}
           </label>
           <span className="text-xs font-mono tabular-nums text-muted-foreground">
             {straighten > 0 ? "+" : ""}
@@ -209,7 +211,7 @@ export function RotateControls({
 
       {/* Flip buttons */}
       <div>
-        <p className="text-xs text-muted-foreground">Flip</p>
+        <p className="text-xs text-muted-foreground">{t.rotate?.flip || "Flip"}</p>
         <div className="flex gap-2 mt-1">
           <button
             type="button"
@@ -222,7 +224,7 @@ export function RotateControls({
             }`}
           >
             <FlipHorizontal className="h-3.5 w-3.5" />
-            Horizontal
+            {t.rotate?.horizontal || "Horizontal"}
           </button>
           <button
             type="button"
@@ -235,7 +237,7 @@ export function RotateControls({
             }`}
           >
             <FlipVertical className="h-3.5 w-3.5" />
-            Vertical
+            {t.rotate?.vertical || "Vertical"}
           </button>
         </div>
       </div>
@@ -247,7 +249,7 @@ export function RotateControls({
           onClick={handleReset}
           className="w-full text-xs text-muted-foreground hover:text-foreground py-1"
         >
-          Reset all changes
+          {t.rotate?.resetAllChanges || "Reset all changes"}
         </button>
       )}
     </div>
@@ -259,6 +261,7 @@ interface RotateSettingsProps {
 }
 
 export function RotateSettings({ onPreviewTransform }: RotateSettingsProps) {
+  const t = useTranslation().tools;
   const { files } = useFileStore();
   const { processFiles, processAllFiles, processing, error, progress } = useToolProcessor("rotate");
 
@@ -309,7 +312,7 @@ export function RotateSettings({ onPreviewTransform }: RotateSettingsProps) {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Applying"
+          label={t.rotate?.applying || "Applying"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -321,7 +324,7 @@ export function RotateSettings({ onPreviewTransform }: RotateSettingsProps) {
           disabled={!hasFile || !hasChanges || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Apply (${files.length} files)` : "Apply"}
+          {files.length > 1 ? `${t.rotate?.rotate || "Apply"} (${files.length} files)` : (t.rotate?.rotate || "Apply")}
         </button>
       )}
     </form>
