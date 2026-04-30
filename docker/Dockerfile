@@ -29,7 +29,7 @@ COPY packages/ai/package.json packages/ai/tsconfig.json ./packages/ai/
 
 # Install ALL dependencies (dev + prod needed for building)
 RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store/v3 \
-    pnpm install --frozen-lockfile
+    pnpm install --frozen-lockfile --auto-install-peers=false
 
 # Copy only frontend-relevant source (API/Python changes don't bust this cache)
 COPY packages/shared/src ./packages/shared/src
@@ -208,7 +208,7 @@ COPY packages/ai/package.json packages/ai/tsconfig.json ./packages/ai/
 # Skip the root prepare script (husky is a devDep, not available in prod)
 RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store/v3 \
     npm pkg delete scripts.prepare && \
-    pnpm install --frozen-lockfile --prod
+    pnpm install --frozen-lockfile --prod --auto-install-peers=false
 
 # Copy source code for API (tsx runs TS directly - no build step needed)
 COPY apps/api/src ./apps/api/src
