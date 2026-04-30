@@ -5,6 +5,7 @@ import { SearchBar } from "@/components/common/search-bar";
 import { apiGet } from "@/lib/api";
 import { ICON_MAP } from "@/lib/icon-map";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/stores/locale-store";
 
 const EXCLUDED_TOOLS = new Set(["pipeline", "compare", "find-duplicates", "collage", "compose"]);
 
@@ -14,6 +15,8 @@ interface ToolPaletteProps {
 }
 
 export function ToolPalette({ onAddStep, className }: ToolPaletteProps) {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const [search, setSearch] = useState("");
   const [disabledTools, setDisabledTools] = useState<string[]>([]);
   const [experimentalEnabled, setExperimentalEnabled] = useState(false);
@@ -63,16 +66,22 @@ export function ToolPalette({ onAddStep, className }: ToolPaletteProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className="px-3 pt-3 pb-2 shrink-0">
-        <SearchBar value={search} onChange={setSearch} placeholder="Search tools..." />
+        <SearchBar value={search} onChange={setSearch} placeholder={tCommon.searchTools} />
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 pb-3">
         {availableTools.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">No tools found</p>
+          <p className="text-sm text-muted-foreground text-center py-8">{tCommon.noResults}</p>
         ) : isSearching ? (
           <div className="space-y-1">
             {availableTools.map((tool) => (
-              <ToolItem key={tool.id} tool={tool} onAdd={onAddStep} />
+              <ToolItem
+                key={tool.id}
+                tool={tool}
+                name={t[tool.id as keyof typeof t]?.name || tool.name}
+                description={t[tool.id as keyof typeof t]?.description || tool.description}
+                onAdd={onAddStep}
+              />
             ))}
           </div>
         ) : (
@@ -92,7 +101,13 @@ export function ToolPalette({ onAddStep, className }: ToolPaletteProps) {
                   </div>
                   <div className="space-y-0.5">
                     {tools.map((tool) => (
-                      <ToolItem key={tool.id} tool={tool} onAdd={onAddStep} />
+                      <ToolItem
+                        key={tool.id}
+                        tool={tool}
+                        name={t[tool.id as keyof typeof t]?.name || tool.name}
+                        description={t[tool.id as keyof typeof t]?.description || tool.description}
+                        onAdd={onAddStep}
+                      />
                     ))}
                   </div>
                 </div>
@@ -107,10 +122,12 @@ export function ToolPalette({ onAddStep, className }: ToolPaletteProps) {
 
 interface ToolItemProps {
   tool: { id: string; name: string; description: string; icon: string };
+  name: string;
+  description: string;
   onAdd: (toolId: string) => void;
 }
 
-function ToolItem({ tool, onAdd }: ToolItemProps) {
+function ToolItem({ tool, name, description, onAdd }: ToolItemProps) {
   const Icon = (ICON_MAP[tool.icon] as React.ComponentType<{ className?: string }>) ?? FileImage;
 
   return (
@@ -123,9 +140,9 @@ function ToolItem({ tool, onAdd }: ToolItemProps) {
         <Icon className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-foreground leading-tight">{tool.name}</div>
+        <div className="text-sm font-medium text-foreground leading-tight">{name}</div>
         <div className="text-[11px] text-muted-foreground truncate leading-tight">
-          {tool.description}
+          {description}
         </div>
       </div>
       <Plus className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
