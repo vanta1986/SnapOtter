@@ -85,7 +85,7 @@ export function FindDuplicatesSettings() {
       const data: DuplicateResult = await res.json();
       setResults(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : (t.findDuplicates?.detectionFailed || "Detection failed"));
+      setError(err instanceof Error ? err.message : (t["find-duplicates"]?.detectionFailed || "Detection failed"));
     } finally {
       setScanning(false);
     }
@@ -150,9 +150,9 @@ export function FindDuplicatesSettings() {
 
   const hasFiles = files.length >= 2;
   const presetDescMap: Record<Preset, string> = {
-    exact: t.gifTools?.presetExact || PRESET_EXACT_DEFAULT,
-    similar: t.gifTools?.presetSimilar || PRESET_SIMILAR_DEFAULT,
-    loose: t.gifTools?.presetLoose || PRESET_LOOSE_DEFAULT,
+    exact: t["gif-tools"]?.presetExact || PRESET_EXACT_DEFAULT,
+    similar: t["gif-tools"]?.presetSimilar || PRESET_SIMILAR_DEFAULT,
+    loose: t["gif-tools"]?.presetLoose || PRESET_LOOSE_DEFAULT,
   };
   const activeDesc = preset ? presetDescMap[preset] : null;
 
@@ -163,7 +163,7 @@ export function FindDuplicatesSettings() {
     <div className="space-y-4">
       {/* Sensitivity presets */}
       <div>
-        <span className="text-xs text-muted-foreground">{t.findDuplicates?.detectionMode || "Detection Mode"}</span>
+        <span className="text-xs text-muted-foreground">{t["find-duplicates"]?.detectionMode || "Detection Mode"}</span>
         <div className="flex gap-1 mt-1">
           <button
             type="button"
@@ -207,8 +207,8 @@ export function FindDuplicatesSettings() {
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>{t.findDuplicates?.strictMatch || "Strict match"}</span>
-          <span>{t.findDuplicates?.broadMatch || "Broad match"}</span>
+          <span>{t["find-duplicates"]?.strictMatch || "Strict match"}</span>
+          <span>{t["find-duplicates"]?.broadMatch || "Broad match"}</span>
         </div>
       </div>
 
@@ -236,20 +236,20 @@ export function FindDuplicatesSettings() {
           {/* Summary stats */}
           <div className="p-3 rounded-lg bg-muted text-xs space-y-1.5">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">{t.findDuplicates?.totalScanned || "Total scanned"}</span>
+              <span className="text-muted-foreground">{t["find-duplicates"]?.totalScanned || "Total scanned"}</span>
               <span className="text-foreground font-medium">{results.totalImages}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">{t.findDuplicates?.duplicateGroups || "Duplicate groups"}</span>
+              <span className="text-muted-foreground">{t["find-duplicates"]?.duplicateGroups || "Duplicate groups"}</span>
               <span className="text-yellow-500 font-medium">{results.duplicateGroups.length}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">{t.findDuplicates?.uniqueImages || "Unique images"}</span>
+              <span className="text-muted-foreground">{t["find-duplicates"]?.uniqueImages || "Unique images"}</span>
               <span className="text-green-500 font-medium">{results.uniqueImages}</span>
             </div>
             {results.spaceSaveable > 0 && (
               <div className="flex justify-between">
-                <span className="text-muted-foreground">{t.findDuplicates?.spaceSaveable || "Space saveable"}</span>
+                <span className="text-muted-foreground">{t["find-duplicates"]?.spaceSaveable || "Space saveable"}</span>
                 <span className="text-primary font-medium">
                   {formatFileSize(results.spaceSaveable)}
                 </span>

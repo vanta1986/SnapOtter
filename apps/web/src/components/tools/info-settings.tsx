@@ -135,9 +135,9 @@ export function InfoSettings() {
                     <span className="text-xs text-foreground capitalize">{ch.channel}</span>
                   </div>
                   <div className="flex gap-2 text-[10px] text-muted-foreground font-mono">
-                    <span>{t.gifTools?.min || "min"}:{ch.min}</span>
-                    <span>{t.gifTools?.max || "max"}:{ch.max}</span>
-                    <span>{t.gifTools?.mean || "mean"}:{ch.mean}</span>
+                    <span>{t["gif-tools"]?.min || "min"}:{ch.min}</span>
+                    <span>{t["gif-tools"]?.max || "max"}:{ch.max}</span>
+                    <span>{t["gif-tools"]?.mean || "mean"}:{ch.mean}</span>
                   </div>
                   <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                     <div

@@ -64,7 +64,7 @@ export function WatermarkTextControls({
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="watermark-text-font-size" className="text-xs text-muted-foreground">
-            {tCommon.fontSize || "Font Size"}
+            {t["watermark-text"].fontSize || "Font Size"}
           </label>
           <span className="text-xs font-mono text-foreground">{fontSize}px</span>
         </div>
@@ -82,7 +82,7 @@ export function WatermarkTextControls({
       <div className="flex gap-2">
         <div className="flex-1">
           <label htmlFor="watermark-text-color" className="text-xs text-muted-foreground">
-            {tCommon.color || "Color"}
+            {t["watermark-text"].color || "Color"}
           </label>
           <input
             id="watermark-text-color"
@@ -95,7 +95,7 @@ export function WatermarkTextControls({
         <div className="flex-1">
           <div className="flex justify-between items-center">
             <label htmlFor="watermark-text-opacity" className="text-xs text-muted-foreground">
-              {tCommon.opacity || "Opacity"}
+              {t["watermark-text"].opacity || "Opacity"}
             </label>
             <span className="text-xs font-mono text-foreground">{opacity}%</span>
           </div>
@@ -113,7 +113,7 @@ export function WatermarkTextControls({
 
       <div>
         <label htmlFor="watermark-text-position" className="text-xs text-muted-foreground">
-          {tCommon.position || "Position"}
+          {t["watermark-text"].position || "Position"}
         </label>
         <select
           id="watermark-text-position"
@@ -133,7 +133,7 @@ export function WatermarkTextControls({
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="watermark-text-rotation" className="text-xs text-muted-foreground">
-            {tCommon.rotation || "Rotation"}
+            {t["watermark-text"].rotation || "Rotation"}
           </label>
           <span className="text-xs font-mono text-foreground">{rotation}&deg;</span>
         </div>

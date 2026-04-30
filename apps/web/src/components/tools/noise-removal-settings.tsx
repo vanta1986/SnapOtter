@@ -25,7 +25,7 @@ export function NoiseRemovalControls({
   settings: initialSettings,
   onChange,
 }: NoiseRemovalControlsProps) {
-  const t = useTranslation().tools.noiseRemoval;
+  const t = useTranslation().tools["noise-removal"];
   const [tier, setTier] = useState<Tier>("balanced");
   const [strength, setStrength] = useState(50);
   const [detailPreservation, setDetailPreservation] = useState(50);
@@ -203,7 +203,7 @@ export function NoiseRemovalControls({
 }
 
 export function NoiseRemovalSettings() {
-  const t = useTranslation().tools.noiseRemoval;
+  const t = useTranslation().tools["noise-removal"];
   const tCommon = useTranslation().common;
   const { files, entries } = useFileStore();
   const {

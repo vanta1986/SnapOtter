@@ -133,7 +133,7 @@ export function WatermarkImageSettings() {
 
       <div>
         <label htmlFor="watermark-image-position" className="text-xs text-muted-foreground">
-          {tCommon.position || "Position"}
+          {t["watermark-image"].position || "Position"}
         </label>
         <select
           id="watermark-image-position"
@@ -152,7 +152,7 @@ export function WatermarkImageSettings() {
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="watermark-image-opacity" className="text-xs text-muted-foreground">
-            {tCommon.opacity || "Opacity"}
+            {t["watermark-image"].opacity || "Opacity"}
           </label>
           <span className="text-xs font-mono text-foreground">{opacity}%</span>
         </div>
@@ -170,7 +170,7 @@ export function WatermarkImageSettings() {
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="watermark-image-scale" className="text-xs text-muted-foreground">
-            {tCommon.scale || "Scale"}
+            {t["watermark-image"].scale || "Scale"}
           </label>
           <span className="text-xs font-mono text-foreground">{scale}%</span>
         </div>
@@ -207,7 +207,7 @@ export function WatermarkImageSettings() {
       >
         {processing && <Loader2 className="h-4 w-4 animate-spin" />}
         {processing
-          ? tCommon.processing || "Processing..."
+          ? t["watermark-image"].processing || "Processing..."
           : files.length > 1
             ? `${t["watermark-image"].applyWatermark || "Apply Watermark"} (${files.length} ${
                 tCommon.files || "files"

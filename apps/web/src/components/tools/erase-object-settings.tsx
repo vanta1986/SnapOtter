@@ -164,8 +164,8 @@ export function EraseObjectSettings({
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>{t.eraseObject?.fine || "Fine"}</span>
-          <span>{t.eraseObject?.wide || "Wide"}</span>
+          <span>{t["erase-object"]?.fine || "Fine"}</span>
+          <span>{t["erase-object"]?.wide || "Wide"}</span>
         </div>
       </div>
 
@@ -255,7 +255,7 @@ export function EraseObjectSettings({
         <ProgressCard
           active={processing}
           phase={progressPhase === "idle" ? "uploading" : progressPhase}
-          label={t.eraseObject?.erasingObject || "Erasing object"}
+          label={t["erase-object"]?.erasingObject || "Erasing object"}
           percent={progressPercent}
           elapsed={elapsed}
         />

@@ -185,13 +185,13 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
     <div className="space-y-4">
       {/* GIF Info Bar */}
       {infoLoading && (
-        <div className="text-xs text-muted-foreground animate-pulse">{t.gifTools?.readingMetadata || "Reading GIF metadata..."}</div>
+        <div className="text-xs text-muted-foreground animate-pulse">{t["gif-tools"]?.readingMetadata || "Reading GIF metadata..."}</div>
       )}
       {info && !infoLoading && (
         <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-muted-foreground bg-muted rounded px-2 py-1.5">
           {isAnimated ? (
             <>
-              <span>{info.pages} {t.gifTools?.frames || "frames"}</span>
+              <span>{info.pages} {t["gif-tools"]?.frames || "frames"}</span>
               <span className="text-border">|</span>
               <span>
                 {info.width}x{info.height}
@@ -203,7 +203,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
             </>
           ) : (
             <>
-              <span className="text-amber-500 font-medium">{t.gifTools?.staticImage || "Static image"}</span>
+              <span className="text-amber-500 font-medium">{t["gif-tools"]?.staticImage || "Static image"}</span>
               <span className="text-border">|</span>
               <span>
                 {info.width}x{info.height}
@@ -217,7 +217,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
 
       {/* Mode Tabs (3x2 grid) */}
       <div>
-        <p className="text-xs text-muted-foreground mb-1">{t.gifTools?.mode || "Mode"}</p>
+        <p className="text-xs text-muted-foreground mb-1">{t["gif-tools"]?.mode || "Mode"}</p>
         <div className="grid grid-cols-3 gap-1">
           {MODES.map((m) => {
             const disabled = m.requiresAnimation && !isAnimated;
@@ -227,7 +227,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
                 type="button"
                 disabled={disabled}
                 onClick={() => setMode(m.id)}
-                title={disabled ? (t.gifTools?.requiresAnimated || "Requires animated GIF") : undefined}
+                title={disabled ? (t["gif-tools"]?.requiresAnimated || "Requires animated GIF") : undefined}
                 className={`text-xs py-1.5 rounded transition-colors ${
                   mode === m.id
                     ? "bg-primary text-primary-foreground"
@@ -356,7 +356,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
               onChange={(e) => setColors(Number(e.target.value))}
               className="w-full mt-1 h-1.5 rounded-full appearance-none bg-muted accent-primary"
             />
-            <p className="text-[10px] text-muted-foreground mt-0.5">{t.gifTools?.fewerColorsSmaller || "Fewer colors = smaller file"}</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{t["gif-tools"]?.fewerColorsSmaller || "Fewer colors = smaller file"}</p>
           </div>
 
           <div>
@@ -397,7 +397,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
               className="w-full mt-1 h-1.5 rounded-full appearance-none bg-muted accent-primary"
             />
             <p className="text-[10px] text-muted-foreground mt-0.5">
-              {t.gifTools?.higherEffortSlowerSmaller || "Higher effort = slower but smaller"}
+              {t["gif-tools"]?.higherEffortSlowerSmaller || "Higher effort = slower but smaller"}
             </p>
           </div>
         </div>
@@ -561,7 +561,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
           )}
 
           <div>
-            <p className="text-xs text-muted-foreground mb-1">{t.optimizeForWeb?.outputFormat || "Output Format"}</p>
+            <p className="text-xs text-muted-foreground mb-1">{t["optimize-for-web"]?.outputFormat || "Output Format"}</p>
             <div className="flex gap-1">
               <button
                 type="button"
@@ -585,7 +585,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
       {mode === "rotate" && (
         <div className="space-y-3">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">{t.gifTools?.angle || "Angle"}</p>
+            <p className="text-xs text-muted-foreground mb-1">{t["gif-tools"]?.angle || "Angle"}</p>
             <div className="flex gap-1">
               {[90, 180, 270].map((a) => (
                 <button
@@ -604,7 +604,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground mb-1">{t.gifTools?.flip || "Flip"}</p>
+            <p className="text-xs text-muted-foreground mb-1">{t["gif-tools"]?.flip || "Flip"}</p>
             <div className="flex gap-1">
               <button type="button" onClick={() => setFlipH(!flipH)} className={tabClass(flipH)}>
                 <span className="flex items-center justify-center gap-1">
@@ -625,7 +625,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
 
       {/* Loop Control */}
       <div className="border-t border-border pt-3">
-        <p className="text-xs text-muted-foreground mb-1">{t.gifTools?.loop || "Loop"}</p>
+        <p className="text-xs text-muted-foreground mb-1">{t["gif-tools"]?.loop || "Loop"}</p>
         <div className="flex gap-1">
           {(["infinite", "once", "custom"] as const).map((l) => (
             <button
@@ -687,7 +687,7 @@ export function GifToolsSettings() {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>{t.gifTools?.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB</p>
+          <p>{t["gif-tools"]?.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB</p>
           <p>
             Processed: {(processedSize / 1024).toFixed(1)} KB
             {originalSize > 0 && (
@@ -703,7 +703,7 @@ export function GifToolsSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={t.gifTools?.processing || "Processing GIF"}
+          label={t["gif-tools"]?.processing || "Processing GIF"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -716,7 +716,7 @@ export function GifToolsSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `${tCommon.process || "Process"} (${files.length} ${t.gifTools?.files || "files"})` : (tCommon.process || "Process")}
+          {files.length > 1 ? `${tCommon.process || "Process"} (${files.length} ${t["gif-tools"]?.files || "files"})` : (tCommon.process || "Process")}
         </button>
       )}
 

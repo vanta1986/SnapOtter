@@ -64,7 +64,7 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
       <div>
         <div className="flex justify-between items-center">
           <p className="text-sm font-medium text-muted-foreground">
-            {t.upscale?.scaleFactor || "Scale Factor"}
+            {t["upscale"]?.scaleFactor || "Scale Factor"}
           </p>
           <span className="text-sm font-mono font-medium">{scale}x</span>
         </div>
@@ -98,7 +98,7 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
       {/* Quality */}
       <div>
         <p className="text-sm font-medium text-muted-foreground mb-1.5">
-          {t.upscale?.quality || "Quality"}
+          {t["upscale"]?.quality || "Quality"}
         </p>
         <div className="flex gap-1">
           {MODEL_OPTIONS.map(({ value, label }) => (
@@ -128,7 +128,7 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
             className="rounded border-border"
           />
           <span className="text-sm text-foreground">
-            {t.upscale?.enhanceFaces || "Enhance faces"}
+            {t["upscale"]?.enhanceFaces || "Enhance faces"}
           </span>
         </label>
       )}
@@ -137,7 +137,7 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
       <div>
         <div className="flex justify-between items-center">
           <p className="text-sm font-medium text-muted-foreground">
-            {t.upscale?.noiseReduction || "Noise Reduction"}
+            {t["upscale"]?.noiseReduction || "Noise Reduction"}
           </p>
           <span className="text-sm font-mono font-medium">
             {denoise === 0 ? "Off" : denoise.toFixed(1)}
@@ -160,7 +160,7 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
       {/* Output Format */}
       <div>
         <label htmlFor="upscale-format" className="text-sm font-medium text-muted-foreground">
-          {t.upscale?.outputFormat || tCommon.outputFormat || "Output Format"}
+          {t["upscale"]?.outputFormat || "Output Format"}
         </label>
         <select
           id="upscale-format"
@@ -181,7 +181,7 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
         <div>
           <div className="flex justify-between items-center">
             <p className="text-sm font-medium text-muted-foreground">
-              {t.upscale?.quality || "Quality"}
+              {t["upscale"]?.quality || "Quality"}
             </p>
             <span className="text-sm font-mono font-medium">{quality}</span>
           </div>
@@ -241,7 +241,7 @@ export function UpscaleSettings() {
             {tCommon.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
           </p>
           <p>
-            {t.upscale?.processed || "Upscaled"}: {(processedSize / 1024).toFixed(1)} KB
+            {t["upscale"]?.processed || "Upscaled"}: {(processedSize / 1024).toFixed(1)} KB
           </p>
         </div>
       )}
@@ -253,10 +253,10 @@ export function UpscaleSettings() {
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
           label={
             hasMultiple
-              ? `${t.upscale?.upscaleLabel || "Upscaling"} ${files.length} ${
-                  tCommon.images || "images"
+              ? `${t["upscale"]?.upscaleLabel || "Upscaling"} ${files.length} ${
+                  t["upscale"]?.images || "images"
                 }`
-              : t.upscale?.upscaleLabel || "Upscaling image"
+              : t["upscale"]?.upscaleLabel || "Upscaling image"
           }
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -270,10 +270,10 @@ export function UpscaleSettings() {
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {hasMultiple
-            ? `${t.upscale?.upscale || "Upscale"} ${(settings.scale as number) ?? 2}x (${
+            ? `${t["upscale"]?.upscale || "Upscale"} ${(settings.scale as number) ?? 2}x (${
                 files.length
               } ${tCommon.files || "files"})`
-            : `${t.upscale?.upscale || "Upscale"} ${(settings.scale as number) ?? 2}x`}
+            : `${t["upscale"]?.upscale || "Upscale"} ${(settings.scale as number) ?? 2}x`}
         </button>
       )}
 

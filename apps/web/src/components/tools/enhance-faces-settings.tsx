@@ -57,7 +57,7 @@ export function EnhanceFacesControls({
     <div className="space-y-4">
       {/* Quality */}
       <div>
-        <p className="text-sm font-medium text-muted-foreground mb-1.5">{t.enhanceFaces?.quality || "Quality"}</p>
+        <p className="text-sm font-medium text-muted-foreground mb-1.5">{t["enhance-faces"]?.quality || "Quality"}</p>
         <div className="flex gap-1">
           {MODEL_OPTIONS.map(({ value, label }) => (
             <button
@@ -95,8 +95,8 @@ export function EnhanceFacesControls({
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground/70 mt-0.5">
-          <span>{t.enhanceFaces?.subtle || "Subtle"}</span>
-          <span>{t.enhanceFaces?.maximum || "Maximum"}</span>
+          <span>{t["enhance-faces"]?.subtle || "Subtle"}</span>
+          <span>{t["enhance-faces"]?.maximum || "Maximum"}</span>
         </div>
       </div>
 
@@ -110,7 +110,7 @@ export function EnhanceFacesControls({
               onChange={(e) => setOnlyCenterFace(e.target.checked)}
               className="rounded border-border"
             />
-            <span className="text-sm text-foreground">{t.enhanceFaces?.onlyMainFace || "Only enhance main face"}</span>
+            <span className="text-sm text-foreground">{t["enhance-faces"]?.onlyMainFace || "Only enhance main face"}</span>
           </label>
           <p className="text-[11px] text-muted-foreground/70 ml-6 mt-0.5">
             For portraits - ignores background faces
@@ -136,8 +136,8 @@ export function EnhanceFacesControls({
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground/70 mt-0.5">
-          <span>{t.enhanceFaces?.fewerFaces || "Fewer faces"}</span>
-          <span>{t.enhanceFaces?.moreFaces || "More faces"}</span>
+          <span>{t["enhance-faces"]?.fewerFaces || "Fewer faces"}</span>
+          <span>{t["enhance-faces"]?.moreFaces || "More faces"}</span>
         </div>
       </div>
     </div>
@@ -191,7 +191,7 @@ export function EnhanceFacesSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={hasMultiple ? `${t.enhanceFaces?.enhancingN || "Enhancing"} ${files.length} images` : (t.enhanceFaces?.enhancingFaces || "Enhancing faces")}
+          label={hasMultiple ? `${t["enhance-faces"]?.enhancingN || "Enhancing"} ${files.length} images` : (t["enhance-faces"]?.enhancingFaces || "Enhancing faces")}
           percent={progress.percent}
           elapsed={progress.elapsed}
         />

@@ -2306,6 +2306,7 @@ function AuditLogSection() {
 function ToolsSection() {
   const t = useTranslation().common;
   const tTools = useTranslation().tools;
+  const tSettingsTools = useTranslation().settings.tools;
   const [disabledTools, setDisabledTools] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -2378,7 +2379,7 @@ function ToolsSection() {
 
       {showRestartBanner && (
         <div className="px-4 py-3 rounded-lg border border-amber-500/30 bg-amber-500/10 text-sm text-amber-700 dark:text-amber-400">
-          {t.restartRequired || "Restart required for changes to take effect."}
+          {tSettingsTools.restartRequired || "Restart required for changes to take effect."}
         </div>
       )}
 
@@ -2388,7 +2389,7 @@ function ToolsSection() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder={t.searchTools || "Search tools..."}
+          placeholder={tSettingsTools.searchPlaceholder || "Search tools..."}
           className="w-full pl-9 pr-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
         />
       </div>

@@ -121,7 +121,7 @@ const ISSUE_TO_TOGGLE: Record<string, string> = {
   noisy: "denoise",
 };
 
-const MODE_LABELS: Record<EnhancementMode, keyof ReturnType<typeof useTranslation>["tools"]["imageEnhancement"]> = {
+const MODE_LABELS: Record<EnhancementMode, keyof ReturnType<typeof useTranslation>["tools"]["image-enhancement"]> = {
   auto: "auto",
   portrait: "portrait",
   landscape: "landscape",
@@ -141,7 +141,7 @@ export function ImageEnhancementControls({
   onChange,
   onPreviewFilter,
 }: ImageEnhancementControlsProps) {
-  const t = useTranslation().tools.imageEnhancement;
+  const t = useTranslation().tools["image-enhancement"];
   const { files } = useFileStore();
   const [mode, setMode] = useState<EnhancementMode>("auto");
   const [intensity, setIntensity] = useState(50);
@@ -397,7 +397,7 @@ export function ImageEnhancementSettings({
 }: {
   onPreviewFilter?: (filter: string) => void;
 }) {
-  const t = useTranslation().tools.imageEnhancement;
+  const t = useTranslation().tools["image-enhancement"];
   const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const {
