@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 const QUICK_SCALES = [2, 3, 4, 6, 8];
 const MODEL_OPTIONS = [
@@ -19,6 +20,8 @@ export interface UpscaleControlsProps {
 }
 
 export function UpscaleControls({ settings: initialSettings, onChange }: UpscaleControlsProps) {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const [scale, setScale] = useState(2);
   const [model, setModel] = useState<"auto" | "realesrgan" | "lanczos">("auto");
   const [faceEnhance, setFaceEnhance] = useState(false);
@@ -60,7 +63,9 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
       {/* Scale factor */}
       <div>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-muted-foreground">Scale Factor</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            {t.upscale?.scaleFactor || "Scale Factor"}
+          </p>
           <span className="text-sm font-mono font-medium">{scale}x</span>
         </div>
         <div className="flex gap-1 mt-1.5">
@@ -92,7 +97,9 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
 
       {/* Quality */}
       <div>
-        <p className="text-sm font-medium text-muted-foreground mb-1.5">Quality</p>
+        <p className="text-sm font-medium text-muted-foreground mb-1.5">
+          {t.upscale?.quality || "Quality"}
+        </p>
         <div className="flex gap-1">
           {MODEL_OPTIONS.map(({ value, label }) => (
             <button
@@ -120,14 +127,18 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
             onChange={(e) => setFaceEnhance(e.target.checked)}
             className="rounded border-border"
           />
-          <span className="text-sm text-foreground">Enhance faces</span>
+          <span className="text-sm text-foreground">
+            {t.upscale?.enhanceFaces || "Enhance faces"}
+          </span>
         </label>
       )}
 
       {/* Noise Reduction */}
       <div>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-muted-foreground">Noise Reduction</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            {t.upscale?.noiseReduction || "Noise Reduction"}
+          </p>
           <span className="text-sm font-mono font-medium">
             {denoise === 0 ? "Off" : denoise.toFixed(1)}
           </span>
@@ -149,7 +160,7 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
       {/* Output Format */}
       <div>
         <label htmlFor="upscale-format" className="text-sm font-medium text-muted-foreground">
-          Output Format
+          {t.upscale?.outputFormat || tCommon.outputFormat || "Output Format"}
         </label>
         <select
           id="upscale-format"
@@ -169,7 +180,9 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
       {LOSSY_FORMATS.includes(outputFormat) && (
         <div>
           <div className="flex justify-between items-center">
-            <p className="text-sm font-medium text-muted-foreground">Quality</p>
+            <p className="text-sm font-medium text-muted-foreground">
+              {t.upscale?.quality || "Quality"}
+            </p>
             <span className="text-sm font-mono font-medium">{quality}</span>
           </div>
           <input
@@ -188,6 +201,8 @@ export function UpscaleControls({ settings: initialSettings, onChange }: Upscale
 }
 
 export function UpscaleSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const {
     processFiles,
@@ -222,8 +237,12 @@ export function UpscaleSettings() {
       {/* Size info */}
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Upscaled: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {t.upscale?.processed || "Upscaled"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -232,7 +251,13 @@ export function UpscaleSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={hasMultiple ? `Upscaling ${files.length} images` : "Upscaling image"}
+          label={
+            hasMultiple
+              ? `${t.upscale?.upscaleLabel || "Upscaling"} ${files.length} ${
+                  tCommon.images || "images"
+                }`
+              : t.upscale?.upscaleLabel || "Upscaling image"
+          }
           percent={progress.percent}
           elapsed={progress.elapsed}
         />
@@ -245,8 +270,10 @@ export function UpscaleSettings() {
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {hasMultiple
-            ? `Upscale ${(settings.scale as number) ?? 2}x (${files.length} files)`
-            : `Upscale ${(settings.scale as number) ?? 2}x`}
+            ? `${t.upscale?.upscale || "Upscale"} ${(settings.scale as number) ?? 2}x (${
+                files.length
+              } ${tCommon.files || "files"})`
+            : `${t.upscale?.upscale || "Upscale"} ${(settings.scale as number) ?? 2}x`}
         </button>
       )}
 
@@ -259,7 +286,7 @@ export function UpscaleSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </div>
