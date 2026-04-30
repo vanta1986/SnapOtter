@@ -328,7 +328,7 @@ export function ColorControls({
           }}
           className="w-full text-xs py-1.5 rounded border border-border text-muted-foreground hover:text-foreground"
         >
-          Reset All
+          {t["adjust-colors"].resetAll || "Reset All"}
         </button>
       )}
     </>
