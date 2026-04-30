@@ -1,7 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "@/stores/locale-store";
 
 export function PrivacyPolicyPage() {
+  const t = useTranslation().common;
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="max-w-2xl mx-auto px-6 py-12">
@@ -10,11 +12,11 @@ export function PrivacyPolicyPage() {
           className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to app
+          {t.back || "Back to app"}
         </Link>
 
-        <h1 className="text-3xl font-bold mb-2">Privacy Policy</h1>
-        <p className="text-sm text-muted-foreground mb-8">Last updated: April 22, 2026</p>
+        <h1 className="text-3xl font-bold mb-2">{t.privacyPolicy || "Privacy Policy"}</h1>
+        <p className="text-sm text-muted-foreground mb-8">{t.lastUpdated || "Last updated"}: April 22, 2026</p>
 
         <div className="space-y-6 text-sm leading-relaxed text-muted-foreground">
           <section>

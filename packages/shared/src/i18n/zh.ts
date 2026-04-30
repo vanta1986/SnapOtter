@@ -215,6 +215,8 @@ export const zh = {
     yourImageToolbox: "您的图像工具箱",
     oneStopShopImageNeeds: "一站式满足所有图像处理需求",
     privacyFirstImageSuite: "隐私优先的图像处理套件，支持 47+ 强大工具。调整尺寸、压缩、转换和处理图像。",
+    privacyPolicy: "隐私政策",
+    lastUpdated: "最后更新",
     // Keyboard shortcuts
     shortcutFocusSearch: "聚焦搜索栏",
     shortcutGoToTools: "跳转到工具",

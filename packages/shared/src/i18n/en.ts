@@ -218,6 +218,8 @@ export const en = {
     yourImageToolbox: "Your Image Toolbox",
     oneStopShopImageNeeds: "Your one-stop-shop for all your image needs.",
     privacyFirstImageSuite: "A privacy-first image suite with 47+ powerful tools. Resize, compress, convert, and process images.",
+    privacyPolicy: "Privacy Policy",
+    lastUpdated: "Last updated",
     // Keyboard shortcuts
     shortcutFocusSearch: "Focus search bar",
     shortcutGoToTools: "Go to tools",
