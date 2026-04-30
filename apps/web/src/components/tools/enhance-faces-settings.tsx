@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 const MODEL_OPTIONS = [
   { value: "gfpgan", label: "Fast" },
@@ -19,6 +20,7 @@ export function EnhanceFacesControls({
   settings: initialSettings,
   onChange,
 }: EnhanceFacesControlsProps) {
+  const t = useTranslation().tools;
   const [model, setModel] = useState<"gfpgan" | "auto" | "codeformer">("auto");
   const [strength, setStrength] = useState(80);
   const [onlyCenterFace, setOnlyCenterFace] = useState(false);
@@ -55,7 +57,7 @@ export function EnhanceFacesControls({
     <div className="space-y-4">
       {/* Quality */}
       <div>
-        <p className="text-sm font-medium text-muted-foreground mb-1.5">Quality</p>
+        <p className="text-sm font-medium text-muted-foreground mb-1.5">{t.enhanceFaces?.quality || "Quality"}</p>
         <div className="flex gap-1">
           {MODEL_OPTIONS.map(({ value, label }) => (
             <button
@@ -93,8 +95,8 @@ export function EnhanceFacesControls({
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground/70 mt-0.5">
-          <span>Subtle</span>
-          <span>Maximum</span>
+          <span>{t.enhanceFaces?.subtle || "Subtle"}</span>
+          <span>{t.enhanceFaces?.maximum || "Maximum"}</span>
         </div>
       </div>
 
@@ -108,7 +110,7 @@ export function EnhanceFacesControls({
               onChange={(e) => setOnlyCenterFace(e.target.checked)}
               className="rounded border-border"
             />
-            <span className="text-sm text-foreground">Only enhance main face</span>
+            <span className="text-sm text-foreground">{t.enhanceFaces?.onlyMainFace || "Only enhance main face"}</span>
           </label>
           <p className="text-[11px] text-muted-foreground/70 ml-6 mt-0.5">
             For portraits - ignores background faces
@@ -134,8 +136,8 @@ export function EnhanceFacesControls({
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground/70 mt-0.5">
-          <span>Fewer faces</span>
-          <span>More faces</span>
+          <span>{t.enhanceFaces?.fewerFaces || "Fewer faces"}</span>
+          <span>{t.enhanceFaces?.moreFaces || "More faces"}</span>
         </div>
       </div>
     </div>
@@ -143,6 +145,8 @@ export function EnhanceFacesControls({
 }
 
 export function EnhanceFacesSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const {
     processFiles,
@@ -187,7 +191,7 @@ export function EnhanceFacesSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={hasMultiple ? `Enhancing ${files.length} images` : "Enhancing faces"}
+          label={hasMultiple ? `${t.enhanceFaces?.enhancingN || "Enhancing"} ${files.length} images` : (t.enhanceFaces?.enhancingFaces || "Enhancing faces")}
           percent={progress.percent}
           elapsed={progress.elapsed}
         />
