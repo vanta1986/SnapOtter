@@ -2,32 +2,12 @@ import type { LucideIcon } from "lucide-react";
 import { FolderOpen, Grid3x3, HelpCircle, LayoutGrid, Settings, Workflow } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/stores/locale-store";
 
 interface SidebarItem {
   icon: LucideIcon;
-  label: string;
+  labelKey: keyof ReturnType<typeof useTranslation>["nav"];
   href?: string;
-}
-
-const topItems: SidebarItem[] = [
-  { icon: LayoutGrid, label: "Tools", href: "/" },
-  { icon: Grid3x3, label: "Grid", href: "/fullscreen" },
-  { icon: Workflow, label: "Automate", href: "/automate" },
-  { icon: FolderOpen, label: "Files", href: "/files" },
-];
-
-const bottomItems: SidebarItem[] = [
-  { icon: HelpCircle, label: "Help" },
-  { icon: Settings, label: "Settings" },
-];
-
-interface SidebarProps {
-  onSettingsClick: () => void;
-  onHelpClick: () => void;
-  /** Called when a nav link is clicked (e.g., to close mobile sidebar). */
-  onNavClick?: () => void;
-  /** When true, renders in expanded mode (for mobile overlay). */
-  expanded?: boolean;
 }
 
 export function Sidebar({
@@ -35,10 +15,33 @@ export function Sidebar({
   onHelpClick,
   onNavClick,
   expanded = false,
-}: SidebarProps) {
+}: {
+  onSettingsClick: () => void;
+  onHelpClick: () => void;
+  onNavClick?: () => void;
+  expanded?: boolean;
+}) {
+  const t = useTranslation().nav;
   const location = useLocation();
 
+  const topItems: SidebarItem[] = [
+    { icon: LayoutGrid, labelKey: "tools", href: "/" },
+    { icon: Grid3x3, labelKey: "reader", href: "/fullscreen" },
+    { icon: Workflow, labelKey: "automate", href: "/automate" },
+    { icon: FolderOpen, labelKey: "files", href: "/files" },
+  ];
+
+  const bottomItems: SidebarItem[] = [
+    { icon: HelpCircle, labelKey: "help" },
+    { icon: Settings, labelKey: "settings" },
+  ];
+
+  const getLabel = (key: keyof typeof t): string => {
+    return t[key] || key;
+  };
+
   const renderItem = (item: SidebarItem, isActive: boolean) => {
+    const label = getLabel(item.labelKey);
     const content = expanded ? (
       <div
         className={cn(
@@ -49,7 +52,7 @@ export function Sidebar({
         )}
       >
         <item.icon className="h-5 w-5" />
-        <span className="text-sm font-medium">{item.label}</span>
+        <span className="text-sm font-medium">{label}</span>
       </div>
     ) : (
       <div
@@ -61,26 +64,26 @@ export function Sidebar({
         )}
       >
         <item.icon className="h-6 w-6" />
-        <span className="text-[10px] font-medium">{item.label}</span>
+        <span className="text-[10px] font-medium">{label}</span>
       </div>
     );
 
-    if (item.label === "Settings") {
+    if (item.labelKey === "settings") {
       return (
-        <button key={item.label} type="button" onClick={onSettingsClick} className="w-full">
+        <button key={item.labelKey} type="button" onClick={onSettingsClick} className="w-full">
           {content}
         </button>
       );
     }
-    if (item.label === "Help") {
+    if (item.labelKey === "help") {
       return (
-        <button key={item.label} type="button" onClick={onHelpClick} className="w-full">
+        <button key={item.labelKey} type="button" onClick={onHelpClick} className="w-full">
           {content}
         </button>
       );
     }
     return (
-      <Link key={item.label} to={item.href || "/"} onClick={onNavClick}>
+      <Link key={item.labelKey} to={item.href || "/"} onClick={onNavClick}>
         {content}
       </Link>
     );
