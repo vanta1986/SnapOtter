@@ -4,9 +4,10 @@ import type { Crop } from "react-image-crop";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 const ASPECT_PRESETS = [
-  { label: "Free", value: undefined as number | undefined },
+  { label: "free", value: undefined as number | undefined },
   { label: "1:1", value: 1 },
   { label: "4:3", value: 4 / 3 },
   { label: "3:2", value: 3 / 2 },
@@ -34,6 +35,8 @@ export function CropSettings({
   onAspectChange,
   onGridToggle,
 }: CropSettingsProps) {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const { processFiles, processAllFiles, processing, error, downloadUrl, progress } =
     useToolProcessor("crop");
@@ -214,33 +217,38 @@ export function CropSettings({
       {/* Aspect Ratio */}
       <div>
         <div className="flex items-center justify-between mb-1">
-          <p className="text-xs text-muted-foreground">Aspect Ratio</p>
+          <p className="text-xs text-muted-foreground">{t.crop?.aspectRatio || "Aspect Ratio"}</p>
           {aspect !== undefined && (
             <button
               type="button"
               onClick={handleSwapAspect}
               className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground"
-              title="Swap width/height"
+              title={t.crop?.swapDimensions || "Swap width/height"}
             >
               <ArrowLeftRight className="h-3.5 w-3.5" />
             </button>
           )}
         </div>
         <div className="flex flex-wrap gap-1">
-          {ASPECT_PRESETS.map(({ label, value }) => (
-            <button
-              type="button"
-              key={label}
-              onClick={() => handleAspectSelect(value)}
-              className={`px-2 py-1.5 rounded text-xs transition-colors ${
-                !customMode && activePresetLabel === label
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-primary/20 hover:text-foreground"
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+          {ASPECT_PRESETS.map(({ label, value }) => {
+            const labelText = label === "free"
+              ? t.crop?.free || "Free"
+              : label;
+            return (
+              <button
+                type="button"
+                key={label}
+                onClick={() => handleAspectSelect(value)}
+                className={`px-2 py-1.5 rounded text-xs transition-colors ${
+                  !customMode && activePresetLabel === label
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-primary/20 hover:text-foreground"
+                }`}
+              >
+                {labelText}
+              </button>
+            );
+          })}
           <button
             type="button"
             onClick={handleCustomSelect}
@@ -250,7 +258,7 @@ export function CropSettings({
                 : "bg-muted text-muted-foreground hover:bg-primary/20 hover:text-foreground"
             }`}
           >
-            Custom
+            {t.crop?.custom || "Custom"}
           </button>
         </div>
         {customMode && (
@@ -286,11 +294,11 @@ export function CropSettings({
 
       {/* Position & Size */}
       <div>
-        <p className="text-xs text-muted-foreground">Position & Size</p>
+        <p className="text-xs text-muted-foreground">{t.crop?.positionSize || "Position & Size"}</p>
         <div className="grid grid-cols-2 gap-2 mt-1">
           <div>
             <label htmlFor="crop-x" className="text-[10px] text-muted-foreground">
-              X{imgDimensions ? ` (of ${imgDimensions.width})` : ""}
+              {t.crop?.xOfWidth?.replace("（宽度）", "") || "X"}{imgDimensions ? ` (${imgDimensions.width})` : ""}
             </label>
             <input
               id="crop-x"
@@ -304,7 +312,7 @@ export function CropSettings({
           </div>
           <div>
             <label htmlFor="crop-y" className="text-[10px] text-muted-foreground">
-              Y{imgDimensions ? ` (of ${imgDimensions.height})` : ""}
+              {t.crop?.yOfHeight?.replace("（高度）", "") || "Y"}{imgDimensions ? ` (${imgDimensions.height})` : ""}
             </label>
             <input
               id="crop-y"
@@ -318,7 +326,7 @@ export function CropSettings({
           </div>
           <div>
             <label htmlFor="crop-width" className="text-[10px] text-muted-foreground">
-              Width{imgDimensions ? ` (of ${imgDimensions.width})` : ""}
+              {t.crop?.widthOfWidth || "Width"}{imgDimensions ? ` (${imgDimensions.width})` : ""}
             </label>
             <input
               id="crop-width"
@@ -332,7 +340,7 @@ export function CropSettings({
           </div>
           <div>
             <label htmlFor="crop-height" className="text-[10px] text-muted-foreground">
-              Height{imgDimensions ? ` (of ${imgDimensions.height})` : ""}
+              {t.crop?.heightOfHeight || "Height"}{imgDimensions ? ` (${imgDimensions.height})` : ""}
             </label>
             <input
               id="crop-height"
@@ -356,7 +364,7 @@ export function CropSettings({
           className="accent-primary h-3.5 w-3.5"
         />
         <Grid3x3 className="h-3.5 w-3.5" />
-        Rule of Thirds
+        {t.crop?.ruleOfThirds || "Rule of Thirds"}
       </label>
 
       {/* Error */}
@@ -367,7 +375,7 @@ export function CropSettings({
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Cropping"
+          label={t.crop?.cropping || "Cropping"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -379,7 +387,9 @@ export function CropSettings({
           disabled={!hasFile || !hasSize || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Crop (${files.length} files)` : "Crop"}
+          {files.length > 1
+            ? `${t.crop?.crop || "Crop"} (${files.length} files)`
+            : (t.crop?.crop || "Crop")}
         </button>
       )}
 
@@ -392,7 +402,7 @@ export function CropSettings({
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </form>
@@ -407,6 +417,7 @@ export interface CropControlsProps {
 }
 
 export function CropControls({ settings: initialSettings, onChange }: CropControlsProps) {
+  const t = useTranslation().tools;
   const [left, setLeft] = useState(0);
   const [top, setTop] = useState(0);
   const [width, setWidth] = useState("");
@@ -441,7 +452,7 @@ export function CropControls({ settings: initialSettings, onChange }: CropContro
       <div className="grid grid-cols-2 gap-2">
         <div>
           <label htmlFor="pipeline-crop-left" className="text-xs text-muted-foreground">
-            Left offset (px)
+            {t.crop?.leftOffset || "Left offset (px)"}
           </label>
           <input
             id="pipeline-crop-left"
@@ -454,7 +465,7 @@ export function CropControls({ settings: initialSettings, onChange }: CropContro
         </div>
         <div>
           <label htmlFor="pipeline-crop-top" className="text-xs text-muted-foreground">
-            Top offset (px)
+            {t.crop?.topOffset || "Top offset (px)"}
           </label>
           <input
             id="pipeline-crop-top"
@@ -467,7 +478,7 @@ export function CropControls({ settings: initialSettings, onChange }: CropContro
         </div>
         <div>
           <label htmlFor="pipeline-crop-width" className="text-xs text-muted-foreground">
-            Width (px)
+            {t.crop?.widthPx || "Width (px)"}
           </label>
           <input
             id="pipeline-crop-width"
@@ -475,13 +486,13 @@ export function CropControls({ settings: initialSettings, onChange }: CropContro
             value={width}
             onChange={(e) => setWidth(e.target.value)}
             min={1}
-            placeholder="Required"
+            placeholder={t.crop?.required || "Required"}
             className="w-full mt-0.5 px-2 py-1.5 rounded border border-border bg-background text-sm text-foreground"
           />
         </div>
         <div>
           <label htmlFor="pipeline-crop-height" className="text-xs text-muted-foreground">
-            Height (px)
+            {t.crop?.heightPx || "Height (px)"}
           </label>
           <input
             id="pipeline-crop-height"
@@ -489,7 +500,7 @@ export function CropControls({ settings: initialSettings, onChange }: CropContro
             value={height}
             onChange={(e) => setHeight(e.target.value)}
             min={1}
-            placeholder="Required"
+            placeholder={t.crop?.required || "Required"}
             className="w-full mt-0.5 px-2 py-1.5 rounded border border-border bg-background text-sm text-foreground"
           />
         </div>
