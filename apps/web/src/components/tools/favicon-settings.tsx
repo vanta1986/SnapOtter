@@ -4,6 +4,7 @@ import { flushSync } from "react-dom";
 import { ProgressCard } from "@/components/common/progress-card";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 const SIZES = [
   { name: "favicon-16x16.png", size: "16x16" },
@@ -16,6 +17,8 @@ const SIZES = [
 ];
 
 export function FaviconSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files, error, setProcessing, setError } = useFileStore();
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -101,18 +104,18 @@ export function FaviconSettings() {
         setDownloadUrl(URL.createObjectURL(blob));
         setProgress((prev) => ({ ...prev, phase: "complete", percent: 100 }));
       } else {
-        setError(`Favicon generation failed: ${xhr.status}`);
+        setError(`${t.favicon?.generationFailed || "Favicon generation failed"}: ${xhr.status}`);
       }
       cleanup();
     };
 
     xhr.onerror = () => {
-      setError("Network error during favicon generation");
+      setError(t.favicon?.networkError || "Network error during favicon generation");
       cleanup();
     };
 
     xhr.ontimeout = () => {
-      setError("Request timed out - the server may be overloaded");
+      setError(t.favicon?.timeoutError || "Request timed out - the server may be overloaded");
       cleanup();
     };
 
@@ -130,11 +133,11 @@ export function FaviconSettings() {
       <p className="text-xs text-muted-foreground">
         Upload square images (recommended 512x512 or larger) to generate all favicon and app icon
         sizes.{" "}
-        {files.length > 1 && `Each of the ${files.length} images gets its own folder in the ZIP.`}
+        {files.length > 1 && `${t.favicon?.eachImageFolder || `Each of the ${files.length} images gets its own folder in the ZIP.`}`}
       </p>
 
       <div>
-        <p className="text-xs font-medium text-muted-foreground">Generated Sizes (per image)</p>
+        <p className="text-xs font-medium text-muted-foreground">{t.favicon?.generatedSizes || "Generated Sizes (per image)"}</p>
         <div className="mt-1 space-y-0.5">
           {SIZES.map((s) => (
             <div key={s.name} className="flex justify-between text-xs text-foreground">
@@ -152,7 +155,7 @@ export function FaviconSettings() {
         <ProgressCard
           active={busy}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Generating Favicons"
+          label={t.favicon?.generatingFavicons || "Generating Favicons"}
           stage={
             progress.phase === "uploading"
               ? "Uploading images..."

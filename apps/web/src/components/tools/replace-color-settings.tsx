@@ -1,3 +1,4 @@
+import { useTranslation } from "@/stores/locale-store";
 import { Download } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
@@ -13,6 +14,7 @@ export function ReplaceColorControls({
   settings: initialSettings,
   onChange,
 }: ReplaceColorControlsProps) {
+  const t = useTranslation().tools;
   const [sourceColor, setSourceColor] = useState("#FF0000");
   const [targetColor, setTargetColor] = useState("#00FF00");
   const [makeTransparent, setMakeTransparent] = useState(false);
@@ -42,7 +44,7 @@ export function ReplaceColorControls({
     <div className="space-y-4">
       <div>
         <label htmlFor="replace-source-color" className="text-xs text-muted-foreground">
-          Source Color (to replace)
+          {t["replace-color"]?.sourceColor || "Source Color (to replace)"}
         </label>
         <div className="flex items-center gap-2 mt-0.5">
           <input
@@ -63,13 +65,13 @@ export function ReplaceColorControls({
           onChange={(e) => setMakeTransparent(e.target.checked)}
           className="rounded"
         />
-        Make transparent instead
+        {t["replace-color"]?.makeTransparent || "Make transparent instead"}
       </label>
 
       {!makeTransparent && (
         <div>
           <label htmlFor="replace-target-color" className="text-xs text-muted-foreground">
-            Target Color (replacement)
+            {t["replace-color"]?.targetColor || "Target Color (replacement)"}
           </label>
           <div className="flex items-center gap-2 mt-0.5">
             <input
@@ -87,7 +89,7 @@ export function ReplaceColorControls({
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="replace-tolerance" className="text-xs text-muted-foreground">
-            Tolerance
+            {t["replace-color"]?.tolerance || "Tolerance"}
           </label>
           <span className="text-xs font-mono text-foreground">{tolerance}</span>
         </div>
@@ -101,8 +103,8 @@ export function ReplaceColorControls({
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>Exact match</span>
-          <span>Wide range</span>
+          <span>{t["replace-color"]?.exactMatch || "Exact match"}</span>
+          <span>{t["replace-color"]?.wideRange || "Wide range"}</span>
         </div>
       </div>
     </div>
@@ -110,6 +112,8 @@ export function ReplaceColorControls({
 }
 
 export function ReplaceColorSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const {
     processFiles,
@@ -142,8 +146,12 @@ export function ReplaceColorSettings() {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Processed: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {tCommon.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -151,7 +159,7 @@ export function ReplaceColorSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Replacing color"
+          label={t["replace-color"]?.replacingColor || "Replacing color"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -164,7 +172,9 @@ export function ReplaceColorSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Replace Color (${files.length} files)` : "Replace Color"}
+          {files.length > 1
+            ? `${t["replace-color"]?.name || "Replace Color"} (${files.length} files)`
+            : (t["replace-color"]?.name || "Replace Color")}
         </button>
       )}
 
@@ -176,7 +186,7 @@ export function ReplaceColorSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </div>

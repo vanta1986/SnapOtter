@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type Effect = "none" | "grayscale" | "sepia" | "invert";
 
@@ -19,6 +20,7 @@ export function ColorControls({
   onChange,
   onPreviewFilter,
 }: ColorControlsProps) {
+  const t = useTranslation().tools;
   // Light
   const [brightness, setBrightness] = useState(0);
   const [contrast, setContrast] = useState(0);
@@ -182,24 +184,24 @@ export function ColorControls({
       )}
 
       {/* Light section */}
-      <SectionLabel>Light</SectionLabel>
+      <SectionLabel>{t["adjust-colors"].light || "Light"}</SectionLabel>
       <div className="space-y-2">
         <SliderControl
-          label="Brightness"
+          label={t["adjust-colors"].brightness || "Brightness"}
           value={brightness}
           onChange={setBrightness}
           min={-100}
           max={100}
         />
         <SliderControl
-          label="Contrast"
+          label={t["adjust-colors"].contrast || "Contrast"}
           value={contrast}
           onChange={setContrast}
           min={-100}
           max={100}
         />
         <SliderControl
-          label="Exposure"
+          label={t["adjust-colors"].exposure || "Exposure"}
           value={exposure}
           onChange={setExposure}
           min={-100}
@@ -208,39 +210,39 @@ export function ColorControls({
       </div>
 
       {/* Color section */}
-      <SectionLabel>Color</SectionLabel>
+      <SectionLabel>{t["adjust-colors"].color || "Color"}</SectionLabel>
       <div className="space-y-2">
         <SliderControl
-          label="Saturation"
+          label={t["adjust-colors"].saturation || "Saturation"}
           value={saturation}
           onChange={setSaturation}
           min={-100}
           max={100}
         />
         <SliderControl
-          label="Temperature"
+          label={t["adjust-colors"].temperature || "Temperature"}
           value={temperature}
           onChange={setTemperature}
           min={-100}
           max={100}
-          hint="cool / warm"
+          hint={t["adjust-colors"].coolWarm || "cool / warm"}
         />
         <SliderControl
-          label="Tint"
+          label={t["adjust-colors"].tint || "Tint"}
           value={tint}
           onChange={setTint}
           min={-100}
           max={100}
-          hint="green / magenta"
+          hint={t["adjust-colors"].greenMagenta || "green / magenta"}
         />
-        <SliderControl label="Hue" value={hue} onChange={setHue} min={-180} max={180} />
+        <SliderControl label={t["adjust-colors"].hue || "Hue"} value={hue} onChange={setHue} min={-180} max={180} />
       </div>
 
       {/* Detail section */}
-      <SectionLabel>Detail</SectionLabel>
+      <SectionLabel>{t["adjust-colors"].detail || "Detail"}</SectionLabel>
       <div className="space-y-2">
         <SliderControl
-          label="Sharpness"
+          label={t["adjust-colors"].sharpness || "Sharpness"}
           value={sharpness}
           onChange={setSharpness}
           min={0}
@@ -249,7 +251,7 @@ export function ColorControls({
       </div>
 
       {/* Effects section */}
-      <SectionLabel>Effects</SectionLabel>
+      <SectionLabel>{t["adjust-colors"].effects || "Effects"}</SectionLabel>
       <div className="grid grid-cols-2 gap-1">
         {(["none", "grayscale", "sepia", "invert"] as const).map((e) => (
           <button
@@ -274,13 +276,13 @@ export function ColorControls({
         className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground w-full"
       >
         {channelsOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-        Color Channels
-        {hasChannelChanges && <span className="ml-auto text-primary text-[10px]">modified</span>}
+        {t["adjust-colors"].colorChannels || "Color Channels"}
+        {hasChannelChanges && <span className="ml-auto text-primary text-[10px]">{t["adjust-colors"].modified || "modified"}</span>}
       </button>
       {channelsOpen && (
         <div className="space-y-2 pl-1">
           <SliderControl
-            label="Red"
+            label={t["adjust-colors"].red || "Red"}
             value={red}
             onChange={setRed}
             min={0}
@@ -288,7 +290,7 @@ export function ColorControls({
             color="text-red-500"
           />
           <SliderControl
-            label="Green"
+            label={t["adjust-colors"].green || "Green"}
             value={green}
             onChange={setGreen}
             min={0}
@@ -296,7 +298,7 @@ export function ColorControls({
             color="text-green-500"
           />
           <SliderControl
-            label="Blue"
+            label={t["adjust-colors"].blue || "Blue"}
             value={blue}
             onChange={setBlue}
             min={0}
@@ -342,6 +344,8 @@ interface ColorSettingsProps {
 
 export function ColorSettings({ toolId, onPreviewFilter }: ColorSettingsProps) {
   const { files } = useFileStore();
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const {
     processFiles,
     processAllFiles,
@@ -383,8 +387,8 @@ export function ColorSettings({ toolId, onPreviewFilter }: ColorSettingsProps) {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Processed: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>{t["adjust-colors"].original || "Original"}: {(originalSize / 1024).toFixed(1)} KB</p>
+          <p>{t["adjust-colors"].processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB</p>
         </div>
       )}
 
@@ -392,7 +396,7 @@ export function ColorSettings({ toolId, onPreviewFilter }: ColorSettingsProps) {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Adjusting colors"
+          label={t["adjust-colors"].adjustingColors || "Adjusting colors"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -404,7 +408,7 @@ export function ColorSettings({ toolId, onPreviewFilter }: ColorSettingsProps) {
           disabled={!hasFile || !hasChanges || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Apply (${files.length} files)` : "Apply"}
+          {files.length > 1 ? `${t["adjust-colors"].apply || "Apply"} (${files.length} files)` : t["adjust-colors"].apply || "Apply"}
         </button>
       )}
 

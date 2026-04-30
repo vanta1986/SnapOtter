@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type Tier = "quick" | "balanced" | "quality" | "maximum";
 
@@ -24,6 +25,7 @@ export function NoiseRemovalControls({
   settings: initialSettings,
   onChange,
 }: NoiseRemovalControlsProps) {
+  const t = useTranslation().tools.noiseRemoval;
   const [tier, setTier] = useState<Tier>("balanced");
   const [strength, setStrength] = useState(50);
   const [detailPreservation, setDetailPreservation] = useState(50);
@@ -74,7 +76,7 @@ export function NoiseRemovalControls({
     <div className="space-y-4">
       {/* Tier selector */}
       <div>
-        <p className="text-xs text-muted-foreground mb-1">Denoising Tier</p>
+        <p className="text-xs text-muted-foreground mb-1">{t.denoisingTier || "Denoising Tier"}</p>
         <div className="grid grid-cols-4 gap-1">
           {TIERS.map((t) => (
             <button
@@ -87,11 +89,11 @@ export function NoiseRemovalControls({
                   : "bg-muted text-muted-foreground hover:bg-muted/80"
               }`}
             >
-              {t.label}
+              {(t as any)[t.id] || t.label}
             </button>
           ))}
         </div>
-        {activeTier && <p className="text-[10px] text-muted-foreground mt-1">{activeTier.desc}</p>}
+        {activeTier && <p className="text-[10px] text-muted-foreground mt-1">{(t as any)[tier] || activeTier.desc}</p>}
       </div>
 
       <div className="border-t border-border pt-3" />
@@ -99,7 +101,7 @@ export function NoiseRemovalControls({
       {/* Strength slider */}
       <div>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-muted-foreground">Strength</p>
+          <p className="text-sm font-medium text-muted-foreground">{t.strength || "Strength"}</p>
           <span className="text-sm font-mono tabular-nums font-medium">{strength}</span>
         </div>
         <input
@@ -112,15 +114,15 @@ export function NoiseRemovalControls({
           className="w-full h-1.5 rounded-full appearance-none bg-muted accent-primary"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>Subtle</span>
-          <span>Aggressive</span>
+          <span>{t.subtle || "Subtle"}</span>
+          <span>{t.aggressive || "Aggressive"}</span>
         </div>
       </div>
 
       {/* Detail Preservation slider */}
       <div>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-muted-foreground">Detail Preservation</p>
+          <p className="text-sm font-medium text-muted-foreground">{t.detailPreservation || "Detail Preservation"}</p>
           <span className="text-sm font-mono tabular-nums font-medium">{detailPreservation}</span>
         </div>
         <input
@@ -133,15 +135,15 @@ export function NoiseRemovalControls({
           className="w-full h-1.5 rounded-full appearance-none bg-muted accent-primary"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>Smooth</span>
-          <span>Sharp</span>
+          <span>{t.smooth || "Smooth"}</span>
+          <span>{t.sharp || "Sharp"}</span>
         </div>
       </div>
 
       {/* Color Noise slider */}
       <div>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-muted-foreground">Color Noise</p>
+          <p className="text-sm font-medium text-muted-foreground">{t.colorNoise || "Color Noise"}</p>
           <span className="text-sm font-mono tabular-nums font-medium">{colorNoise}</span>
         </div>
         <input
@@ -154,8 +156,8 @@ export function NoiseRemovalControls({
           className="w-full h-1.5 rounded-full appearance-none bg-muted accent-primary"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>Off</span>
-          <span>Heavy</span>
+          <span>{t.off || "Off"}</span>
+          <span>{t.heavy || "Heavy"}</span>
         </div>
       </div>
 
@@ -163,7 +165,7 @@ export function NoiseRemovalControls({
 
       {/* Output format */}
       <div>
-        <p className="text-xs text-muted-foreground mb-1">Output Format</p>
+        <p className="text-xs text-muted-foreground mb-1">{t.outputFormat || "Output Format"}</p>
         <div className="grid grid-cols-5 gap-1">
           {(["original", "png", "jpeg", "webp", "avif"] as const).map((f) => (
             <button
@@ -172,7 +174,7 @@ export function NoiseRemovalControls({
               onClick={() => setOutputFormat(f)}
               className={tabClass(outputFormat === f)}
             >
-              {f === "original" ? "Original" : f.toUpperCase()}
+              {f === "original" ? (t.original || "Original") : f.toUpperCase()}
             </button>
           ))}
         </div>
@@ -182,7 +184,7 @@ export function NoiseRemovalControls({
       {LOSSY_FORMATS.has(outputFormat) && (
         <div data-testid="quality-slider">
           <div className="flex justify-between items-center">
-            <p className="text-sm font-medium text-muted-foreground">Quality</p>
+            <p className="text-sm font-medium text-muted-foreground">{t.quality || "Quality"}</p>
             <span className="text-sm font-mono tabular-nums font-medium">{quality}</span>
           </div>
           <input
@@ -201,6 +203,8 @@ export function NoiseRemovalControls({
 }
 
 export function NoiseRemovalSettings() {
+  const t = useTranslation().tools.noiseRemoval;
+  const tCommon = useTranslation().common;
   const { files, entries } = useFileStore();
   const {
     processFiles,
@@ -236,8 +240,7 @@ export function NoiseRemovalSettings() {
       {/* GIF + AI tier warning */}
       {isGif && isAiTier && (
         <p className="text-xs text-amber-500">
-          AI denoising on GIF files processes only the first frame. For animated GIFs, use the Quick
-          or Balanced tier.
+          {t.denoisingGifWarning || "AI denoising on GIF files processes only the first frame. For animated GIFs, use the Quick or Balanced tier."}
         </p>
       )}
 
@@ -247,8 +250,12 @@ export function NoiseRemovalSettings() {
       {/* Size info */}
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Denoised: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {(t.original || "Original")}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {(t.denoised || "Denoised")}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -257,7 +264,11 @@ export function NoiseRemovalSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={hasMultiple ? `Removing noise from ${files.length} images` : "Removing noise"}
+          label={
+            hasMultiple
+              ? `${t.removingNoise || "Removing noise"} from ${files.length} images`
+              : (t.removingNoise || "Removing noise")
+          }
           percent={progress.percent}
           elapsed={progress.elapsed}
         />
@@ -269,7 +280,9 @@ export function NoiseRemovalSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {hasMultiple ? `Remove Noise (${files.length} files)` : "Remove Noise"}
+          {hasMultiple
+            ? `${t.removeNoise || "Remove Noise"} (${files.length} files)`
+            : (t.removeNoise || "Remove Noise")}
         </button>
       )}
 
@@ -282,7 +295,7 @@ export function NoiseRemovalSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </div>

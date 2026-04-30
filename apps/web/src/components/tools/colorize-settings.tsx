@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type Model = "auto" | "ddcolor" | "opencv";
 
@@ -14,6 +15,8 @@ const MODEL_OPTIONS: { value: Model; label: string; desc: string }[] = [
 
 export function ColorizeSettings() {
   const { files } = useFileStore();
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const {
     processFiles,
     processAllFiles,
@@ -51,7 +54,9 @@ export function ColorizeSettings() {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       {/* Model selector */}
-      <SectionLabel>AI Model</SectionLabel>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70 pt-1">
+        {t.colorize.aiModel || "AI Model"}
+      </p>
       <div className="grid grid-cols-3 gap-1">
         {MODEL_OPTIONS.map((opt) => (
           <button
@@ -71,7 +76,9 @@ export function ColorizeSettings() {
       </div>
 
       {/* Color intensity */}
-      <SectionLabel>Color Intensity</SectionLabel>
+      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70 pt-1">
+        {t.colorize.colorIntensity || "Color Intensity"}
+      </p>
       <div>
         <div className="flex justify-between items-center">
           <span className="text-xs text-muted-foreground">
@@ -97,7 +104,7 @@ export function ColorizeSettings() {
           className="w-full mt-0.5"
         />
         <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-          Lower values produce more muted, vintage-style colors.
+          {t.colorize.intensityHint || "Lower values produce more muted, vintage-style colors."}
         </p>
       </div>
 
@@ -105,8 +112,8 @@ export function ColorizeSettings() {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Colorized: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>{t.colorize.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB</p>
+          <p>{t.colorize.colorized || "Colorized"}: {(processedSize / 1024).toFixed(1)} KB</p>
         </div>
       )}
 
@@ -114,7 +121,7 @@ export function ColorizeSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={hasMultiple ? `Colorizing ${files.length} images` : "Colorizing"}
+          label={hasMultiple ? `${t.colorize.colorizing || "Colorizing"} (${files.length} files)` : t.colorize.colorizing || "Colorizing"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -126,7 +133,7 @@ export function ColorizeSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {hasMultiple ? `Colorize (${files.length} files)` : "Colorize"}
+          {hasMultiple ? `${t.colorize.colorize || "Colorize"} (${files.length} files)` : t.colorize.colorize || "Colorize"}
         </button>
       )}
 

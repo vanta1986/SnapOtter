@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type EnhancementMode = "auto" | "portrait" | "landscape" | "low-light" | "food" | "document";
 
@@ -120,6 +121,15 @@ const ISSUE_TO_TOGGLE: Record<string, string> = {
   noisy: "denoise",
 };
 
+const MODE_LABELS: Record<EnhancementMode, keyof ReturnType<typeof useTranslation>["tools"]["imageEnhancement"]> = {
+  auto: "auto",
+  portrait: "portrait",
+  landscape: "landscape",
+  "low-light": "lowLight",
+  food: "food",
+  document: "document",
+};
+
 interface ImageEnhancementControlsProps {
   settings?: Record<string, unknown>;
   onChange?: (settings: Record<string, unknown>) => void;
@@ -131,6 +141,7 @@ export function ImageEnhancementControls({
   onChange,
   onPreviewFilter,
 }: ImageEnhancementControlsProps) {
+  const t = useTranslation().tools.imageEnhancement;
   const { files } = useFileStore();
   const [mode, setMode] = useState<EnhancementMode>("auto");
   const [intensity, setIntensity] = useState(50);
@@ -269,7 +280,7 @@ export function ImageEnhancementControls({
 
       {/* Mode selector */}
       <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-        Enhancement Mode
+        {t.enhancementMode || "Enhancement Mode"}
       </p>
       <div className="grid grid-cols-3 gap-1">
         {MODES.map(({ value, label, icon: Icon }) => (
@@ -284,7 +295,7 @@ export function ImageEnhancementControls({
             }`}
           >
             <Icon className="h-3 w-3" />
-            {label}
+            {(t[MODE_LABELS[value]] as string) || label}
           </button>
         ))}
       </div>
@@ -293,7 +304,7 @@ export function ImageEnhancementControls({
       <div className="pt-1">
         <div className="flex justify-between items-center">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-            Intensity
+            {t.intensity || "Intensity"}
           </p>
           <span className="text-xs font-mono text-foreground tabular-nums">{intensity}%</span>
         </div>
@@ -311,18 +322,18 @@ export function ImageEnhancementControls({
       {analyzing && (
         <div className="flex items-center gap-2 text-xs text-muted-foreground py-1">
           <div className="h-3 w-3 border border-primary border-t-transparent rounded-full animate-spin" />
-          Analyzing image...
+          {t.analyzingImage || "Analyzing image..."}
         </div>
       )}
 
       {analysis && !analyzing && (
         <div className="space-y-2">
           <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
-            Detected Issues
+            {t.detectedIssues || "Detected Issues"}
           </p>
           {analysis.issues.length === 0 ? (
             <p className="text-xs text-muted-foreground">
-              Image looks good. Fine-tune with the intensity slider.
+              {t.imageLooksGood || "Image looks good. Fine-tune with the intensity slider."}
             </p>
           ) : (
             <div className="flex flex-wrap gap-1">
@@ -352,12 +363,12 @@ export function ImageEnhancementControls({
           <div className="grid grid-cols-3 gap-x-3 gap-y-1 pt-1">
             {(
               [
-                ["Exposure", analysis.scores.exposure],
-                ["Contrast", analysis.scores.contrast],
-                ["White Bal", analysis.scores.whiteBalance],
-                ["Saturation", analysis.scores.saturation],
-                ["Sharpness", analysis.scores.sharpness],
-                ["Noise", analysis.scores.noise],
+                [t.exposure || "Exposure", analysis.scores.exposure],
+                [t.contrast || "Contrast", analysis.scores.contrast],
+                [t.whiteBal || "White Bal", analysis.scores.whiteBalance],
+                [t.saturation || "Saturation", analysis.scores.saturation],
+                [t.sharpness || "Sharpness", analysis.scores.sharpness],
+                [t.noise || "Noise", analysis.scores.noise],
               ] as const
             ).map(([label, score]) => (
               <div key={label} className="flex items-center gap-1.5">
@@ -386,6 +397,8 @@ export function ImageEnhancementSettings({
 }: {
   onPreviewFilter?: (filter: string) => void;
 }) {
+  const t = useTranslation().tools.imageEnhancement;
+  const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const {
     processFiles,
@@ -422,8 +435,12 @@ export function ImageEnhancementSettings({
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Enhanced: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {(t.original || "Original")}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {(t.enhanced || "Enhanced")}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -431,7 +448,11 @@ export function ImageEnhancementSettings({
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={files.length > 1 ? `Enhancing ${files.length} images` : "Enhancing image"}
+          label={
+            files.length > 1
+              ? `${t.enhancing || "Enhancing"} ${files.length} images`
+              : (t.enhancing || "Enhancing image")
+          }
           percent={progress.percent}
           elapsed={progress.elapsed}
         />
@@ -442,7 +463,9 @@ export function ImageEnhancementSettings({
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Enhance (${files.length} files)` : "Enhance"}
+          {files.length > 1
+            ? `${t.enhance || "Enhance"} (${files.length} files)`
+            : (t.enhance || "Enhance")}
         </button>
       )}
 
@@ -454,7 +477,7 @@ export function ImageEnhancementSettings({
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </form>

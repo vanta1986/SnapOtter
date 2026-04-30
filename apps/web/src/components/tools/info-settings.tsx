@@ -2,6 +2,7 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 interface ImageInfoData {
   filename: string;
@@ -31,6 +32,8 @@ interface ImageInfoData {
 }
 
 export function InfoSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files, processing, error, setProcessing, setError } = useFileStore();
   const [info, setInfo] = useState<ImageInfoData | null>(null);
 
@@ -59,7 +62,7 @@ export function InfoSettings() {
       const data: ImageInfoData = await res.json();
       setInfo(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to read info");
+      setError(err instanceof Error ? err.message : (t.info?.failedToRead || "Failed to read info"));
     } finally {
       setProcessing(false);
     }
@@ -91,37 +94,37 @@ export function InfoSettings() {
       {info && (
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-1 text-xs">
-            <div className="text-muted-foreground">Dimensions</div>
+            <div className="text-muted-foreground">{t.info?.dimensions || "Dimensions"}</div>
             <div className="text-foreground font-mono">
               {info.width} x {info.height}
             </div>
-            <div className="text-muted-foreground">Format</div>
+            <div className="text-muted-foreground">{t.info?.format || "Format"}</div>
             <div className="text-foreground font-mono">{info.format}</div>
-            <div className="text-muted-foreground">File Size</div>
+            <div className="text-muted-foreground">{t.info?.fileSize || "File Size"}</div>
             <div className="text-foreground font-mono">{(info.fileSize / 1024).toFixed(1)} KB</div>
-            <div className="text-muted-foreground">Channels</div>
+            <div className="text-muted-foreground">{t.info?.channels || "Channels"}</div>
             <div className="text-foreground font-mono">{info.channels}</div>
-            <div className="text-muted-foreground">Color Space</div>
+            <div className="text-muted-foreground">{t.info?.colorSpace || "Color Space"}</div>
             <div className="text-foreground font-mono">{info.colorSpace}</div>
-            <div className="text-muted-foreground">Alpha</div>
-            <div className="text-foreground font-mono">{info.hasAlpha ? "Yes" : "No"}</div>
-            <div className="text-muted-foreground">DPI</div>
+            <div className="text-muted-foreground">{t.info?.alpha || "Alpha"}</div>
+            <div className="text-foreground font-mono">{info.hasAlpha ? (t.info?.yes || "Yes") : (t.info?.no || "No")}</div>
+            <div className="text-muted-foreground">{t.info?.dpi || "DPI"}</div>
             <div className="text-foreground font-mono">{info.density ?? "N/A"}</div>
-            <div className="text-muted-foreground">Progressive</div>
-            <div className="text-foreground font-mono">{info.isProgressive ? "Yes" : "No"}</div>
-            <div className="text-muted-foreground">ICC Profile</div>
-            <div className="text-foreground font-mono">{info.hasIcc ? "Yes" : "No"}</div>
-            <div className="text-muted-foreground">EXIF Data</div>
-            <div className="text-foreground font-mono">{info.hasExif ? "Yes" : "No"}</div>
-            <div className="text-muted-foreground">XMP Data</div>
-            <div className="text-foreground font-mono">{info.hasXmp ? "Yes" : "No"}</div>
-            <div className="text-muted-foreground">Pages</div>
+            <div className="text-muted-foreground">{t.info?.progressive || "Progressive"}</div>
+            <div className="text-foreground font-mono">{info.isProgressive ? (t.info?.yes || "Yes") : (t.info?.no || "No")}</div>
+            <div className="text-muted-foreground">{t.info?.iccProfile || "ICC Profile"}</div>
+            <div className="text-foreground font-mono">{info.hasIcc ? (t.info?.yes || "Yes") : (t.info?.no || "No")}</div>
+            <div className="text-muted-foreground">{t.info?.exifData || "EXIF Data"}</div>
+            <div className="text-foreground font-mono">{info.hasExif ? (t.info?.yes || "Yes") : (t.info?.no || "No")}</div>
+            <div className="text-muted-foreground">{t.info?.xmpData || "XMP Data"}</div>
+            <div className="text-foreground font-mono">{info.hasXmp ? (t.info?.yes || "Yes") : (t.info?.no || "No")}</div>
+            <div className="text-muted-foreground">{t.info?.pages || "Pages"}</div>
             <div className="text-foreground font-mono">{info.pages}</div>
           </div>
 
           {/* Histogram */}
           <div>
-            <p className="text-xs font-medium text-muted-foreground">Channel Stats</p>
+            <p className="text-xs font-medium text-muted-foreground">{t.info?.channelStats || "Channel Stats"}</p>
             <div className="mt-1 space-y-1.5">
               {info.histogram.map((ch) => (
                 <div key={ch.channel} className="space-y-0.5">
@@ -132,9 +135,9 @@ export function InfoSettings() {
                     <span className="text-xs text-foreground capitalize">{ch.channel}</span>
                   </div>
                   <div className="flex gap-2 text-[10px] text-muted-foreground font-mono">
-                    <span>min:{ch.min}</span>
-                    <span>max:{ch.max}</span>
-                    <span>mean:{ch.mean}</span>
+                    <span>{t.gifTools?.min || "min"}:{ch.min}</span>
+                    <span>{t.gifTools?.max || "max"}:{ch.max}</span>
+                    <span>{t.gifTools?.mean || "mean"}:{ch.mean}</span>
                   </div>
                   <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                     <div

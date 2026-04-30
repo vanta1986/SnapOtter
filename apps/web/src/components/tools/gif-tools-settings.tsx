@@ -4,19 +4,20 @@ import { ProgressCard } from "@/components/common/progress-card";
 import { useGifInfo } from "@/hooks/use-gif-info";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type GifMode = "resize" | "optimize" | "speed" | "reverse" | "extract" | "rotate";
 type LoopMode = "infinite" | "once" | "custom";
 type ResizeTab = "pixel" | "percentage";
 type ExtractTab = "single" | "range" | "all";
 
-const MODES: { id: GifMode; label: string; requiresAnimation: boolean }[] = [
-  { id: "resize", label: "Resize", requiresAnimation: false },
-  { id: "optimize", label: "Optimize", requiresAnimation: false },
-  { id: "speed", label: "Speed", requiresAnimation: true },
-  { id: "reverse", label: "Reverse", requiresAnimation: true },
-  { id: "extract", label: "Extract", requiresAnimation: true },
-  { id: "rotate", label: "Rotate", requiresAnimation: false },
+const MODES: { id: GifMode; labelKey: string; requiresAnimation: boolean }[] = [
+  { id: "resize", labelKey: "gif-tools.resize", requiresAnimation: false },
+  { id: "optimize", labelKey: "gif-tools.optimize", requiresAnimation: false },
+  { id: "speed", labelKey: "gif-tools.speed", requiresAnimation: true },
+  { id: "reverse", labelKey: "gif-tools.reverse", requiresAnimation: true },
+  { id: "extract", labelKey: "gif-tools.extract", requiresAnimation: true },
+  { id: "rotate", labelKey: "gif-tools.rotate", requiresAnimation: false },
 ];
 
 export interface GifToolsControlsProps {
@@ -25,6 +26,8 @@ export interface GifToolsControlsProps {
 }
 
 export function GifToolsControls({ settings: initialSettings, onChange }: GifToolsControlsProps) {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { info, loading: infoLoading } = useGifInfo();
   const isAnimated = (info?.pages ?? 0) > 1;
 
@@ -170,17 +173,25 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
 
   const maxFrame = Math.max(0, (info?.pages ?? 1) - 1);
 
+  const resolveModeLabel = (key: string) => {
+    const parts = key.split(".");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let val: any = t;
+    for (const p of parts) { val = val?.[p]; }
+    return val || "";
+  };
+
   return (
     <div className="space-y-4">
       {/* GIF Info Bar */}
       {infoLoading && (
-        <div className="text-xs text-muted-foreground animate-pulse">Reading GIF metadata...</div>
+        <div className="text-xs text-muted-foreground animate-pulse">{t.gifTools?.readingMetadata || "Reading GIF metadata..."}</div>
       )}
       {info && !infoLoading && (
         <div className="flex flex-wrap gap-x-2 gap-y-0.5 text-xs text-muted-foreground bg-muted rounded px-2 py-1.5">
           {isAnimated ? (
             <>
-              <span>{info.pages} frames</span>
+              <span>{info.pages} {t.gifTools?.frames || "frames"}</span>
               <span className="text-border">|</span>
               <span>
                 {info.width}x{info.height}
@@ -192,7 +203,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
             </>
           ) : (
             <>
-              <span className="text-amber-500 font-medium">Static image</span>
+              <span className="text-amber-500 font-medium">{t.gifTools?.staticImage || "Static image"}</span>
               <span className="text-border">|</span>
               <span>
                 {info.width}x{info.height}
@@ -206,7 +217,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
 
       {/* Mode Tabs (3x2 grid) */}
       <div>
-        <p className="text-xs text-muted-foreground mb-1">Mode</p>
+        <p className="text-xs text-muted-foreground mb-1">{t.gifTools?.mode || "Mode"}</p>
         <div className="grid grid-cols-3 gap-1">
           {MODES.map((m) => {
             const disabled = m.requiresAnimation && !isAnimated;
@@ -216,7 +227,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
                 type="button"
                 disabled={disabled}
                 onClick={() => setMode(m.id)}
-                title={disabled ? "Requires animated GIF" : undefined}
+                title={disabled ? (t.gifTools?.requiresAnimated || "Requires animated GIF") : undefined}
                 className={`text-xs py-1.5 rounded transition-colors ${
                   mode === m.id
                     ? "bg-primary text-primary-foreground"
@@ -225,7 +236,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
                       : "bg-muted text-muted-foreground hover:text-foreground"
                 }`}
               >
-                {m.label}
+                {resolveModeLabel(m.labelKey)}
               </button>
             );
           })}
@@ -264,7 +275,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
                   type="number"
                   value={width}
                   onChange={(e) => setWidth(e.target.value)}
-                  placeholder="Auto"
+                  placeholder={t.resize?.auto || "Auto"}
                   className="w-full mt-0.5 px-2 py-1.5 rounded border border-border bg-background text-sm text-foreground"
                 />
               </div>
@@ -272,7 +283,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
                 type="button"
                 onClick={() => setLockAspect(!lockAspect)}
                 className="p-1.5 rounded border border-border text-muted-foreground hover:text-foreground"
-                title={lockAspect ? "Unlock aspect ratio" : "Lock aspect ratio"}
+                title={lockAspect ? (t.resize?.unlockAspect || "Unlock aspect ratio") : (t.resize?.lockAspect || "Lock aspect ratio")}
               >
                 {lockAspect ? <Link className="h-4 w-4" /> : <Unlink className="h-4 w-4" />}
               </button>
@@ -285,7 +296,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
                   type="number"
                   value={height}
                   onChange={(e) => setHeight(e.target.value)}
-                  placeholder="Auto"
+                  placeholder={t.resize?.auto || "Auto"}
                   className="w-full mt-0.5 px-2 py-1.5 rounded border border-border bg-background text-sm text-foreground"
                 />
               </div>
@@ -345,7 +356,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
               onChange={(e) => setColors(Number(e.target.value))}
               className="w-full mt-1 h-1.5 rounded-full appearance-none bg-muted accent-primary"
             />
-            <p className="text-[10px] text-muted-foreground mt-0.5">Fewer colors = smaller file</p>
+            <p className="text-[10px] text-muted-foreground mt-0.5">{t.gifTools?.fewerColorsSmaller || "Fewer colors = smaller file"}</p>
           </div>
 
           <div>
@@ -386,7 +397,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
               className="w-full mt-1 h-1.5 rounded-full appearance-none bg-muted accent-primary"
             />
             <p className="text-[10px] text-muted-foreground mt-0.5">
-              Higher effort = slower but smaller
+              {t.gifTools?.higherEffortSlowerSmaller || "Higher effort = slower but smaller"}
             </p>
           </div>
         </div>
@@ -550,7 +561,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
           )}
 
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Output Format</p>
+            <p className="text-xs text-muted-foreground mb-1">{t.optimizeForWeb?.outputFormat || "Output Format"}</p>
             <div className="flex gap-1">
               <button
                 type="button"
@@ -574,7 +585,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
       {mode === "rotate" && (
         <div className="space-y-3">
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Angle</p>
+            <p className="text-xs text-muted-foreground mb-1">{t.gifTools?.angle || "Angle"}</p>
             <div className="flex gap-1">
               {[90, 180, 270].map((a) => (
                 <button
@@ -593,7 +604,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground mb-1">Flip</p>
+            <p className="text-xs text-muted-foreground mb-1">{t.gifTools?.flip || "Flip"}</p>
             <div className="flex gap-1">
               <button type="button" onClick={() => setFlipH(!flipH)} className={tabClass(flipH)}>
                 <span className="flex items-center justify-center gap-1">
@@ -614,7 +625,7 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
 
       {/* Loop Control */}
       <div className="border-t border-border pt-3">
-        <p className="text-xs text-muted-foreground mb-1">Loop</p>
+        <p className="text-xs text-muted-foreground mb-1">{t.gifTools?.loop || "Loop"}</p>
         <div className="flex gap-1">
           {(["infinite", "once", "custom"] as const).map((l) => (
             <button
@@ -643,6 +654,8 @@ export function GifToolsControls({ settings: initialSettings, onChange }: GifToo
 }
 
 export function GifToolsSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files } = useFileStore();
   const {
     processFiles,
@@ -674,7 +687,7 @@ export function GifToolsSettings() {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
+          <p>{t.gifTools?.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB</p>
           <p>
             Processed: {(processedSize / 1024).toFixed(1)} KB
             {originalSize > 0 && (
@@ -690,7 +703,7 @@ export function GifToolsSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Processing GIF"
+          label={t.gifTools?.processing || "Processing GIF"}
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -703,7 +716,7 @@ export function GifToolsSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Process (${files.length} files)` : "Process"}
+          {files.length > 1 ? `${tCommon.process || "Process"} (${files.length} ${t.gifTools?.files || "files"})` : (tCommon.process || "Process")}
         </button>
       )}
 
@@ -715,7 +728,7 @@ export function GifToolsSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </div>
