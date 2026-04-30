@@ -5,6 +5,7 @@ import { formatHeaders } from "@/lib/api";
 import { generateId } from "@/lib/utils";
 import { useFileStore } from "@/stores/file-store";
 import type { EraserCanvasRef } from "./eraser-canvas";
+import { useTranslation } from "@/stores/locale-store";
 
 const OUTPUT_FORMATS = ["png", "jpg", "webp", "avif", "tiff", "gif", "heic", "heif"] as const;
 const LOSSY_FORMATS = ["jpg", "jpeg", "webp", "avif", "heic", "heif"];
@@ -24,6 +25,8 @@ export function EraseObjectSettings({
   onBrushSizeChange: setBrushSize,
   onMaskCenter,
 }: EraseObjectSettingsProps) {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files, processing, error, setProcessing, setError, setProcessedUrl, setSizes } =
     useFileStore();
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
@@ -161,8 +164,8 @@ export function EraseObjectSettings({
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>Fine</span>
-          <span>Wide</span>
+          <span>{t.eraseObject?.fine || "Fine"}</span>
+          <span>{t.eraseObject?.wide || "Wide"}</span>
         </div>
       </div>
 
@@ -252,7 +255,7 @@ export function EraseObjectSettings({
         <ProgressCard
           active={processing}
           phase={progressPhase === "idle" ? "uploading" : progressPhase}
-          label="Erasing object"
+          label={t.eraseObject?.erasingObject || "Erasing object"}
           percent={progressPercent}
           elapsed={elapsed}
         />
