@@ -9,8 +9,10 @@ import { apiGet } from "@/lib/api";
 import { ICON_MAP } from "@/lib/icon-map";
 import { cn } from "@/lib/utils";
 import { useFeaturesStore } from "@/stores/features-store";
+import { useTranslation } from "@/stores/locale-store";
 
 export function FullscreenGridPage() {
+  const t = useTranslation().common;
   const [search, setSearch] = useState("");
   const [showDetails, setShowDetails] = useState(true);
   const navigate = useNavigate();
@@ -95,7 +97,7 @@ export function FullscreenGridPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search tools..."
+              placeholder={t.searchTools || "Search tools..."}
               className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
           </div>
@@ -113,7 +115,7 @@ export function FullscreenGridPage() {
           >
             {showDetails ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             <span className="hidden sm:inline">
-              {showDetails ? "Hide Details" : "Show Details"}
+              {showDetails ? (t.hideDetails || "Hide Details") : (t.showDetails || "Show Details")}
             </span>
           </button>
 
@@ -122,10 +124,10 @@ export function FullscreenGridPage() {
             type="button"
             onClick={() => navigate("/")}
             className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
-            title="Switch to sidebar view"
+            title={t.switchToSidebarView || "Switch to sidebar view"}
           >
             <List className="h-4 w-4" />
-            <span className="hidden sm:inline">Sidebar</span>
+            <span className="hidden sm:inline">{t.sidebar || "Sidebar"}</span>
           </button>
         </div>
       </header>
@@ -135,8 +137,8 @@ export function FullscreenGridPage() {
         {activeCategories.length === 0 ? (
           <div className="text-center py-16 text-muted-foreground">
             <Search className="h-12 w-12 mx-auto mb-4 opacity-30" />
-            <p className="text-lg font-medium">No tools found</p>
-            <p className="text-sm mt-1">Try a different search term</p>
+            <p className="text-lg font-medium">{t.noToolsFound || "No tools found"}</p>
+            <p className="text-sm mt-1">{t.tryDifferentSearch || "Try a different search term"}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
