@@ -25,6 +25,8 @@ export const en = {
     copy: "Copy",
     copied: "Copied!",
     noResults: "No results found",
+    recent: "Recent",
+    fileDetails: "File Details",
     // Login page
     login: "Login",
     logout: "Log out",

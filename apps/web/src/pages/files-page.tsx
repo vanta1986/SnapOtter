@@ -7,8 +7,10 @@ import { FilesNav } from "@/components/files/files-nav";
 import { AppLayout } from "@/components/layout/app-layout";
 import { useMobile } from "@/hooks/use-mobile";
 import { useFilesPageStore } from "@/stores/files-page-store";
+import { useTranslation } from "@/stores/locale-store";
 
 export function FilesPage() {
+  const t = useTranslation().common;
   const { activeTab, setActiveTab, selectedFileId } = useFilesPageStore();
   const isMobile = useMobile();
   const [showDetails, setShowDetails] = useState(false);
@@ -28,7 +30,7 @@ export function FilesPage() {
                   : "text-muted-foreground"
               }`}
             >
-              Recent
+              {t.recent || "Recent"}
             </button>
             <button
               type="button"
@@ -39,7 +41,7 @@ export function FilesPage() {
                   : "text-muted-foreground"
               }`}
             >
-              Upload
+              {t.upload || "Upload"}
             </button>
           </div>
 
@@ -66,7 +68,7 @@ export function FilesPage() {
             <div
               role="dialog"
               aria-modal="true"
-              aria-label="File Details"
+              aria-label={t.fileDetails || "File Details"}
               className="fixed inset-0 z-50 bg-black/50"
               onClick={(e) => {
                 if (e.target === e.currentTarget) setShowDetails(false);
@@ -77,7 +79,7 @@ export function FilesPage() {
             >
               <div className="absolute bottom-0 left-0 right-0 bg-background rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-semibold">File Details</span>
+                  <span className="text-sm font-semibold"{t.fileDetails || "File Details"}</span>
                   <button type="button" onClick={() => setShowDetails(false)}>
                     <X className="h-5 w-5 text-muted-foreground" />
                   </button>

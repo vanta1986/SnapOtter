@@ -22,6 +22,8 @@ export const zh = {
     copy: "复制",
     copied: "已复制！",
     noResults: "未找到结果",
+    recent: "最近",
+    fileDetails: "文件详情",
     // Login page
     login: "登录",
     logout: "退出登录",
