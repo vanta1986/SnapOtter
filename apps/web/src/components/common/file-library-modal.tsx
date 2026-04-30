@@ -8,6 +8,7 @@ import {
   type UserFile,
 } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/stores/locale-store";
 
 interface FileLibraryModalProps {
   open: boolean;
@@ -16,6 +17,7 @@ interface FileLibraryModalProps {
 }
 
 export function FileLibraryModal({ open, onClose, onImport }: FileLibraryModalProps) {
+  const t = useTranslation().common;
   const [files, setFiles] = useState<UserFile[]>([]);
   const [loading, setLoading] = useState(false);
   const [importing, setImporting] = useState(false);
@@ -105,7 +107,7 @@ export function FileLibraryModal({ open, onClose, onImport }: FileLibraryModalPr
         {/* Header */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-border shrink-0">
           <FolderOpen className="h-5 w-5 text-primary" />
-          <h2 className="text-sm font-semibold text-foreground flex-1">Import from Library</h2>
+          <h2 className="text-sm font-semibold text-foreground flex-1">{t.importFromLibrary}</h2>
           <button
             type="button"
             onClick={onClose}
@@ -121,7 +123,7 @@ export function FileLibraryModal({ open, onClose, onImport }: FileLibraryModalPr
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search files..."
+              placeholder={t.searchFiles}
               value={searchQuery}
               onChange={handleSearchChange}
               className="w-full pl-8 pr-3 py-1.5 text-sm bg-muted rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
@@ -138,7 +140,7 @@ export function FileLibraryModal({ open, onClose, onImport }: FileLibraryModalPr
             className="h-4 w-4 accent-primary"
           />
           <span className="text-xs text-muted-foreground flex-1">
-            {checkedIds.size > 0 ? `${checkedIds.size} selected` : `${files.length} files`}
+            {checkedIds.size > 0 ? `${checkedIds.size} ${t.selected}` : `${files.length} ${t.filesCount}`}
           </span>
         </div>
 
@@ -151,7 +153,7 @@ export function FileLibraryModal({ open, onClose, onImport }: FileLibraryModalPr
           )}
           {!loading && files.length === 0 && (
             <div className="flex items-center justify-center h-32">
-              <p className="text-sm text-muted-foreground">No files found</p>
+              <p className="text-sm text-muted-foreground">{t.noFilesFound}</p>
             </div>
           )}
           {!loading && files.length > 0 && (
@@ -198,7 +200,7 @@ export function FileLibraryModal({ open, onClose, onImport }: FileLibraryModalPr
             onClick={onClose}
             className="px-4 py-2 text-sm rounded-lg border border-border text-foreground hover:bg-muted"
           >
-            Cancel
+            {t.cancel}
           </button>
           <button
             type="button"
@@ -209,10 +211,10 @@ export function FileLibraryModal({ open, onClose, onImport }: FileLibraryModalPr
             {importing ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
-                Importing...
+                {t.importing}
               </>
             ) : (
-              <>Import{checkedIds.size > 0 ? ` (${checkedIds.size})` : ""}</>
+              <>{t.import}{checkedIds.size > 0 ? ` (${checkedIds.size})` : ""}</>
             )}
           </button>
         </div>

@@ -9,7 +9,7 @@ import { useTranslation } from "@/stores/locale-store";
 type ResizeTab = "presets" | "custom" | "scale";
 type FitMode = "cover" | "contain" | "fill";
 
-const FIT_LABELS = (t: ReturnType<typeof useTranslation>["tools"]>): Record<FitMode, string> => ({
+const FIT_LABELS = (t: (ReturnType<typeof useTranslation>)["tools"]) : Record<FitMode, string> => ({
   cover: t.resize?.cropToFit || "Crop to fit",
   contain: t.resize?.fitInside || "Fit inside",
   fill: t.resize?.stretch || "Stretch",

@@ -32,6 +32,7 @@ import { formatFileSize } from "@/lib/download";
 import { cn } from "@/lib/utils";
 import { useFileStore } from "@/stores/file-store";
 import { type SavedPipeline, usePipelineStore } from "@/stores/pipeline-store";
+import { useTranslation } from "@/stores/locale-store";
 
 export function AutomatePage() {
   const {

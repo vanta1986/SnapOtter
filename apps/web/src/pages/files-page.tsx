@@ -79,7 +79,7 @@ export function FilesPage() {
             >
               <div className="absolute bottom-0 left-0 right-0 bg-background rounded-t-xl p-4 max-h-[70vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-sm font-semibold"{t.fileDetails || "File Details"}</span>
+                  <span className="text-sm font-semibold">{t.fileDetails || "File Details"}</span>
                   <button type="button" onClick={() => setShowDetails(false)}>
                     <X className="h-5 w-5 text-muted-foreground" />
                   </button>

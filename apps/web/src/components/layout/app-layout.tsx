@@ -5,6 +5,7 @@ import { useMobile } from "@/hooks/use-mobile";
 import { apiGet } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { useConnectionStore } from "@/stores/connection-store";
+import { useTranslation } from "@/stores/locale-store";
 import { Dropzone } from "../common/dropzone";
 import { OtterLogo } from "../common/otter-logo";
 import { HelpDialog } from "../help/help-dialog";
@@ -21,6 +22,9 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children, showToolPanel = true, onFiles }: AppLayoutProps) {
+  const t = useTranslation();
+  const tCommon = t.common;
+  const tNav = t.nav as Record<string, string>;
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -139,7 +143,7 @@ export function AppLayout({ children, showToolPanel = true, onFiles }: AppLayout
         {!isMobile && (
           <div className="text-center text-xs text-muted-foreground py-2 border-t border-border">
             <Link to="/privacy" className="hover:text-foreground transition-colors">
-              Privacy Policy
+              {tCommon.privacyPolicy}
             </Link>
           </div>
         )}
@@ -150,16 +154,16 @@ export function AppLayout({ children, showToolPanel = true, onFiles }: AppLayout
       {/* Mobile bottom nav */}
       {isMobile && (
         <nav className="fixed bottom-0 left-0 right-0 z-30 bg-background/95 backdrop-blur-sm border-t border-border flex items-center justify-around px-2 py-1.5">
-          <MobileNavItem icon={LayoutGrid} label="Tools" href="/" />
-          <MobileNavItem icon={Workflow} label="Automate" href="/automate" />
-          <MobileNavItem icon={FolderOpen} label="Files" href="/files" />
+          <MobileNavItem icon={LayoutGrid} label={tNav.tools} href="/" />
+          <MobileNavItem icon={Workflow} label={tNav.automate} href="/automate" />
+          <MobileNavItem icon={FolderOpen} label={tNav.files} href="/files" />
           <button
             type="button"
             onClick={() => setSettingsOpen(true)}
             className="flex flex-col items-center gap-0.5 px-3 py-1 text-muted-foreground"
           >
             <SettingsIcon className="h-5 w-5" />
-            <span className="text-[10px]">Settings</span>
+            <span className="text-[10px]">{tCommon.settings}</span>
           </button>
         </nav>
       )}

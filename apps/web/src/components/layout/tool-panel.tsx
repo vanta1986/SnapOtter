@@ -2,10 +2,14 @@ import { CATEGORIES, TOOLS } from "@snapotter/shared";
 import { useEffect, useMemo, useState } from "react";
 import { useFeaturesStore } from "@/stores/features-store";
 import { useSettingsStore } from "@/stores/settings-store";
+import { useTranslation } from "@/stores/locale-store";
 import { SearchBar } from "../common/search-bar";
 import { ToolCard } from "../common/tool-card";
 
 export function ToolPanel() {
+  const t = useTranslation();
+  const tCommon = t.common;
+  const tCategories = t.categories as Record<string, string>;
   const [search, setSearch] = useState("");
   const { disabledTools, experimentalEnabled, loaded, fetch } = useSettingsStore();
   const fetchFeatures = useFeaturesStore((s) => s.fetch);
@@ -54,7 +58,7 @@ export function ToolPanel() {
         {CATEGORIES.filter((cat) => groupedTools.has(cat.id)).map((category) => (
           <div key={category.id} className="mb-4">
             <h3 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-2">
-              {category.name}
+              {tCategories[category.id] || category.name}
             </h3>
             <div className="space-y-0.5">
               {groupedTools.get(category.id)?.map((tool) => (
@@ -64,7 +68,7 @@ export function ToolPanel() {
           </div>
         ))}
         {filteredTools.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-8">No tools found</p>
+          <p className="text-sm text-muted-foreground text-center py-8">{tCommon.noToolsFound}</p>
         )}
       </div>
     </div>
