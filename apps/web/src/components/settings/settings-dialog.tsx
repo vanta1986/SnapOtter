@@ -34,6 +34,7 @@ import { useAnalyticsStore } from "@/stores/analytics-store";
 import { useSettingsStore } from "@/stores/settings-store";
 import { useThemeStore } from "@/stores/theme-store";
 import { useLocaleStore } from "@/stores/locale-store";
+import { useTranslation } from "@/stores/locale-store";
 import { OtterLogo } from "../common/otter-logo";
 import { AiFeaturesSection } from "./ai-features-section";
 
@@ -64,21 +65,22 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: "general", label: "General", icon: Settings },
-  { id: "system", label: "System Settings", icon: Monitor, requiredPermission: "settings:write" },
-  { id: "security", label: "Security", icon: Shield },
-  { id: "people", label: "People", icon: Users, requiredPermission: "users:manage" },
-  { id: "teams", label: "Teams", icon: UsersRound, requiredPermission: "teams:manage" },
-  { id: "roles", label: "Roles", icon: Shield, requiredPermission: "users:manage" },
-  { id: "audit-log", label: "Audit Log", icon: FileText, requiredPermission: "audit:read" },
-  { id: "api-keys", label: "API Keys", icon: Key },
-  { id: "ai-features", label: "AI Features", icon: Sparkles, requiredPermission: "settings:write" },
-  { id: "tools", label: "Tools", icon: Wrench },
-  { id: "analytics", label: "Product Analytics", icon: Eye },
-  { id: "about", label: "About", icon: Info },
+  { id: "general", label: "general", icon: Settings },
+  { id: "system", label: "systemSettings", icon: Monitor, requiredPermission: "settings:write" },
+  { id: "security", label: "security", icon: Shield },
+  { id: "people", label: "people", icon: Users, requiredPermission: "users:manage" },
+  { id: "teams", label: "teams", icon: UsersRound, requiredPermission: "teams:manage" },
+  { id: "roles", label: "roles", icon: Shield, requiredPermission: "users:manage" },
+  { id: "audit-log", label: "auditLog", icon: FileText, requiredPermission: "audit:read" },
+  { id: "api-keys", label: "apiKeys", icon: Key },
+  { id: "ai-features", label: "aiFeatures", icon: Sparkles, requiredPermission: "settings:write" },
+  { id: "tools", label: "tools", icon: Wrench },
+  { id: "analytics", label: "productAnalytics", icon: Eye },
+  { id: "about", label: "about", icon: Info },
 ];
 
 export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
+  const t = useTranslation().common;
   const [section, setSection] = useState<Section>("general");
   const { hasPermission } = useAuth();
 
@@ -112,7 +114,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
         {/* Sidebar nav */}
         <div className="w-48 border-r border-border bg-muted/30 p-3 space-y-1 shrink-0">
           <div className="flex items-center justify-between mb-4 px-2">
-            <h2 className="text-sm font-semibold text-foreground">Settings</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t.settings || "Settings"}</h2>
           </div>
           {visibleNavItems.map((item) => (
             <button
@@ -127,7 +129,7 @@ export function SettingsDialog({ open, onClose }: SettingsDialogProps) {
               )}
             >
               <item.icon className="h-4 w-4" />
-              {item.label}
+              {(t as Record<string, string>)[item.label] || item.label}
             </button>
           ))}
         </div>
@@ -204,6 +206,7 @@ interface TeamEntry {
 /* ────────────────────── General ────────────────────── */
 
 function GeneralSection() {
+  const t = useTranslation().common;
   const { authEnabled } = useAuth();
   const [user, setUser] = useState<SessionUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -243,12 +246,12 @@ function GeneralSection() {
     setSaveMsg(null);
     try {
       await apiPut("/v1/settings", { defaultToolView });
-      setSaveMsg("Settings saved.");
+      setSaveMsg(t.settingsSaved || "Settings saved.");
       useSettingsStore.setState({
         defaultToolView: defaultToolView as "sidebar" | "fullscreen",
       });
     } catch {
-      setSaveMsg("Failed to save settings.");
+      setSaveMsg(t.failedToSaveSettings || "Failed to save settings.");
     } finally {
       setSaving(false);
       setTimeout(() => setSaveMsg(null), 3000);
@@ -261,8 +264,8 @@ function GeneralSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">General</h3>
-        <p className="text-sm text-muted-foreground mt-1">User preferences and display settings.</p>
+        <h3 className="text-lg font-semibold text-foreground">{t.general || "General"}</h3>
+        <p className="text-sm text-muted-foreground mt-1">{t.userPreferences || "User preferences and display settings."}</p>
       </div>
 
       {/* User info */}
@@ -276,7 +279,7 @@ function GeneralSection() {
             )}
           </div>
           <div>
-            <p className="font-medium text-foreground">{loading ? "Loading..." : username}</p>
+            <p className="font-medium text-foreground">{loading ? (t.loadingEllipsis || "Loading...") : username}</p>
             <p className="text-xs text-muted-foreground capitalize">{role}</p>
           </div>
         </div>
@@ -287,25 +290,25 @@ function GeneralSection() {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
           >
             <LogOut className="h-3.5 w-3.5" />
-            Log out
+            {t.logOut || "Log out"}
           </button>
         )}
       </div>
 
       {/* Default view */}
-      <SettingRow label="Default Tool View" description="How tools are displayed on the home page">
+      <SettingRow label={t.defaultToolView || "Default Tool View"} description="How tools are displayed on the home page">
         <select
           value={defaultToolView}
           onChange={(e) => setDefaultToolView(e.target.value)}
           className="px-3 py-1.5 rounded-lg border border-border bg-background text-sm text-foreground"
         >
-          <option value="sidebar">Sidebar</option>
-          <option value="fullscreen">Fullscreen Grid</option>
+          <option value="sidebar">{t.sidebar || "Sidebar"}</option>
+          <option value="fullscreen">{t.fullscreenGrid || "Fullscreen Grid"}</option>
         </select>
       </SettingRow>
 
       {/* Version */}
-      <SettingRow label="App Version" description="Current version of SnapOtter">
+      <SettingRow label={t.appVersion || "App Version"} description="Current version of SnapOtter">
         <span className="text-sm font-mono text-muted-foreground">{APP_VERSION}</span>
       </SettingRow>
 
@@ -317,7 +320,7 @@ function GeneralSection() {
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
           {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-          Save Settings
+          {(t.saveSettings || "Save Settings")}
         </button>
         {saveMsg && (
           <span
@@ -339,6 +342,7 @@ function GeneralSection() {
 /* ────────────────────── System ────────────────────── */
 
 function SystemSection() {
+  const t = useTranslation().common;
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -376,9 +380,9 @@ function SystemSection() {
         const theme = settings.defaultTheme as "light" | "dark" | "system";
         useThemeStore.getState().setTheme(theme);
       }
-      setSaveMsg("Settings saved.");
+      setSaveMsg(t.settingsSaved || "Settings saved.");
     } catch {
-      setSaveMsg("Failed to save settings.");
+      setSaveMsg(t.failedToSaveSettings || "Failed to save settings.");
     } finally {
       setSaving(false);
       setTimeout(() => setSaveMsg(null), 3000);
@@ -398,7 +402,7 @@ function SystemSection() {
       });
       setSettings((prev) => ({ ...prev, customLogo: "true" }));
     } catch {
-      setSaveMsg("Failed to upload logo.");
+      setSaveMsg(t.failedToUploadLogo || "Failed to upload logo.");
     }
   };
 
@@ -407,7 +411,7 @@ function SystemSection() {
       await apiDelete("/v1/settings/logo");
       setSettings((prev) => ({ ...prev, customLogo: "false" }));
     } catch {
-      setSaveMsg("Failed to delete logo.");
+      setSaveMsg(t.failedToDeleteLogo || "Failed to delete logo.");
     }
   };
 
@@ -422,11 +426,11 @@ function SystemSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">System Settings</h3>
-        <p className="text-sm text-muted-foreground mt-1">Server-side configuration and limits.</p>
+        <h3 className="text-lg font-semibold text-foreground">{t.systemSettings || "System Settings"}</h3>
+        <p className="text-sm text-muted-foreground mt-1">{t.systemSettings || "Server-side configuration and limits."}</p>
       </div>
 
-      <SettingRow label="App Name" description="Display name for the application">
+      <SettingRow label={t.appName || "App Name"} description="Display name for the application">
         <input
           type="text"
           value={settings.appName || ""}
@@ -472,7 +476,7 @@ function SystemSection() {
         </div>
       </SettingRow>
 
-      <SettingRow label="File Upload Limit (MB)" description="Maximum file size per upload">
+      <SettingRow label={t.fileUploadLimit || "File Upload Limit (MB)"} description="Maximum file size per upload">
         <input
           type="number"
           value={settings.fileUploadLimitMb || "100"}
@@ -482,25 +486,25 @@ function SystemSection() {
         />
       </SettingRow>
 
-      <SettingRow label="Default Theme" description="Theme applied for new sessions">
+      <SettingRow label={t.defaultTheme || "Default Theme"} description="Theme applied for new sessions">
         <select
           value={settings.defaultTheme || "system"}
           onChange={(e) => updateSetting("defaultTheme", e.target.value)}
           className="px-3 py-1.5 rounded-lg border border-border bg-background text-sm text-foreground"
         >
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-          <option value="system">System</option>
+          <option value="light">{t.light || "Light"}</option>
+          <option value="dark">{t.dark || "Dark"}</option>
+          <option value="system">{t.system || "System"}</option>
         </select>
       </SettingRow>
 
-      <SettingRow label="Language" description="Language for the interface">
+      <SettingRow label={t.language || "Language"} description="Language for the interface">
         <select
           value={settings.defaultLocale || "en"}
           onChange={(e) => updateSetting("defaultLocale", e.target.value)}
           className="px-3 py-1.5 rounded-lg border border-border bg-background text-sm text-foreground"
         >
-          <option value="en">English</option>
+          <option value="en">{t.language || "English"}</option>
           <option value="zh">中文</option>
         </select>
       </SettingRow>
@@ -520,7 +524,7 @@ function SystemSection() {
       </SettingRow>
 
       <div className="pt-4 border-t border-border">
-        <h4 className="text-sm font-semibold text-foreground mb-3">File Management</h4>
+        <h4 className="text-sm font-semibold text-foreground mb-3">{t.fileManagementSettings || "File Management"}</h4>
       </div>
       <SettingRow
         label="Max File Age (hours)"
@@ -565,7 +569,7 @@ function SystemSection() {
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
           {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-          Save Settings
+          {(t.saveSettings || "Save Settings")}
         </button>
         {saveMsg && (
           <span
@@ -587,6 +591,7 @@ function SystemSection() {
 /* ────────────────────── Security ────────────────────── */
 
 function SecuritySection() {
+  const t = useTranslation().common;
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -599,11 +604,11 @@ function SecuritySection() {
     async (e: React.FormEvent) => {
       e.preventDefault();
       if (newPassword !== confirmPassword) {
-        setMessage({ type: "error", text: "Passwords do not match" });
+        setMessage({ type: "error", text: t.passwordsDoNotMatch || "Passwords do not match" });
         return;
       }
       if (newPassword.length < 4) {
-        setMessage({ type: "error", text: "Password must be at least 4 characters" });
+        setMessage({ type: "error", text: t.passwordTooShort || "Password must be at least 4 characters" });
         return;
       }
 
@@ -611,15 +616,15 @@ function SecuritySection() {
       setMessage(null);
       try {
         await apiPost("/auth/change-password", { currentPassword, newPassword });
-        setMessage({ type: "success", text: "Password changed successfully" });
+        setMessage({ type: "success", text: t.passwordChanged || "Password changed successfully" });
         setCurrentPassword("");
         setNewPassword("");
         setConfirmPassword("");
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to change password";
+        const msg = err instanceof Error ? err.message : (t.failedToChangePassword || "Failed to change password");
         setMessage({
           type: "error",
-          text: msg.includes("401") ? "Current password is incorrect" : msg,
+          text: msg.includes("401") ? (t.currentPasswordIncorrect || "Current password is incorrect") : msg,
         });
       } finally {
         setSubmitting(false);
@@ -631,12 +636,12 @@ function SecuritySection() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">Security</h3>
-        <p className="text-sm text-muted-foreground mt-1">Password and authentication settings.</p>
+        <h3 className="text-lg font-semibold text-foreground">{t.security || "Security"}</h3>
+        <p className="text-sm text-muted-foreground mt-1">{t.passwordAuthSettings || "Password and authentication settings."}</p>
       </div>
 
       <form onSubmit={handleChangePassword} className="space-y-4">
-        <h4 className="text-sm font-medium text-foreground">Change Password</h4>
+        <h4 className="text-sm font-medium text-foreground">{t.changePassword || "Change Password"}</h4>
 
         <div className="space-y-3 max-w-sm">
           <div className="relative">
@@ -644,7 +649,7 @@ function SecuritySection() {
               type={showCurrent ? "text" : "password"}
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
-              placeholder="Current Password"
+              placeholder={t.currentPasswordPlaceholder || "Current Password"}
               className="w-full px-3 py-2 pr-10 rounded-lg border border-border bg-background text-sm text-foreground"
               required
             />
@@ -662,7 +667,7 @@ function SecuritySection() {
               type={showNew ? "text" : "password"}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="New Password"
+              placeholder={t.newPasswordPlaceholder || "New Password"}
               className="w-full px-3 py-2 pr-10 rounded-lg border border-border bg-background text-sm text-foreground"
               required
             />
@@ -679,7 +684,7 @@ function SecuritySection() {
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirm New Password"
+            placeholder={t.confirmNewPasswordPlaceholder || "Confirm New Password"}
             className="w-full px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
             required
           />
@@ -703,14 +708,14 @@ function SecuritySection() {
             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {submitting && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            Change Password
+            {t.changePassword || "Change Password"}
           </button>
         </div>
       </form>
 
       <div className="border-t border-border pt-4">
         <p className="text-sm text-muted-foreground">
-          Login attempt limits can be configured in System Settings.
+          {t.loginAttemptLimitsNote || "Login attempt limits can be configured in System Settings."}
         </p>
       </div>
     </div>
@@ -720,6 +725,7 @@ function SecuritySection() {
 /* ────────────────────── People ────────────────────── */
 
 function PeopleSection() {
+  const t = useTranslation().common;
   const [users, setUsers] = useState<UserEntry[]>([]);
   const [maxUsers, setMaxUsers] = useState(5);
   const [loading, setLoading] = useState(true);
@@ -803,11 +809,11 @@ function PeopleSection() {
         setNewRole("user");
         setNewTeam("Default");
         setShowAddForm(false);
-        setActionMsg({ type: "success", text: "User created successfully" });
+        setActionMsg({ type: "success", text: t.userCreated || "User created successfully" });
         await loadUsers();
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to create user";
-        setAddError(msg.includes("403") ? `User limit reached (${maxUsers} max)` : msg);
+        const msg = err instanceof Error ? err.message : (t.failedToCreateUser || "Failed to create user");
+        setAddError(msg.includes("403") ? (t.userLimitReached?.replace("{max}", String(maxUsers)) || `User limit reached (${maxUsers} max)`) : msg);
       } finally {
         setAdding(false);
         setTimeout(() => setActionMsg(null), 3000);
@@ -818,13 +824,13 @@ function PeopleSection() {
 
   const handleDeleteUser = useCallback(
     async (id: string, username: string) => {
-      if (!confirm(`Delete user "${username}"? This cannot be undone.`)) return;
+      if (!confirm(`${t.deleteUser || "Delete user"} "${username}"? ${t.cannotBeUndone || "This cannot be undone."}`)) return;
       try {
         await apiDelete(`/auth/users/${id}`);
-        setActionMsg({ type: "success", text: `User "${username}" deleted` });
+        setActionMsg({ type: "success", text: t.userDeleted || `User "${username}" deleted` });
         await loadUsers();
       } catch {
-        setActionMsg({ type: "error", text: "Failed to delete user" });
+        setActionMsg({ type: "error", text: t.failedToDeleteUser || "Failed to delete user" });
       }
       setOpenMenuId(null);
       setTimeout(() => setActionMsg(null), 3000);
@@ -842,13 +848,13 @@ function PeopleSection() {
           team: editTeam,
         });
         setEditingUser(null);
-        setActionMsg({ type: "success", text: "User updated" });
+        setActionMsg({ type: "success", text: t.userUpdated || "User updated" });
         await loadUsers();
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to update user";
+        const msg = err instanceof Error ? err.message : (t.failedToUpdateUser || "Failed to update user");
         setActionMsg({
           type: "error",
-          text: msg.includes("400") ? "Cannot remove your own admin role" : msg,
+          text: msg.includes("400") ? (t.cannotRemoveOwnAdminRole || "Cannot remove your own admin role") : msg,
         });
       }
       setTimeout(() => setActionMsg(null), 3000);
@@ -866,9 +872,9 @@ function PeopleSection() {
         });
         setResetPasswordUser(null);
         setResetPassword("");
-        setActionMsg({ type: "success", text: "Password reset successfully" });
+        setActionMsg({ type: "success", text: t.passwordResetSuccess || "Password reset successfully" });
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to reset password";
+        const msg = err instanceof Error ? err.message : (t.failedToResetPassword || "Failed to reset password");
         setActionMsg({ type: "error", text: msg });
       }
       setTimeout(() => setActionMsg(null), 3000);
@@ -888,9 +894,9 @@ function PeopleSection() {
     <div className="space-y-5">
       {/* Header */}
       <div>
-        <h3 className="text-lg font-semibold text-foreground">People</h3>
+        <h3 className="text-lg font-semibold text-foreground">{t.people || "People"}</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Manage workspace members and their permissions
+          {t.people || "Manage workspace members and their permissions"}
         </p>
       </div>
 
@@ -923,7 +929,7 @@ function PeopleSection() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search members..."
+            placeholder={t.searchMembers || "Search members..."}
             className="w-full pl-9 pr-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
           />
         </div>
@@ -940,10 +946,10 @@ function PeopleSection() {
               ? "bg-muted text-muted-foreground cursor-not-allowed"
               : "bg-primary text-primary-foreground hover:bg-primary/90",
           )}
-          title={atLimit ? `User limit reached (${maxUsers} max)` : "Add a new member"}
+          title={atLimit ? (t.userLimitReached?.replace("{max}", String(maxUsers)) || `User limit reached (${maxUsers} max)`) : (t.addNewMember || "Add a new member")}
         >
           <UserPlus className="h-4 w-4" />
-          Add Members
+          {t.addMembers || "Add Members"}
         </button>
       </div>
 
@@ -953,13 +959,13 @@ function PeopleSection() {
           onSubmit={handleAddUser}
           className="p-4 rounded-lg border border-border bg-muted/20 space-y-3"
         >
-          <h4 className="text-sm font-medium text-foreground">New Member</h4>
+          <h4 className="text-sm font-medium text-foreground">{t.newMember || "New Member"}</h4>
           <div className="grid grid-cols-2 gap-3">
             <input
               type="text"
               value={newUsername}
               onChange={(e) => setNewUsername(e.target.value)}
-              placeholder="Username"
+              placeholder={t.username || "Username"}
               required
               className="px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
             />
@@ -967,7 +973,7 @@ function PeopleSection() {
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              placeholder="Password"
+              placeholder={t.password || "Password"}
               required
               minLength={8}
               className="px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
@@ -986,9 +992,9 @@ function PeopleSection() {
                 ))
               ) : (
                 <>
-                  <option value="user">User — Basic tool access</option>
-                  <option value="editor">Editor — All files &amp; pipelines</option>
-                  <option value="admin">Admin — Full access</option>
+                  <option value="user">{t.userRoleBasic || "User — Basic tool access"}</option>
+                  <option value="editor">{t.editorRoleAllFiles || "Editor — All files & pipelines"}</option>
+                  <option value="admin">{t.adminRoleFull || "Admin — Full access"}</option>
                 </>
               )}
             </select>
@@ -1012,14 +1018,14 @@ function PeopleSection() {
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               {adding && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-              Create
+              {t.create || "Create"}
             </button>
             <button
               type="button"
               onClick={() => setShowAddForm(false)}
               className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
             >
-              Cancel
+              {t.cancel || "Cancel"}
             </button>
           </div>
           {addError && <p className="text-sm text-destructive">{addError}</p>}
@@ -1032,7 +1038,7 @@ function PeopleSection() {
           onSubmit={handleUpdateUser}
           className="p-4 rounded-lg border border-primary/30 bg-primary/5 space-y-3"
         >
-          <h4 className="text-sm font-medium text-foreground">Edit {editingUser.username}</h4>
+          <h4 className="text-sm font-medium text-foreground">{(t.edit || "Edit")} {editingUser.username}</h4>
           <div className="flex flex-wrap gap-3">
             <select
               value={editRole}
@@ -1048,9 +1054,9 @@ function PeopleSection() {
                 ))
               ) : (
                 <>
-                  <option value="user">User — Basic tool access</option>
-                  <option value="editor">Editor — All files &amp; pipelines</option>
-                  <option value="admin">Admin — Full access</option>
+                  <option value="user">{t.userRoleBasic || "User — Basic tool access"}</option>
+                  <option value="editor">{t.editorRoleAllFiles || "Editor — All files & pipelines"}</option>
+                  <option value="admin">{t.adminRoleFull || "Admin — Full access"}</option>
                 </>
               )}
             </select>
@@ -1070,14 +1076,14 @@ function PeopleSection() {
               type="submit"
               className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
             >
-              Save
+              {t.save || "Save"}
             </button>
             <button
               type="button"
               onClick={() => setEditingUser(null)}
               className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
             >
-              Cancel
+              {t.cancel || "Cancel"}
             </button>
           </div>
         </form>
@@ -1090,7 +1096,7 @@ function PeopleSection() {
           className="p-4 rounded-lg border border-orange-500/30 bg-orange-500/5 space-y-3"
         >
           <h4 className="text-sm font-medium text-foreground">
-            Reset password for {resetPasswordUser.username}
+            {(t.resetPasswordFor || "Reset password for").replace("{username}", resetPasswordUser.username)}
           </h4>
           <div className="flex flex-wrap gap-3">
             <input
@@ -1106,7 +1112,7 @@ function PeopleSection() {
               type="submit"
               className="px-4 py-2 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 transition-colors"
             >
-              Reset Password
+              {t.resetPassword || "Reset Password"}
             </button>
             <button
               type="button"
@@ -1116,11 +1122,11 @@ function PeopleSection() {
               }}
               className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
             >
-              Cancel
+              {t.cancel || "Cancel"}
             </button>
           </div>
           <p className="text-xs text-muted-foreground">
-            This will invalidate all sessions and API keys for this user.
+            {t.passwordResetInvalidates || "This will invalidate all sessions and API keys for this user."}
           </p>
         </form>
       )}
@@ -1129,16 +1135,16 @@ function PeopleSection() {
       <div className="border border-border rounded-lg overflow-hidden">
         {/* Table header */}
         <div className="grid grid-cols-[1fr_100px_120px_60px] gap-2 px-4 py-2.5 bg-muted/40 border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          <span>User</span>
-          <span>Role</span>
-          <span>Team</span>
+          <span>{t.user || "User"}</span>
+          <span>{t.role || "Role"}</span>
+          <span>{t.team || "Team"}</span>
           <span />
         </div>
 
         {/* Table rows */}
         {filteredUsers.length === 0 ? (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-            {search ? "No members match your search." : "No users found."}
+            {search ? (t.noMembersMatchSearch || "No members match your search.") : (t.noUsersFound || "No users found.")}
           </div>
         ) : (
           filteredUsers.map((u) => (
@@ -1202,7 +1208,7 @@ function PeopleSection() {
                       className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                     >
                       <Pencil className="h-3.5 w-3.5" />
-                      Edit Role / Team
+                      {t.editRoleTeam || "Edit Role / Team"}
                     </button>
                     <button
                       type="button"
@@ -1214,7 +1220,7 @@ function PeopleSection() {
                       className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                     >
                       <RotateCcw className="h-3.5 w-3.5" />
-                      Reset Password
+                      {t.resetPassword || "Reset Password"}
                     </button>
                     <div className="border-t border-border my-1" />
                     <button
@@ -1223,7 +1229,7 @@ function PeopleSection() {
                       className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
-                      Delete User
+                      {t.deleteUser || "Delete User"}
                     </button>
                   </div>
                 )}
@@ -1300,7 +1306,7 @@ function ApiKeysSection() {
 
   const deleteKey = useCallback(
     async (id: number) => {
-      if (!confirm("Delete this API key? Any integrations using it will stop working.")) return;
+      if (!confirm((t.deleteKeyConfirm || "Delete this API key? Any integrations using it will stop working."))) return;
       try {
         await apiDelete(`/v1/api-keys/${id}`);
         await loadKeys();
@@ -1322,9 +1328,9 @@ function ApiKeysSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">API Keys</h3>
+        <h3 className="text-lg font-semibold text-foreground">{t.apiKeys || "API Keys"}</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Manage API keys for programmatic access to SnapOtter.
+          {t.manageApiKeysDescription || "Manage API keys for programmatic access to SnapOtter."}
         </p>
       </div>
 
@@ -1355,7 +1361,7 @@ function ApiKeysSection() {
           onClick={() => setShowScoping(!showScoping)}
           className="text-xs text-muted-foreground hover:text-foreground transition-colors"
         >
-          {showScoping ? "Remove permission scoping" : "Restrict permissions (optional)"}
+          {showScoping ? (t.removePermissionScoping || "Remove permission scoping") : (t.restrictPermissionsOptional || "Restrict permissions (optional)")}
         </button>
 
         {showScoping && (
@@ -1429,7 +1435,7 @@ function ApiKeysSection() {
       {/* Existing keys list */}
       {keys.length > 0 && (
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-foreground">Existing Keys</h4>
+          <h4 className="text-sm font-medium text-foreground">{t.existingKeys || "Existing Keys"}</h4>
           {keys.map((k) => (
             <div
               key={k.id}
@@ -1476,6 +1482,7 @@ function ApiKeysSection() {
 /* ────────────────────── Teams ────────────────────── */
 
 function TeamsSection() {
+  const t = useTranslation().common;
   const [teams, setTeams] = useState<TeamEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -1520,13 +1527,13 @@ function TeamsSection() {
         await apiPost("/v1/teams", { name: newTeamName.trim() });
         setNewTeamName("");
         setShowCreateForm(false);
-        setActionMsg({ type: "success", text: "Team created successfully" });
+        setActionMsg({ type: "success", text: t.teamCreated || "Team created successfully" });
         await loadTeams();
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to create team";
+        const msg = err instanceof Error ? err.message : (t.failedToCreateTeam || "Failed to create team");
         setActionMsg({
           type: "error",
-          text: msg.includes("409") ? "A team with that name already exists" : msg,
+          text: msg.includes("409") ? (t.aTeamWithNameExists || "A team with that name already exists") : msg,
         });
       } finally {
         setCreating(false);
@@ -1543,10 +1550,10 @@ function TeamsSection() {
         await apiPut(`/v1/teams/${id}`, { name: editingTeamName.trim() });
         setEditingTeamId(null);
         setEditingTeamName("");
-        setActionMsg({ type: "success", text: "Team renamed" });
+        setActionMsg({ type: "success", text: t.teamRenamed || "Team renamed" });
         await loadTeams();
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to rename team";
+        const msg = err instanceof Error ? err.message : (t.failedToRenameTeam || "Failed to rename team");
         setActionMsg({ type: "error", text: msg });
       }
       setTimeout(() => setActionMsg(null), 3000);
@@ -1556,16 +1563,16 @@ function TeamsSection() {
 
   const handleDelete = useCallback(
     async (id: number, name: string) => {
-      if (!confirm(`Delete team "${name}"? Members will be unassigned.`)) return;
+      if (!confirm(`${t.deleteTeam || "Delete team"} "${name}"? ${t.membersWillBeUnassigned || "Members will be unassigned."}`)) return;
       try {
         await apiDelete(`/v1/teams/${id}`);
-        setActionMsg({ type: "success", text: `Team "${name}" deleted` });
+        setActionMsg({ type: "success", text: t.teamDeleted || `Team "${name}" deleted` });
         await loadTeams();
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to delete team";
+        const msg = err instanceof Error ? err.message : (t.failedToDeleteTeam || "Failed to delete team");
         setActionMsg({
           type: "error",
-          text: msg.includes("400") ? "Cannot delete the default team or a team with members" : msg,
+          text: msg.includes("400") ? (t.cannotDeleteDefaultTeam || "Cannot delete the default team or a team with members") : msg,
         });
       }
       setOpenMenuId(null);
@@ -1585,9 +1592,9 @@ function TeamsSection() {
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">Teams</h3>
+        <h3 className="text-lg font-semibold text-foreground">{t.teams || "Teams"}</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Organize members into teams for better management.
+          {t.teams || "Organize members into teams for better management."}
         </p>
       </div>
 
@@ -1611,7 +1618,7 @@ function TeamsSection() {
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
         >
           <UsersRound className="h-4 w-4" />
-          Create New Team
+          {t.createNewTeam || "Create New Team"}
         </button>
       </div>
 
@@ -1620,13 +1627,13 @@ function TeamsSection() {
           onSubmit={handleCreate}
           className="p-4 rounded-lg border border-border bg-muted/20 space-y-3"
         >
-          <h4 className="text-sm font-medium text-foreground">New Team</h4>
+          <h4 className="text-sm font-medium text-foreground">{t.newTeam || "New Team"}</h4>
           <div className="flex items-center gap-3">
             <input
               type="text"
               value={newTeamName}
               onChange={(e) => setNewTeamName(e.target.value)}
-              placeholder="Team name"
+              placeholder={t.teamName || "Team name"}
               required
               className="px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground flex-1"
             />
@@ -1636,14 +1643,14 @@ function TeamsSection() {
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               {creating && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-              Create
+              {t.create || "Create"}
             </button>
             <button
               type="button"
               onClick={() => setShowCreateForm(false)}
               className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
             >
-              Cancel
+              {t.cancel || "Cancel"}
             </button>
           </div>
         </form>
@@ -1651,13 +1658,13 @@ function TeamsSection() {
 
       <div className="border border-border rounded-lg overflow-hidden">
         <div className="grid grid-cols-[1fr_100px_60px] gap-2 px-4 py-2.5 bg-muted/40 border-b border-border text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          <span>Team Name</span>
-          <span>Members</span>
+          <span>{t.teamName || "Team Name"}</span>
+          <span>{t.members || "Members"}</span>
           <span />
         </div>
 
         {teams.length === 0 ? (
-          <div className="px-4 py-8 text-center text-sm text-muted-foreground">No teams found.</div>
+          <div className="px-4 py-8 text-center text-sm text-muted-foreground">{t.noTeamsFound || "No teams found."}</div>
         ) : (
           teams.map((t) => (
             <div
@@ -1724,7 +1731,7 @@ function TeamsSection() {
                       className="flex items-center gap-2 w-full px-3 py-2 text-sm text-foreground hover:bg-muted transition-colors"
                     >
                       <Pencil className="h-3.5 w-3.5" />
-                      Rename
+                      {t.rename || "Rename"}
                     </button>
                     <div className="border-t border-border my-1" />
                     <button
@@ -1733,7 +1740,7 @@ function TeamsSection() {
                       className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
-                      Delete
+                      {t.deleteTeam || "Delete"}
                     </button>
                   </div>
                 )}
@@ -1749,21 +1756,22 @@ function TeamsSection() {
 /* ────────────────────── Roles ────────────────────── */
 
 const PERMISSION_GROUPS = [
-  { label: "Tools", permissions: ["tools:use"] },
-  { label: "Files", permissions: ["files:own", "files:all"] },
-  { label: "API Keys", permissions: ["apikeys:own", "apikeys:all"] },
-  { label: "Pipelines", permissions: ["pipelines:own", "pipelines:all"] },
-  { label: "Settings", permissions: ["settings:read", "settings:write"] },
-  { label: "Users", permissions: ["users:manage"] },
-  { label: "Teams", permissions: ["teams:manage"] },
-  { label: "Branding", permissions: ["branding:manage"] },
+  { label: "tools", permissions: ["tools:use"] },
+  { label: "files", permissions: ["files:own", "files:all"] },
+  { label: "apiKeys", permissions: ["apikeys:own", "apikeys:all"] },
+  { label: "pipelines", permissions: ["pipelines:own", "pipelines:all"] },
+  { label: "settings", permissions: ["settings:read", "settings:write"] },
+  { label: "users", permissions: ["users:manage"] },
+  { label: "teams", permissions: ["teams:manage"] },
+  { label: "brandingPermission", permissions: ["branding:manage"] },
   {
-    label: "System",
+    label: "system",
     permissions: ["features:manage", "system:health", "audit:read"],
   },
 ];
 
 function RolesSection() {
+  const t = useTranslation().common;
   const [roles, setRoles] = useState<RoleEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -1807,13 +1815,13 @@ function RolesSection() {
         setNewDescription("");
         setNewPermissions([]);
         setShowCreateForm(false);
-        setActionMsg({ type: "success", text: "Role created successfully" });
+        setActionMsg({ type: "success", text: t.roleCreated || "Role created successfully" });
         await loadRoles();
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to create role";
+        const msg = err instanceof Error ? err.message : (t.failedToCreateRole || "Failed to create role");
         setActionMsg({
           type: "error",
-          text: msg.includes("409") ? "A role with that name already exists" : msg,
+          text: msg.includes("409") ? (t.aRoleWithNameExists || "A role with that name already exists") : msg,
         });
       }
       setTimeout(() => setActionMsg(null), 3000);
@@ -1832,10 +1840,10 @@ function RolesSection() {
           permissions: editPermissions,
         });
         setEditingRole(null);
-        setActionMsg({ type: "success", text: "Role updated" });
+        setActionMsg({ type: "success", text: t.roleUpdated || "Role updated" });
         await loadRoles();
       } catch (err) {
-        const msg = err instanceof Error ? err.message : "Failed to update role";
+        const msg = err instanceof Error ? err.message : (t.failedToUpdateRole || "Failed to update role");
         setActionMsg({ type: "error", text: msg });
       }
       setTimeout(() => setActionMsg(null), 3000);
@@ -1847,15 +1855,15 @@ function RolesSection() {
     async (role: RoleEntry) => {
       const msg =
         role.userCount > 0
-          ? `Delete role "${role.name}"? ${role.userCount} user${role.userCount !== 1 ? "s" : ""} will need to be reassigned.`
-          : `Delete role "${role.name}"?`;
+          ? `${t.deleteRole || "Delete role"} "${role.name}"? ${role.userCount} user${role.userCount !== 1 ? "s" : ""} ${t.willNeedReassign || "will need to be reassigned"}.`
+          : `${t.deleteRole || "Delete role"} "${role.name}"?`;
       if (!confirm(msg)) return;
       try {
         await apiDelete(`/v1/roles/${role.id}`);
-        setActionMsg({ type: "success", text: `Role "${role.name}" deleted` });
+        setActionMsg({ type: "success", text: t.roleDeleted || `Role "${role.name}" deleted` });
         await loadRoles();
       } catch (err) {
-        const errMsg = err instanceof Error ? err.message : "Failed to delete role";
+        const errMsg = err instanceof Error ? err.message : (t.failedToDeleteRole || "Failed to delete role");
         setActionMsg({ type: "error", text: errMsg });
       }
       setTimeout(() => setActionMsg(null), 3000);
@@ -1878,9 +1886,9 @@ function RolesSection() {
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">Roles</h3>
+        <h3 className="text-lg font-semibold text-foreground">{t.roles || "Roles"}</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Manage roles and their permissions. Built-in roles cannot be modified.
+          {t.manageRolesPermissions || "Manage roles and their permissions. Built-in roles cannot be modified."}
         </p>
       </div>
 
@@ -1904,7 +1912,7 @@ function RolesSection() {
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
         >
           <Plus className="h-4 w-4" />
-          Create Custom Role
+          {t.createCustomRole || "Create Custom Role"}
         </button>
       </div>
 
@@ -1914,13 +1922,13 @@ function RolesSection() {
           onSubmit={handleCreate}
           className="p-4 rounded-lg border border-border bg-muted/20 space-y-3"
         >
-          <h4 className="text-sm font-medium text-foreground">New Role</h4>
+          <h4 className="text-sm font-medium text-foreground">{t.newRole || "New Role"}</h4>
           <div className="grid grid-cols-2 gap-3">
             <input
               type="text"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              placeholder="Role name"
+              placeholder={t.roleName || "Role name"}
               required
               className="px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
             />
@@ -1928,16 +1936,16 @@ function RolesSection() {
               type="text"
               value={newDescription}
               onChange={(e) => setNewDescription(e.target.value)}
-              placeholder="Description (optional)"
+              placeholder={t.descriptionOptional || "Description (optional)"}
               className="px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
             />
           </div>
           <div>
-            <p className="text-xs font-medium text-muted-foreground mb-2">Permissions</p>
+            <p className="text-xs font-medium text-muted-foreground mb-2">{t.permissions || "Permissions"}</p>
             <div className="grid grid-cols-2 gap-3">
               {PERMISSION_GROUPS.map((group) => (
                 <div key={group.label} className="space-y-1">
-                  <p className="text-xs font-semibold text-foreground">{group.label}</p>
+                  <p className="text-xs font-semibold text-foreground">{(t as Record<string, string>)[group.label] || group.label}</p>
                   {group.permissions.map((perm) => (
                     <label key={perm} className="flex items-center gap-1.5 text-xs cursor-pointer">
                       <input
@@ -1958,7 +1966,7 @@ function RolesSection() {
               type="submit"
               className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
             >
-              Create
+              {t.create || "Create"}
             </button>
             <button
               type="button"
@@ -1970,7 +1978,7 @@ function RolesSection() {
               }}
               className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
             >
-              Cancel
+              {t.cancel || "Cancel"}
             </button>
           </div>
         </form>
@@ -1982,13 +1990,13 @@ function RolesSection() {
           onSubmit={handleUpdate}
           className="p-4 rounded-lg border border-primary/30 bg-primary/5 space-y-3"
         >
-          <h4 className="text-sm font-medium text-foreground">Edit Role: {editingRole.name}</h4>
+          <h4 className="text-sm font-medium text-foreground">{(t.edit || "Edit")} {editingRole.name}</h4>
           <div className="grid grid-cols-2 gap-3">
             <input
               type="text"
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
-              placeholder="Role name"
+              placeholder={t.roleName || "Role name"}
               required
               className="px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
             />
@@ -1996,16 +2004,16 @@ function RolesSection() {
               type="text"
               value={editDescription}
               onChange={(e) => setEditDescription(e.target.value)}
-              placeholder="Description (optional)"
+              placeholder={t.descriptionOptional || "Description (optional)"}
               className="px-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
             />
           </div>
           <div>
-            <p className="text-xs font-medium text-muted-foreground mb-2">Permissions</p>
+            <p className="text-xs font-medium text-muted-foreground mb-2">{t.permissions || "Permissions"}</p>
             <div className="grid grid-cols-2 gap-3">
               {PERMISSION_GROUPS.map((group) => (
                 <div key={group.label} className="space-y-1">
-                  <p className="text-xs font-semibold text-foreground">{group.label}</p>
+                  <p className="text-xs font-semibold text-foreground">{(t as Record<string, string>)[group.label] || group.label}</p>
                   {group.permissions.map((perm) => (
                     <label key={perm} className="flex items-center gap-1.5 text-xs cursor-pointer">
                       <input
@@ -2026,14 +2034,14 @@ function RolesSection() {
               type="submit"
               className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
             >
-              Save
+              {t.save || "Save"}
             </button>
             <button
               type="button"
               onClick={() => setEditingRole(null)}
               className="px-4 py-2 rounded-lg border border-border text-sm text-muted-foreground hover:bg-muted transition-colors"
             >
-              Cancel
+              {t.cancel || "Cancel"}
             </button>
           </div>
         </form>
@@ -2042,7 +2050,7 @@ function RolesSection() {
       {/* Role cards */}
       <div className="space-y-3">
         {roles.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-8">No roles found.</p>
+          <p className="text-sm text-muted-foreground text-center py-8">{t.noRolesFound || "No roles found."}</p>
         ) : (
           roles.map((role) => (
             <div
@@ -2057,7 +2065,7 @@ function RolesSection() {
                   {role.isBuiltin && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-muted text-xs font-medium text-muted-foreground">
                       <Lock className="h-3 w-3" />
-                      Built-in
+                      {t.builtIn || "Built-in"}
                     </span>
                   )}
                   <span className="inline-block px-2 py-0.5 rounded-full bg-primary/10 text-xs font-medium text-primary">
@@ -2152,6 +2160,7 @@ function formatRelativeTime(iso: string): string {
 }
 
 function AuditLogSection() {
+  const t = useTranslation().common;
   const [entries, setEntries] = useState<AuditEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -2192,13 +2201,13 @@ function AuditLogSection() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-foreground">Audit Log</h3>
+        <h3 className="text-lg font-semibold text-foreground">{t.auditLog || "Audit Log"}</h3>
         <select
           value={actionFilter}
           onChange={(e) => handleFilterChange(e.target.value)}
           className="text-sm border border-border rounded-lg px-2 py-1.5 bg-background text-foreground"
         >
-          <option value="">All actions</option>
+          <option value="">{t.allActions || "All actions"}</option>
           {AUDIT_ACTIONS.map((a) => (
             <option key={a} value={a}>
               {a.replaceAll("_", " ")}
@@ -2212,16 +2221,16 @@ function AuditLogSection() {
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
       ) : entries.length === 0 ? (
-        <p className="text-sm text-muted-foreground text-center py-8">No audit log entries.</p>
+        <p className="text-sm text-muted-foreground text-center py-8">{t.noAuditLogEntries || "No audit log entries."}</p>
       ) : (
         <div className="border border-border rounded-lg overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/30">
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Time</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">User</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Action</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Target</th>
+                <th className="text-left px-3 py-2 font-medium text-muted-foreground">{t.time || "Time"}</th>
+                <th className="text-left px-3 py-2 font-medium text-muted-foreground">{t.user || "User"}</th>
+                <th className="text-left px-3 py-2 font-medium text-muted-foreground">{t.action || "Action"}</th>
+                <th className="text-left px-3 py-2 font-medium text-muted-foreground">{t.target || "Target"}</th>
               </tr>
             </thead>
             <tbody>
@@ -2266,7 +2275,7 @@ function AuditLogSection() {
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">
-            Page {page} of {totalPages} ({total} entries)
+            {(t.pageOf || "Page {page} of {totalPages}").replace("{page}", String(page)).replace("{totalPages}", String(totalPages))} ({(t.entries || "entries")})
           </span>
           <div className="flex gap-2">
             <button
@@ -2275,7 +2284,7 @@ function AuditLogSection() {
               onClick={() => setPage((p) => p - 1)}
               className="px-3 py-1 rounded-lg border border-border text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Previous
+              {t.previous || "Previous"}
             </button>
             <button
               type="button"
@@ -2283,7 +2292,7 @@ function AuditLogSection() {
               onClick={() => setPage((p) => p + 1)}
               className="px-3 py-1 rounded-lg border border-border text-foreground hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Next
+              {t.next || "Next"}
             </button>
           </div>
         </div>
@@ -2295,6 +2304,8 @@ function AuditLogSection() {
 /* ────────────────────── Tools ────────────────────── */
 
 function ToolsSection() {
+  const t = useTranslation().common;
+  const tTools = useTranslation().tools;
   const [disabledTools, setDisabledTools] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -2359,15 +2370,15 @@ function ToolsSection() {
   return (
     <div className="space-y-5">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">Tools</h3>
+        <h3 className="text-lg font-semibold text-foreground">{t.tools || "Tools"}</h3>
         <p className="text-sm text-muted-foreground mt-1">
-          Enable or disable individual tools. Disabled tools are hidden from all users.
+          {t.enableOrDisableTools || "Enable or disable individual tools. Disabled tools are hidden from all users."}
         </p>
       </div>
 
       {showRestartBanner && (
         <div className="px-4 py-3 rounded-lg border border-amber-500/30 bg-amber-500/10 text-sm text-amber-700 dark:text-amber-400">
-          Restart required for changes to take effect.
+          {t.restartRequired || "Restart required for changes to take effect."}
         </div>
       )}
 
@@ -2377,7 +2388,7 @@ function ToolsSection() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search tools..."
+          placeholder={t.searchTools || "Search tools..."}
           className="w-full pl-9 pr-3 py-2 rounded-lg border border-border bg-background text-sm text-foreground"
         />
       </div>
@@ -2397,7 +2408,7 @@ function ToolsSection() {
                     className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/20 transition-colors"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-foreground">{tool.name}</p>
+                      <p className="text-sm font-medium text-foreground">{tTools[tool.id as keyof typeof tTools]?.name || tool.name}</p>
                       <p className="text-xs text-muted-foreground truncate">{tool.description}</p>
                     </div>
                     <button
@@ -2425,7 +2436,7 @@ function ToolsSection() {
 
       {filteredTools.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-4">
-          No tools match your search.
+          {t.noToolsMatchSearch || "No tools match your search."}
         </p>
       )}
 
@@ -2437,10 +2448,10 @@ function ToolsSection() {
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
         >
           {saving && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-          Save Tool Settings
+          {(t.saveToolSettings || "Save Tool Settings")}
         </button>
         <span className="text-xs text-muted-foreground">
-          {disabledTools.length} tool{disabledTools.length !== 1 ? "s" : ""} disabled
+          {disabledTools.length} {(t.toolsDisabled || "tools disabled")}
         </span>
       </div>
     </div>
@@ -2450,6 +2461,7 @@ function ToolsSection() {
 /* ────────────────────── Analytics ────────────────────── */
 
 function AnalyticsSection() {
+  const t = useTranslation().common;
   const { consent, config, configLoaded, fetchConfig, toggleAnalytics } = useAnalyticsStore();
 
   useEffect(() => {
@@ -2464,21 +2476,21 @@ function AnalyticsSection() {
   return (
     <div className="space-y-4">
       <div>
-        <h3 className="text-sm font-medium text-foreground">Product Analytics</h3>
+        <h3 className="text-sm font-medium text-foreground">{t.analyticsTitle || "Product Analytics"}</h3>
         <p className="text-xs text-muted-foreground mt-1">
-          Share anonymous usage data to help improve SnapOtter.
+          {t.shareAnonymousUsage || "Share anonymous usage data to help improve SnapOtter."}
         </p>
-        <p className="text-xs text-muted-foreground">Your images never leave your machine.</p>
+        <p className="text-xs text-muted-foreground">{t.yourImagesNeverLeave || "Your images never leave your machine."}</p>
       </div>
 
       {disabled ? (
         <p className="text-xs text-muted-foreground italic">
-          Product analytics has been disabled by the server administrator.
+          {t.analyticsDisabled || "Product analytics has been disabled by the server administrator."}
         </p>
       ) : (
         <div className="flex items-center justify-between">
           <span className="text-sm text-foreground">
-            {enabled ? "Analytics enabled" : "Analytics disabled"}
+            {enabled ? (t.analyticsEnabled || "Analytics enabled") : (t.analyticsDisabledStatus || "Analytics disabled")}
           </span>
           <button
             type="button"
@@ -2504,7 +2516,7 @@ function AnalyticsSection() {
         rel="noopener noreferrer"
         className="text-xs text-primary hover:underline"
       >
-        Learn more
+        {t.learnMore || "Learn more"}
       </a>
     </div>
   );
@@ -2513,10 +2525,11 @@ function AnalyticsSection() {
 /* ────────────────────── About ────────────────────── */
 
 function AboutSection() {
+  const t = useTranslation().common;
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-semibold text-foreground">About</h3>
+        <h3 className="text-lg font-semibold text-foreground">{t.about || "About"}</h3>
       </div>
 
       <div className="p-4 rounded-lg border border-border bg-muted/20 space-y-3">
@@ -2531,13 +2544,13 @@ function AboutSection() {
           convert, watermark, and automate your image workflows without sending data to the cloud.
         </p>
         <div className="flex items-center gap-4 text-sm">
-          <span className="text-muted-foreground">Version:</span>
+          <span className="text-muted-foreground">{t.versionLabel || "Version"}:</span>
           <span className="font-mono text-foreground">{APP_VERSION}</span>
         </div>
       </div>
 
       <div className="space-y-2">
-        <h4 className="text-sm font-medium text-foreground">Links</h4>
+        <h4 className="text-sm font-medium text-foreground">{t.links || "Links"}</h4>
         <div className="flex flex-col gap-1.5">
           <a
             href="https://github.com/snapotter-hq/snapotter"
@@ -2545,7 +2558,7 @@ function AboutSection() {
             rel="noopener noreferrer"
             className="text-sm text-primary hover:underline"
           >
-            GitHub Repository
+            {t.githubRepository || "GitHub Repository"}
           </a>
           <a
             href="https://docs.snapotter.com/"
@@ -2553,7 +2566,7 @@ function AboutSection() {
             rel="noopener noreferrer"
             className="text-sm text-primary hover:underline"
           >
-            Documentation
+            {t.documentation || "Documentation"}
           </a>
           <a
             href="/api/docs"
@@ -2561,7 +2574,7 @@ function AboutSection() {
             rel="noopener noreferrer"
             className="text-sm text-primary hover:underline"
           >
-            API Reference (Swagger)
+            {t.apiReference || "API Reference (Swagger)"}
           </a>
         </div>
       </div>
