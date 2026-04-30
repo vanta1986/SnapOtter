@@ -66,7 +66,7 @@ export function ToolPalette({ onAddStep, className }: ToolPaletteProps) {
   return (
     <div className={cn("flex flex-col h-full", className)}>
       <div className="px-3 pt-3 pb-2 shrink-0">
-        <SearchBar value={search} onChange={setSearch} placeholder={tCommon.searchTools} />
+        <SearchBar value={search} onChange={setSearch} placeholder={tCommon.search} />
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 pb-3">
