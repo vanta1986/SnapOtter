@@ -2,7 +2,10 @@ import { Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 export function BulkRenameSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files, processing, error, setProcessing, setError } = useFileStore();
   const [pattern, setPattern] = useState("image-{{index}}");
   const [startIndex, setStartIndex] = useState(1);
@@ -69,7 +72,7 @@ export function BulkRenameSettings() {
     <div className="space-y-4">
       <div>
         <label htmlFor="bulk-rename-pattern" className="text-xs text-muted-foreground">
-          Pattern
+          {t["bulk-rename"].pattern || "Pattern"}
         </label>
         <input
           id="bulk-rename-pattern"
@@ -79,13 +82,13 @@ export function BulkRenameSettings() {
           className="w-full mt-0.5 px-2 py-1.5 rounded border border-border bg-background text-sm text-foreground"
         />
         <p className="text-[10px] text-muted-foreground mt-0.5">
-          Variables: {"{{index}}"}, {"{{padded}}"}, {"{{original}}"}
+          {t["bulk-rename"].variables || "Variables"}: {"{{index}}"}, {"{{padded}}"}, {"{{original}}"}
         </p>
       </div>
 
       <div>
         <label htmlFor="bulk-rename-start-index" className="text-xs text-muted-foreground">
-          Start Index
+          {t["bulk-rename"].startIndex || "Start Index"}
         </label>
         <input
           id="bulk-rename-start-index"
@@ -99,7 +102,9 @@ export function BulkRenameSettings() {
 
       {previewNames.length > 0 && (
         <div>
-          <p className="text-xs text-muted-foreground">Preview</p>
+          <p className="text-xs text-muted-foreground">
+            {t["bulk-rename"].preview || "Preview"}
+          </p>
           <div className="mt-1 space-y-0.5">
             {previewNames.map((name) => (
               <div
@@ -110,7 +115,10 @@ export function BulkRenameSettings() {
               </div>
             ))}
             {files.length > 5 && (
-              <p className="text-[10px] text-muted-foreground">... and {files.length - 5} more</p>
+              <p className="text-[10px] text-muted-foreground">
+                ... {t["bulk-rename"].andMore || "and"} {files.length - 5}{" "}
+                {t["bulk-rename"].more || "more"}
+              </p>
             )}
           </div>
         </div>
@@ -126,12 +134,17 @@ export function BulkRenameSettings() {
         className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {processing && <Loader2 className="h-4 w-4 animate-spin" />}
-        {processing ? "Renaming..." : `Rename ${files.length} Files`}
+        {processing
+          ? tCommon.renaming || "Renaming..."
+          : `${t["bulk-rename"].rename || "Rename"} ${files.length} ${
+              tCommon.files || "Files"
+            }`}
       </button>
 
       {downloadReady && (
         <p className="text-xs text-green-600 flex items-center gap-1">
-          <Download className="h-3 w-3" /> ZIP downloaded successfully
+          <Download className="h-3 w-3" />{" "}
+          {t["bulk-rename"].zipDownloaded || "ZIP downloaded successfully"}
         </p>
       )}
     </div>
