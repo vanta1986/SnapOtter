@@ -2,9 +2,12 @@ import { Download, Loader2, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type Position = "center" | "top-left" | "top-right" | "bottom-left" | "bottom-right";
 export function WatermarkImageSettings() {
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const { files, processing, error, setProcessing, setError, setProcessedUrl, setSizes, setJobId } =
     useFileStore();
   const [position, setPosition] = useState<Position>("bottom-right");
@@ -106,7 +109,9 @@ export function WatermarkImageSettings() {
   return (
     <div className="space-y-4">
       <div>
-        <p className="text-xs text-muted-foreground">Watermark Image</p>
+        <p className="text-xs text-muted-foreground">
+          {t["watermark-image"].watermarkImage || "Watermark Image"}
+        </p>
         <input
           ref={watermarkInputRef}
           type="file"
@@ -120,13 +125,15 @@ export function WatermarkImageSettings() {
           className="w-full mt-0.5 px-2 py-2 rounded border border-dashed border-border bg-background text-sm text-muted-foreground hover:text-foreground flex items-center justify-center gap-2"
         >
           <Upload className="h-4 w-4" />
-          {watermarkFile ? watermarkFile.name : "Choose watermark image"}
+          {watermarkFile
+            ? watermarkFile.name
+            : t["watermark-image"].chooseWatermarkImage || "Choose watermark image"}
         </button>
       </div>
 
       <div>
         <label htmlFor="watermark-image-position" className="text-xs text-muted-foreground">
-          Position
+          {tCommon.position || "Position"}
         </label>
         <select
           id="watermark-image-position"
@@ -134,18 +141,18 @@ export function WatermarkImageSettings() {
           onChange={(e) => setPosition(e.target.value as Position)}
           className="w-full mt-0.5 px-2 py-1.5 rounded border border-border bg-background text-sm text-foreground"
         >
-          <option value="center">Center</option>
-          <option value="top-left">Top Left</option>
-          <option value="top-right">Top Right</option>
-          <option value="bottom-left">Bottom Left</option>
-          <option value="bottom-right">Bottom Right</option>
+          <option value="center">{t["watermark-image"].center || "Center"}</option>
+          <option value="top-left">{t["watermark-image"].topLeft || "Top Left"}</option>
+          <option value="top-right">{t["watermark-image"].topRight || "Top Right"}</option>
+          <option value="bottom-left">{t["watermark-image"].bottomLeft || "Bottom Left"}</option>
+          <option value="bottom-right">{t["watermark-image"].bottomRight || "Bottom Right"}</option>
         </select>
       </div>
 
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="watermark-image-opacity" className="text-xs text-muted-foreground">
-            Opacity
+            {tCommon.opacity || "Opacity"}
           </label>
           <span className="text-xs font-mono text-foreground">{opacity}%</span>
         </div>
@@ -163,7 +170,7 @@ export function WatermarkImageSettings() {
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="watermark-image-scale" className="text-xs text-muted-foreground">
-            Scale
+            {tCommon.scale || "Scale"}
           </label>
           <span className="text-xs font-mono text-foreground">{scale}%</span>
         </div>
@@ -182,8 +189,12 @@ export function WatermarkImageSettings() {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Processed: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {tCommon.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -196,10 +207,12 @@ export function WatermarkImageSettings() {
       >
         {processing && <Loader2 className="h-4 w-4 animate-spin" />}
         {processing
-          ? "Processing..."
+          ? tCommon.processing || "Processing..."
           : files.length > 1
-            ? `Apply Watermark (${files.length} files)`
-            : "Apply Watermark"}
+            ? `${t["watermark-image"].applyWatermark || "Apply Watermark"} (${files.length} ${
+                tCommon.files || "files"
+              })`
+            : t["watermark-image"].applyWatermark || "Apply Watermark"}
       </button>
 
       {downloadUrl && (
@@ -210,7 +223,7 @@ export function WatermarkImageSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </div>
