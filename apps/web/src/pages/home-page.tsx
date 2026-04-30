@@ -9,11 +9,13 @@ import { ICON_MAP } from "@/lib/icon-map";
 import { useFeaturesStore } from "@/stores/features-store";
 import { useFileStore } from "@/stores/file-store";
 import { useSettingsStore } from "@/stores/settings-store";
+import { useTranslation } from "@/stores/locale-store";
 
 // Tools shown prominently as "quick actions" at the top
 const QUICK_ACTION_IDS = ["resize", "compress", "convert", "remove-background"];
 
 export function HomePage() {
+  const t = useTranslation().common;
   const {
     setFiles,
     files,
@@ -93,14 +95,14 @@ export function HomePage() {
               onClick={reset}
               className="text-xs text-muted-foreground hover:text-foreground mt-2"
             >
-              Change file
+              {t.changeFile || "Change file"}
             </button>
           </div>
 
           {/* Quick actions */}
           <div className="p-4 border-b border-border">
             <h3 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-3">
-              Quick Actions
+              {t.quickActions || "Quick Actions"}
             </h3>
             <div className="grid grid-cols-2 gap-2">
               {QUICK_ACTION_IDS.map((id) => {
@@ -139,7 +141,7 @@ export function HomePage() {
           {/* All tools by category */}
           <div className="p-4">
             <h3 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-3">
-              All Tools
+              {t.allTools || "All Tools"}
             </h3>
             {CATEGORIES.map((category) => {
               const categoryTools = TOOLS.filter((t) => t.category === category.id);
@@ -193,7 +195,7 @@ export function HomePage() {
           ) : currentEntry?.previewLoading ? (
             <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
               <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
-              <p className="text-sm text-muted-foreground">Generating preview...</p>
+              <p className="text-sm text-muted-foreground">{t.generatingPreview || "Generating preview..."}</p>
               <p className="text-xs text-muted-foreground/60">{selectedFileName}</p>
             </div>
           ) : originalBlobUrl ? (
@@ -204,7 +206,7 @@ export function HomePage() {
             />
           ) : (
             <div className="text-center text-muted-foreground">
-              <p>Loading preview...</p>
+              <p>{t.loadingPreview || "Loading preview..."}</p>
             </div>
           )}
         </div>
