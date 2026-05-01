@@ -35,6 +35,7 @@ import { useFileStore } from "@/stores/file-store";
 import { usePdfToImageStore } from "@/stores/pdf-to-image-store";
 import { useQrStore } from "@/stores/qr-store";
 import { useSplitStore } from "@/stores/split-store";
+import { useTranslation } from "@/stores/locale-store";
 
 /** Formats that browsers can render in <img> tags. */
 const BROWSER_PREVIEWABLE_EXTS = new Set([
@@ -71,6 +72,7 @@ function FileSelectionInfo({
   onClear: () => void;
   onAddMore: () => void;
 }) {
+  const tc = useTranslation().common;
   if (files.length === 0) {
     return (
       <p className="text-xs text-muted-foreground italic">Drop or upload an image to get started</p>
@@ -80,13 +82,13 @@ function FileSelectionInfo({
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-foreground">Files ({files.length})</span>
+        <span className="text-xs font-medium text-foreground">{tc.files || "Files"} ({files.length})</span>
         <button
           type="button"
           onClick={onAddMore}
           className="text-xs text-primary hover:text-primary/80"
         >
-          + Add more
+          + {tc.import || "Add more"}
         </button>
       </div>
       <div className="flex items-center gap-1.5 text-xs text-foreground bg-muted rounded px-2 py-1.5">
@@ -101,7 +103,7 @@ function FileSelectionInfo({
         onClick={onClear}
         className="text-xs text-muted-foreground hover:text-foreground"
       >
-        Clear all
+        {tc.clear}
       </button>
     </div>
   );
@@ -127,6 +129,7 @@ export function ToolPage() {
   const toolInstalled = featureBundle ? featureBundle.status === "installed" : !isAiTool;
   const { hasPermission } = useAuth();
   const isAdmin = hasPermission("settings:write");
+  const t = useTranslation().common;
 
   useEffect(() => {
     if (isAiTool) fetchFeatures();
@@ -374,7 +377,7 @@ export function ToolPage() {
       return (
         <div className="flex flex-col items-center justify-center gap-3 h-full text-center px-4">
           <p className="text-sm text-red-500">
-            {currentEntry.error ?? "Processing failed for this file"}
+            {currentEntry.error ?? (t.processingFailed || "Processing failed for this file")}
           </p>
         </div>
       );
@@ -601,7 +604,7 @@ export function ToolPage() {
       <>
         {!isNoDropzone && (
           <div className="space-y-2">
-            <h3 className="text-sm font-medium text-muted-foreground">Files</h3>
+            <h3 className="text-sm font-medium text-muted-foreground">{t.files}</h3>
             <FileSelectionInfo
               files={files}
               selectedFileName={selectedFileName}
@@ -615,8 +618,8 @@ export function ToolPage() {
         <div className="border-t border-border" />
 
         <div className="space-y-2">
-          <h3 className="text-sm font-medium text-muted-foreground">Settings</h3>
-          <Suspense fallback={<div className="text-xs text-muted-foreground">Loading...</div>}>
+          <h3 className="text-sm font-medium text-muted-foreground">{t.settings}</h3>
+          <Suspense fallback={<div className="text-xs text-muted-foreground">{t.loading}</div>}>
             <ToolSettings {...settingsProps} />
           </Suspense>
         </div>
@@ -629,7 +632,7 @@ export function ToolPage() {
             className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
           >
             <Download className="h-4 w-4" />
-            Download All (ZIP)
+            {t.downloadAll || "Download All (ZIP)"}
           </button>
         )}
 
@@ -664,7 +667,7 @@ export function ToolPage() {
               onClick={() => setMobileSettingsOpen(!mobileSettingsOpen)}
               className="px-3 py-1.5 rounded-lg border border-border text-xs text-muted-foreground hover:bg-muted"
             >
-              {mobileSettingsOpen ? "Hide Settings" : "Settings"}
+              {mobileSettingsOpen ? (t.hideSettings || "Hide Settings") : t.settings}
             </button>
           </div>
 

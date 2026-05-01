@@ -2,8 +2,10 @@ import { Upload } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useFilesPageStore } from "@/stores/files-page-store";
+import { useTranslation } from "@/stores/locale-store";
 
 export function FileUploadArea() {
+  const t = useTranslation().common;
   const { uploadFiles, loading } = useFilesPageStore();
   const [dragging, setDragging] = useState(false);
 
@@ -51,9 +53,9 @@ export function FileUploadArea() {
         )}
         <div className="text-center">
           <p className="text-sm font-medium text-foreground">
-            {loading ? "Uploading..." : "Drop images here"}
+            {loading ? t.loading : t.dropFiles}
           </p>
-          <p className="text-xs text-muted-foreground mt-1">or click to select files</p>
+          <p className="text-xs text-muted-foreground mt-1">{t.upload}</p>
         </div>
         <input
           type="file"

@@ -1,6 +1,7 @@
 import { FileImage, Upload } from "lucide-react";
 import { type DragEvent, useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/stores/locale-store";
 
 interface DropzoneProps {
   onFiles?: (files: File[]) => void;
@@ -26,6 +27,7 @@ export function Dropzone({
   currentFiles = [],
   compact = false,
 }: DropzoneProps) {
+  const t = useTranslation().common;
   const resolvedAccept = expandAccept(accept);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -86,16 +88,16 @@ export function Dropzone({
           className="flex items-center gap-2 px-6 py-2.5 rounded-lg border border-primary text-primary hover:bg-primary/5 transition-colors text-sm font-medium"
         >
           <Upload className="h-4 w-4" />
-          Upload from computer
+          {t.upload}
         </button>
-        <p className="text-sm text-muted-foreground">Drop files here or click the upload button</p>
+        <p className="text-sm text-muted-foreground">{t.dropFiles}</p>
 
         {/* Show file count badge and list when multiple files are dropped */}
         {hasMultipleFiles && (
           <div className="flex flex-col items-center gap-2 mt-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
               <FileImage className="h-3.5 w-3.5" />
-              {currentFiles.length} files selected
+              {t.filesSelected.replace("{{count}}", String(currentFiles.length))}
             </span>
             <div className="max-h-32 overflow-y-auto w-full max-w-xs">
               {currentFiles.map((f) => (
