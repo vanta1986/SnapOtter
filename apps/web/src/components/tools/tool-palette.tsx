@@ -17,6 +17,7 @@ interface ToolPaletteProps {
 export function ToolPalette({ onAddStep, className }: ToolPaletteProps) {
   const t = useTranslation().tools;
   const tCommon = useTranslation().common;
+  const tCategories = useTranslation().categories;
   const [search, setSearch] = useState("");
   const [disabledTools, setDisabledTools] = useState<string[]>([]);
   const [experimentalEnabled, setExperimentalEnabled] = useState(false);
@@ -96,7 +97,7 @@ export function ToolPalette({ onAddStep, className }: ToolPaletteProps) {
                   <div className="flex items-center gap-1.5 mb-1.5 px-1">
                     <CatIcon className="h-3.5 w-3.5 text-muted-foreground" />
                     <span className="text-xs font-semibold uppercase text-muted-foreground tracking-wider">
-                      {cat.name}
+                      {tCategories[cat.id as keyof typeof tCategories] || cat.name}
                     </span>
                   </div>
                   <div className="space-y-0.5">
