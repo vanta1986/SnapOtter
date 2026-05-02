@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 // ── Presets ──────────────────────────────────────────────────────────
 
@@ -579,6 +580,7 @@ export function BorderSettings({
   onImageStyle?: (style: React.CSSProperties | null) => void;
 }) {
   const { files } = useFileStore();
+  const t = useTranslation().tools;
   const { processFiles, processAllFiles, processing, error, downloadUrl, progress } =
     useToolProcessor("border");
 
@@ -631,7 +633,9 @@ export function BorderSettings({
           disabled={!canProcess}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Apply Border (${files.length} files)` : "Apply Border"}
+          {files.length > 1
+            ? `${t.border?.applyBorder || "Apply Border"} (${files.length} ${t.border?.filesCount || "files"})`
+            : t.border?.applyBorder || "Apply Border"}
         </button>
       )}
 

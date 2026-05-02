@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 export interface TextOverlayControlsProps {
   settings?: Record<string, unknown>;
@@ -156,6 +157,7 @@ export function TextOverlayControls({
 
 export function TextOverlaySettings() {
   const { files } = useFileStore();
+  const t = useTranslation().tools;
   const {
     processFiles,
     processAllFiles,
@@ -209,7 +211,9 @@ export function TextOverlaySettings() {
           disabled={!hasFile || processing || !settings.text}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Apply Overlay (${files.length} files)` : "Apply Overlay"}
+          {files.length > 1
+            ? `${t["text-overlay"]?.textOverlay || "Apply Overlay"} (${files.length} ${t["text-overlay"]?.filesCount || "files"})`
+            : t["text-overlay"]?.textOverlay || "Apply Overlay"}
         </button>
       )}
 

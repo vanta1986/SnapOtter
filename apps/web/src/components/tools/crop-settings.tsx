@@ -231,9 +231,7 @@ export function CropSettings({
         </div>
         <div className="flex flex-wrap gap-1">
           {ASPECT_PRESETS.map(({ label, value }) => {
-            const labelText = label === "free"
-              ? t.crop?.free || "Free"
-              : label;
+            const labelText = label === "free" ? t.crop?.free || "Free" : label;
             return (
               <button
                 type="button"
@@ -298,7 +296,8 @@ export function CropSettings({
         <div className="grid grid-cols-2 gap-2 mt-1">
           <div>
             <label htmlFor="crop-x" className="text-[10px] text-muted-foreground">
-              {t.crop?.xOfWidth?.replace("（宽度）", "") || "X"}{imgDimensions ? ` (${imgDimensions.width})` : ""}
+              {t.crop?.xOfWidth?.replace("（宽度）", "") || "X"}
+              {imgDimensions ? ` (${imgDimensions.width})` : ""}
             </label>
             <input
               id="crop-x"
@@ -312,7 +311,8 @@ export function CropSettings({
           </div>
           <div>
             <label htmlFor="crop-y" className="text-[10px] text-muted-foreground">
-              {t.crop?.yOfHeight?.replace("（高度）", "") || "Y"}{imgDimensions ? ` (${imgDimensions.height})` : ""}
+              {t.crop?.yOfHeight?.replace("（高度）", "") || "Y"}
+              {imgDimensions ? ` (${imgDimensions.height})` : ""}
             </label>
             <input
               id="crop-y"
@@ -326,7 +326,8 @@ export function CropSettings({
           </div>
           <div>
             <label htmlFor="crop-width" className="text-[10px] text-muted-foreground">
-              {t.crop?.widthOfWidth || "Width"}{imgDimensions ? ` (${imgDimensions.width})` : ""}
+              {t.crop?.widthOfWidth || "Width"}
+              {imgDimensions ? ` (${imgDimensions.width})` : ""}
             </label>
             <input
               id="crop-width"
@@ -340,7 +341,8 @@ export function CropSettings({
           </div>
           <div>
             <label htmlFor="crop-height" className="text-[10px] text-muted-foreground">
-              {t.crop?.heightOfHeight || "Height"}{imgDimensions ? ` (${imgDimensions.height})` : ""}
+              {t.crop?.heightOfHeight || "Height"}
+              {imgDimensions ? ` (${imgDimensions.height})` : ""}
             </label>
             <input
               id="crop-height"
@@ -388,8 +390,8 @@ export function CropSettings({
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {files.length > 1
-            ? `${t.crop?.crop || "Crop"} (${files.length} files)`
-            : (t.crop?.crop || "Crop")}
+            ? `${t.crop?.crop || "Crop"} (${files.length} ${t.crop?.filesCount || "files"})`
+            : t.crop?.crop || "Crop"}
         </button>
       )}
 

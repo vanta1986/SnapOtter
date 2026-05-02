@@ -4,6 +4,7 @@ import { ProgressCard } from "@/components/common/progress-card";
 import { formatHeaders } from "@/lib/api";
 import { copyToClipboard } from "@/lib/utils";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 interface BarcodeResult {
   type: string;
@@ -107,6 +108,7 @@ function scanOneFile(
 
 export function BarcodeReadSettings() {
   const { files, processing, error, setProcessing, setError } = useFileStore();
+  const t = useTranslation().tools;
 
   const [tryHarder, setTryHarder] = useState(false);
   const [results, setResults] = useState<FileResult[]>([]);
@@ -285,7 +287,9 @@ export function BarcodeReadSettings() {
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           <Search className="h-4 w-4" />
-          {files.length > 1 ? `Scan Barcodes (${files.length} files)` : "Scan Barcodes"}
+          {files.length > 1
+            ? `${t["barcode-read"]?.scanBarcodes || "Scan Barcodes"} (${files.length} ${t["barcode-read"]?.filesCount || "files"})`
+            : t["barcode-read"]?.scanBarcodes || "Scan Barcodes"}
         </button>
       )}
 

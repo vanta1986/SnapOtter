@@ -57,7 +57,9 @@ export function EnhanceFacesControls({
     <div className="space-y-4">
       {/* Quality */}
       <div>
-        <p className="text-sm font-medium text-muted-foreground mb-1.5">{t["enhance-faces"]?.quality || "Quality"}</p>
+        <p className="text-sm font-medium text-muted-foreground mb-1.5">
+          {t["enhance-faces"]?.quality || "Quality"}
+        </p>
         <div className="flex gap-1">
           {MODEL_OPTIONS.map(({ value, label }) => (
             <button
@@ -110,7 +112,9 @@ export function EnhanceFacesControls({
               onChange={(e) => setOnlyCenterFace(e.target.checked)}
               className="rounded border-border"
             />
-            <span className="text-sm text-foreground">{t["enhance-faces"]?.onlyMainFace || "Only enhance main face"}</span>
+            <span className="text-sm text-foreground">
+              {t["enhance-faces"]?.onlyMainFace || "Only enhance main face"}
+            </span>
           </label>
           <p className="text-[11px] text-muted-foreground/70 ml-6 mt-0.5">
             For portraits - ignores background faces
@@ -191,7 +195,11 @@ export function EnhanceFacesSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={hasMultiple ? `${t["enhance-faces"]?.enhancingN || "Enhancing"} ${files.length} images` : (t["enhance-faces"]?.enhancingFaces || "Enhancing faces")}
+          label={
+            hasMultiple
+              ? `${t["enhance-faces"]?.enhancingN || "Enhancing"} ${files.length} images`
+              : t["enhance-faces"]?.enhancingFaces || "Enhancing faces"
+          }
           percent={progress.percent}
           elapsed={progress.elapsed}
         />
@@ -203,7 +211,9 @@ export function EnhanceFacesSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {hasMultiple ? `Enhance Faces (${files.length} files)` : "Enhance Faces"}
+          {hasMultiple
+            ? `${t["enhance-faces"]?.enhanceFaces || "Enhance Faces"} (${files.length} ${t["enhance-faces"]?.filesCount || "files"})`
+            : t["enhance-faces"]?.enhanceFaces || "Enhance Faces"}
         </button>
       )}
 

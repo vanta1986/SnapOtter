@@ -4,6 +4,7 @@ import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type WebFormat = "webp" | "jpeg" | "avif" | "png";
 
@@ -29,6 +30,7 @@ function formatSize(bytes: number): string {
 
 export function OptimizeForWebSettings() {
   const { files, entries, selectedIndex } = useFileStore();
+  const t = useTranslation().tools["optimize-for-web"];
   const { processFiles, processAllFiles, processing, error, downloadUrl, progress } =
     useToolProcessor("optimize-for-web");
 
@@ -365,7 +367,9 @@ export function OptimizeForWebSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Process & Download (${files.length} files)` : "Process & Download"}
+          {files.length > 1
+            ? `Process & Download (${files.length} ${t.filesCount || "files"})`
+            : "Process & Download"}
         </button>
       )}
 

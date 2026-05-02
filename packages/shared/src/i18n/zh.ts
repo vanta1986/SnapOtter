@@ -120,7 +120,7 @@ export const zh = {
     failedToDeleteUser: "删除用户失败",
     failedToUpdateUser: "更新用户失败",
     deleteUser: "删除用户",
-    deleteUserConfirm: "确定要删除用户 \"{username}\" 吗？此操作无法撤销。",
+    deleteUserConfirm: '确定要删除用户 "{username}" 吗？此操作无法撤销。',
     cannotRemoveOwnAdminRole: "无法移除自己的管理员角色",
     resetPassword: "重置密码",
     resetPasswordFor: "为 {username} 重置密码",
@@ -161,7 +161,7 @@ export const zh = {
     rename: "重命名",
     members: "成员",
     deleteTeam: "删除团队",
-    deleteTeamConfirm: "确定删除团队 \"{name}\"？成员将被取消分配。",
+    deleteTeamConfirm: '确定删除团队 "{name}"？成员将被取消分配。',
     cannotDeleteDefaultTeam: "无法删除默认团队或已有成员的团队",
     noTeamsFound: "未找到团队。",
     teamCreated: "团队创建成功",
@@ -237,7 +237,8 @@ export const zh = {
     analyticsDisabledStatus: "分析已禁用",
     learnMore: "了解更多",
     aboutSnapOtter: "关于 SnapOtter",
-    selfHostedPrivacyFirst: "一款自托管的隐私优先图像处理套件，包含 47 个工具。调整尺寸、压缩、转换、水印和工作流自动化，无需将数据发送到云端。",
+    selfHostedPrivacyFirst:
+      "一款自托管的隐私优先图像处理套件，包含 47 个工具。调整尺寸、压缩、转换、水印和工作流自动化，无需将数据发送到云端。",
     version: "版本",
     links: "链接",
     githubRepository: "GitHub 仓库",
@@ -254,7 +255,8 @@ export const zh = {
     // Home/page
     yourImageToolbox: "您的图像工具箱",
     oneStopShopImageNeeds: "一站式满足所有图像处理需求",
-    privacyFirstImageSuite: "隐私优先的图像处理套件，支持 47+ 强大工具。调整尺寸、压缩、转换和处理图像。",
+    privacyFirstImageSuite:
+      "隐私优先的图像处理套件，支持 47+ 强大工具。调整尺寸、压缩、转换和处理图像。",
     privacyPolicy: "隐私政策",
     lastUpdated: "最后更新",
     // Keyboard shortcuts
@@ -301,6 +303,7 @@ export const zh = {
       cropToFit: "裁剪适应",
       fitInside: "适应内部",
       stretch: "拉伸",
+      filesCount: "个文件",
     },
     crop: {
       name: "裁剪",
@@ -323,6 +326,7 @@ export const zh = {
       topOffset: "顶边距 (px)",
       widthPx: "宽度 (px)",
       heightPx: "高度 (px)",
+      filesCount: "个文件",
     },
     rotate: {
       name: "旋转与翻转",
@@ -340,6 +344,7 @@ export const zh = {
       vertical: "垂直",
       resetAllChanges: "重置所有更改",
       applying: "应用中",
+      filesCount: "个文件",
     },
     convert: {
       name: "转换格式",
@@ -351,6 +356,7 @@ export const zh = {
       processed: "已处理",
       converting: "转换中",
       convert: "转换",
+      filesCount: "个文件",
     },
     compress: {
       name: "压缩",
@@ -358,6 +364,7 @@ export const zh = {
       bestQuality: "最佳质量",
       compressionMode: "压缩模式",
       smallestFile: "最小文件",
+      filesCount: "个文件",
     },
     "optimize-for-web": {
       name: "网页优化",
@@ -368,6 +375,7 @@ export const zh = {
       sizeComparison: "尺寸对比",
       smallestFile: "最小文件",
       px: "像素",
+      filesCount: "个文件",
     },
     "strip-metadata": {
       name: "移除元数据",
@@ -492,10 +500,13 @@ export const zh = {
       apply: "应用",
       original: "原图",
       processed: "已处理",
+      filesCount: "个文件",
     },
     sharpening: {
       name: "锐化",
       description: "自适应、USM 锐化和高通锐化及预设",
+      sharpening: "锐化",
+      filesCount: "个文件",
       method: "方法",
       adaptive: "自适应",
       unsharpMask: "USM 锐化",
@@ -522,6 +533,7 @@ export const zh = {
       targetColor: "目标颜色",
       tolerance: "容差",
       replacingColor: "替换颜色",
+      filesCount: "个文件",
     },
     "remove-background": {
       name: "移除背景",
@@ -552,6 +564,7 @@ export const zh = {
       opacity: "不透明度",
       removingBackground: "移除背景中",
       removeBackground: "移除背景",
+      filesCount: "个文件",
     },
     upscale: {
       name: "图像放大",
@@ -565,6 +578,7 @@ export const zh = {
       upscaleLabel: "放大中",
       images: "张图片",
       upscale: "放大",
+      filesCount: "个文件",
     },
     "erase-object": {
       name: "物体擦除",
@@ -576,6 +590,8 @@ export const zh = {
     ocr: {
       name: "OCR / 文字提取",
       description: "用 AI 精准度从图像中提取文字",
+      ocr: "提取文字",
+      filesCount: "个文件",
       enhanceBeforeScan: "扫描前增强",
       extractedText: "提取的文字",
       quality: "质量",
@@ -595,6 +611,7 @@ export const zh = {
     "enhance-faces": {
       name: "人脸增强",
       description: "用 AI 修复和增强人脸",
+      enhanceFaces: "增强人脸",
       fewerFaces: "更少人脸",
       maximum: "最多",
       moreFaces: "更多人脸",
@@ -603,6 +620,7 @@ export const zh = {
       subtle: "轻微",
       enhancingN: "增强中",
       enhancingFaces: "增强人脸中",
+      filesCount: "个文件",
     },
     "smart-crop": {
       name: "智能裁剪",
@@ -612,6 +630,11 @@ export const zh = {
       framing: "构图",
       moreFaces: "更多人脸",
       swapDimensions: "交换宽高",
+      faceCrop: "人脸裁剪",
+      trimBorders: "裁剪边界",
+      smartCrop: "智能裁剪",
+      smartCropping: "智能裁剪中",
+      filesCount: "个文件",
     },
     "image-enhancement": {
       name: "图像增强",
@@ -639,6 +662,7 @@ export const zh = {
       lowLight: "弱光",
       food: "美食",
       document: "文档",
+      filesCount: "个文件",
     },
     "noise-removal": {
       name: "降噪",
@@ -660,10 +684,12 @@ export const zh = {
       denoisingGifWarning: "不建议对动态 GIF 进行降噪，可能会产生伪影",
       removingNoise: "移除噪点中",
       removeNoise: "移除噪点",
+      filesCount: "个文件",
     },
     "red-eye-removal": {
       name: "红眼修复",
       description: "闪光灯照片的 AI 红眼检测与校正",
+      redEyeRemoval: "修复红眼",
       aggressive: "强力",
       correctionStrength: "校正强度",
       dark: "暗",
@@ -672,6 +698,7 @@ export const zh = {
       sensitivity: "敏感度",
       strict: "严格",
       subtle: "轻微",
+      filesCount: "个文件",
     },
     "restore-photo": {
       name: "照片修复",
@@ -716,6 +743,7 @@ export const zh = {
       colorized: "已着色",
       colorizing: "着色中",
       colorize: "着色",
+      filesCount: "个文件",
     },
     "passport-photo": {
       name: "证件照",
@@ -775,9 +803,11 @@ export const zh = {
     "text-overlay": {
       name: "文字叠加",
       description: "为图像添加样式化文字",
+      textOverlay: "应用叠加",
       bottom: "底部",
       center: "居中",
       top: "顶部",
+      filesCount: "个文件",
     },
     compose: {
       name: "图像合成",
@@ -885,12 +915,13 @@ export const zh = {
     "barcode-read": {
       name: "条形码读取器",
       description: "扫描图像中的二维码、条形码和二维码",
+      scanBarcodes: "扫描条形码",
+      filesCount: "个文件",
       thoroughScan: "彻底扫描",
       scanningBarcodes: "扫描条形码中...",
       noBarcodesFound: "未找到条形码",
       foundBarcodes: "找到 (n) 个条形码",
       copyValue: "复制值",
-      scanBarcodes: "扫描条形码",
       options: "选项",
     },
     collage: {
@@ -932,6 +963,7 @@ export const zh = {
     border: {
       name: "边框与相框",
       description: "一键预设添加边框、内边距、圆角和阴影",
+      filesCount: "个文件",
       presets: "预设",
       borderWidth: "边框宽度",
       borderColor: "边框颜色",
@@ -950,6 +982,8 @@ export const zh = {
     "svg-to-raster": {
       name: "SVG 转位图",
       description: "以自定义比例和 DPI 将 SVG 转换为 PNG、JPEG、WebP、AVIF、TIFF、GIF 或 HEIF",
+      svgToRaster: "转换 SVG",
+      filesCount: "个文件",
       auto: "自动",
       blackBackground: "黑色背景",
       whiteBackground: "白色背景",

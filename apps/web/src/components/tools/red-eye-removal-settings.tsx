@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 const LOSSY_FORMATS = new Set(["jpeg", "webp", "avif"]);
 
@@ -139,6 +140,7 @@ export function RedEyeRemovalControls({
 
 export function RedEyeRemovalSettings() {
   const { files } = useFileStore();
+  const t = useTranslation().tools;
   const {
     processFiles,
     processAllFiles,
@@ -194,7 +196,9 @@ export function RedEyeRemovalSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {hasMultiple ? `Fix Red Eye (${files.length} files)` : "Fix Red Eye"}
+          {hasMultiple
+            ? `${t["red-eye-removal"]?.redEyeRemoval || "Fix Red Eye"} (${files.length} ${t["red-eye-removal"]?.filesCount || "files"})`
+            : t["red-eye-removal"]?.redEyeRemoval || "Fix Red Eye"}
         </button>
       )}
 

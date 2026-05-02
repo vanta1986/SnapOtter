@@ -44,7 +44,9 @@ export function CompressControls({ settings: initialSettings, onChange }: Compre
     <div className="space-y-4">
       {/* Mode toggle */}
       <div>
-        <p className="text-sm font-medium text-muted-foreground">{t.compress?.compressionMode || "Compression Mode"}</p>
+        <p className="text-sm font-medium text-muted-foreground">
+          {t.compress?.compressionMode || "Compression Mode"}
+        </p>
         <div className="flex gap-1 mt-1">
           <button
             type="button"
@@ -174,7 +176,9 @@ export function CompressSettings() {
           disabled={!hasFile || !canProcess || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `${t.compress?.name || "Compress"} (${files.length} files)` : (t.compress?.name || "Compress")}
+          {files.length > 1
+            ? `${t.compress?.name || "Compress"} (${files.length} ${t.compress?.filesCount || "files"})`
+            : t.compress?.name || "Compress"}
         </button>
       )}
 

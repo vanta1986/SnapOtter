@@ -93,7 +93,11 @@ export function NoiseRemovalControls({
             </button>
           ))}
         </div>
-        {activeTier && <p className="text-[10px] text-muted-foreground mt-1">{(t as any)[tier] || activeTier.desc}</p>}
+        {activeTier && (
+          <p className="text-[10px] text-muted-foreground mt-1">
+            {(t as any)[tier] || activeTier.desc}
+          </p>
+        )}
       </div>
 
       <div className="border-t border-border pt-3" />
@@ -122,7 +126,9 @@ export function NoiseRemovalControls({
       {/* Detail Preservation slider */}
       <div>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-muted-foreground">{t.detailPreservation || "Detail Preservation"}</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            {t.detailPreservation || "Detail Preservation"}
+          </p>
           <span className="text-sm font-mono tabular-nums font-medium">{detailPreservation}</span>
         </div>
         <input
@@ -143,7 +149,9 @@ export function NoiseRemovalControls({
       {/* Color Noise slider */}
       <div>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-muted-foreground">{t.colorNoise || "Color Noise"}</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            {t.colorNoise || "Color Noise"}
+          </p>
           <span className="text-sm font-mono tabular-nums font-medium">{colorNoise}</span>
         </div>
         <input
@@ -174,7 +182,7 @@ export function NoiseRemovalControls({
               onClick={() => setOutputFormat(f)}
               className={tabClass(outputFormat === f)}
             >
-              {f === "original" ? (t.original || "Original") : f.toUpperCase()}
+              {f === "original" ? t.original || "Original" : f.toUpperCase()}
             </button>
           ))}
         </div>
@@ -240,7 +248,8 @@ export function NoiseRemovalSettings() {
       {/* GIF + AI tier warning */}
       {isGif && isAiTier && (
         <p className="text-xs text-amber-500">
-          {t.denoisingGifWarning || "AI denoising on GIF files processes only the first frame. For animated GIFs, use the Quick or Balanced tier."}
+          {t.denoisingGifWarning ||
+            "AI denoising on GIF files processes only the first frame. For animated GIFs, use the Quick or Balanced tier."}
         </p>
       )}
 
@@ -251,10 +260,10 @@ export function NoiseRemovalSettings() {
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
           <p>
-            {(t.original || "Original")}: {(originalSize / 1024).toFixed(1)} KB
+            {t.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
           </p>
           <p>
-            {(t.denoised || "Denoised")}: {(processedSize / 1024).toFixed(1)} KB
+            {t.denoised || "Denoised"}: {(processedSize / 1024).toFixed(1)} KB
           </p>
         </div>
       )}
@@ -267,7 +276,7 @@ export function NoiseRemovalSettings() {
           label={
             hasMultiple
               ? `${t.removingNoise || "Removing noise"} from ${files.length} images`
-              : (t.removingNoise || "Removing noise")
+              : t.removingNoise || "Removing noise"
           }
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -281,8 +290,8 @@ export function NoiseRemovalSettings() {
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {hasMultiple
-            ? `${t.removeNoise || "Remove Noise"} (${files.length} files)`
-            : (t.removeNoise || "Remove Noise")}
+            ? `${t.removeNoise || "Remove Noise"} (${files.length} ${t.filesCount || "files"})`
+            : t.removeNoise || "Remove Noise"}
         </button>
       )}
 

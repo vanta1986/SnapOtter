@@ -4,6 +4,7 @@ import { ProgressCard } from "@/components/common/progress-card";
 import { formatHeaders } from "@/lib/api";
 import { copyToClipboard, generateId } from "@/lib/utils";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type OcrQuality = "fast" | "balanced" | "best";
 
@@ -101,6 +102,7 @@ function ocrOneFile(
 
 export function OcrSettings() {
   const { files, processing, error, setProcessing, setError } = useFileStore();
+  const t = useTranslation().tools;
 
   const [quality, setQuality] = useState<OcrQuality>("balanced");
   const [language, setLanguage] = useState("auto");
@@ -303,7 +305,9 @@ export function OcrSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Extract Text (${files.length} files)` : "Extract Text"}
+          {files.length > 1
+            ? `${t.ocr?.ocr || "Extract Text"} (${files.length} ${t.ocr?.filesCount || "files"})`
+            : t.ocr?.ocr || "Extract Text"}
         </button>
       )}
 

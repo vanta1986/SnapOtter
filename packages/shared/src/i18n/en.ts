@@ -57,7 +57,8 @@ export const en = {
     passwordTooShort: "Password must be at least 4 characters",
     passwordChanged: "Password changed successfully",
     currentPasswordIncorrect: "Current password is incorrect",
-    changePasswordHint: "You need to set a new password before continuing. Your password must be at least 8 characters with uppercase, lowercase, and a number.",
+    changePasswordHint:
+      "You need to set a new password before continuing. Your password must be at least 8 characters with uppercase, lowercase, and a number.",
     generateStrongPassword: "Generate strong password",
     passwordMinChars: "At least 8 characters",
     almostThere: "Almost there",
@@ -123,7 +124,7 @@ export const en = {
     failedToDeleteUser: "Failed to delete user",
     failedToUpdateUser: "Failed to update user",
     deleteUser: "Delete User",
-    deleteUserConfirm: "Delete user \"{username}\"? This cannot be undone.",
+    deleteUserConfirm: 'Delete user "{username}"? This cannot be undone.',
     cannotRemoveOwnAdminRole: "Cannot remove your own admin role",
     resetPassword: "Reset Password",
     resetPasswordFor: "Reset password for {username}",
@@ -164,7 +165,7 @@ export const en = {
     rename: "Rename",
     members: "Members",
     deleteTeam: "Delete Team",
-    deleteTeamConfirm: "Delete team \"{name}\"? Members will be unassigned.",
+    deleteTeamConfirm: 'Delete team "{name}"? Members will be unassigned.',
     cannotDeleteDefaultTeam: "Cannot delete the default team or a team with members",
     noTeamsFound: "No teams found.",
     teamCreated: "Team created successfully",
@@ -175,7 +176,8 @@ export const en = {
     teamDeleted: "Team deleted",
     aTeamWithNameExists: "A team with that name already exists",
     rolesPermissions: "Roles & Permissions",
-    manageRolesPermissions: "Manage roles and their permissions. Built-in roles cannot be modified.",
+    manageRolesPermissions:
+      "Manage roles and their permissions. Built-in roles cannot be modified.",
     createCustomRole: "Create Custom Role",
     newRole: "New Role",
     roleName: "Role Name",
@@ -228,7 +230,8 @@ export const en = {
     previous: "Previous",
     nextPage: "Next",
     toolsSettings: "Tools",
-    enableOrDisableTools: "Enable or disable individual tools. Disabled tools are hidden from all users.",
+    enableOrDisableTools:
+      "Enable or disable individual tools. Disabled tools are hidden from all users.",
     saveToolSettings: "Save Tool Settings",
     toolsDisabled: "tools disabled",
     noToolsMatchSearch: "No tools match your search.",
@@ -240,7 +243,8 @@ export const en = {
     analyticsDisabledStatus: "Analytics disabled",
     learnMore: "Learn more",
     aboutSnapOtter: "About",
-    selfHostedPrivacyFirst: "A self-hosted, privacy-first image processing suite with 47 tools. Resize, compress, convert, watermark, and automate your image workflows without sending data to the cloud.",
+    selfHostedPrivacyFirst:
+      "A self-hosted, privacy-first image processing suite with 47 tools. Resize, compress, convert, watermark, and automate your image workflows without sending data to the cloud.",
     version: "Version",
     links: "Links",
     githubRepository: "GitHub Repository",
@@ -257,7 +261,8 @@ export const en = {
     // Home/page
     yourImageToolbox: "Your Image Toolbox",
     oneStopShopImageNeeds: "Your one-stop-shop for all your image needs.",
-    privacyFirstImageSuite: "A privacy-first image suite with 47+ powerful tools. Resize, compress, convert, and process images.",
+    privacyFirstImageSuite:
+      "A privacy-first image suite with 47+ powerful tools. Resize, compress, convert, and process images.",
     privacyPolicy: "Privacy Policy",
     lastUpdated: "Last updated",
     // Keyboard shortcuts
@@ -304,6 +309,7 @@ export const en = {
       cropToFit: "Crop to fit",
       fitInside: "Fit inside",
       stretch: "Stretch",
+      filesCount: "files",
     },
     crop: {
       name: "Crop",
@@ -326,6 +332,7 @@ export const en = {
       topOffset: "Top offset (px)",
       widthPx: "Width (px)",
       heightPx: "Height (px)",
+      filesCount: "files",
     },
     rotate: {
       name: "Rotate & Flip",
@@ -343,6 +350,7 @@ export const en = {
       vertical: "Vertical",
       resetAllChanges: "Reset all changes",
       applying: "Applying",
+      filesCount: "files",
     },
     convert: {
       name: "Convert",
@@ -354,6 +362,7 @@ export const en = {
       processed: "Processed",
       converting: "Converting",
       convert: "Convert",
+      filesCount: "files",
     },
     compress: {
       name: "Compress",
@@ -361,6 +370,7 @@ export const en = {
       bestQuality: "Best quality",
       compressionMode: "Compression Mode",
       smallestFile: "Smallest file",
+      filesCount: "files",
     },
     "optimize-for-web": {
       name: "Optimize for Web",
@@ -372,6 +382,7 @@ export const en = {
       sizeComparison: "Size Comparison",
       smallestFile: "Smallest file",
       px: "px",
+      filesCount: "files",
     },
     "strip-metadata": {
       name: "Remove Metadata",
@@ -497,6 +508,7 @@ export const en = {
       apply: "Apply",
       original: "Original",
       processed: "Processed",
+      filesCount: "files",
     },
     sharpening: {
       name: "Sharpening",
@@ -516,6 +528,8 @@ export const en = {
       light: "Light",
       medium: "Medium",
       strong: "Strong",
+      sharpening: "Sharpen",
+      filesCount: "files",
     },
     "replace-color": {
       name: "Replace & Invert Color",
@@ -527,6 +541,7 @@ export const en = {
       targetColor: "Target color",
       tolerance: "Tolerance",
       replacingColor: "Replacing color",
+      filesCount: "files",
     },
     "remove-background": {
       name: "Remove Background",
@@ -557,6 +572,7 @@ export const en = {
       opacity: "Opacity",
       removingBackground: "Removing background",
       removeBackground: "Remove Background",
+      filesCount: "files",
     },
     upscale: {
       name: "Image Upscaling",
@@ -584,7 +600,10 @@ export const en = {
       enhanceBeforeScan: "Enhance before scanning",
       extractedText: "Extracted Text",
       quality: "Quality",
-      ocrDescription: "Automatically deskews, enhances contrast, removes noise, and upscales the image before scanning for better accuracy.",
+      ocrDescription:
+        "Automatically deskews, enhances contrast, removes noise, and upscales the image before scanning for better accuracy.",
+      ocr: "Extract Text",
+      filesCount: "files",
     },
     "blur-faces": {
       name: "Face / PII Blur",
@@ -608,6 +627,8 @@ export const en = {
       subtle: "Subtle",
       enhancingN: "Enhancing",
       enhancingFaces: "Enhancing faces",
+      enhanceFaces: "Enhance Faces",
+      filesCount: "files",
     },
     "smart-crop": {
       name: "Smart Crop",
@@ -617,6 +638,11 @@ export const en = {
       framing: "Framing",
       moreFaces: "More faces",
       swapDimensions: "Swap width and height",
+      faceCrop: "Face Crop",
+      trimBorders: "Trim Borders",
+      smartCrop: "Smart Crop",
+      smartCropping: "Smart cropping",
+      filesCount: "files",
     },
     "image-enhancement": {
       name: "Image Enhancement",
@@ -645,6 +671,7 @@ export const en = {
       lowLight: "Low Light",
       food: "Food",
       document: "Document",
+      filesCount: "files",
     },
     "noise-removal": {
       name: "Noise Removal",
@@ -666,6 +693,7 @@ export const en = {
       denoisingGifWarning: "Denoising animated GIFs is not recommended and may produce artifacts",
       removingNoise: "Removing noise",
       removeNoise: "Remove Noise",
+      filesCount: "files",
     },
     "red-eye-removal": {
       name: "Red Eye Removal",
@@ -678,6 +706,8 @@ export const en = {
       sensitivity: "Sensitivity",
       strict: "Strict",
       subtle: "Subtle",
+      redEyeRemoval: "Fix Red Eye",
+      filesCount: "files",
     },
     "restore-photo": {
       name: "Photo Restoration",
@@ -722,6 +752,7 @@ export const en = {
       colorized: "Colorized",
       colorizing: "Colorizing",
       colorize: "Colorize",
+      filesCount: "files",
     },
     "passport-photo": {
       name: "Passport Photo",
@@ -785,6 +816,8 @@ export const en = {
       bottom: "Bottom",
       center: "Center",
       top: "Top",
+      textOverlay: "Apply Overlay",
+      filesCount: "files",
     },
     compose: {
       name: "Image Composition",
@@ -899,6 +932,7 @@ export const en = {
       copyValue: "Copy value",
       scanBarcodes: "Scan Barcodes",
       options: "Options",
+      filesCount: "files",
     },
     collage: {
       name: "Collage / Grid",
@@ -953,6 +987,7 @@ export const en = {
       opacity: "Opacity",
       applyingBorder: "Applying border",
       applyBorder: "Apply Border",
+      filesCount: "files",
     },
     "svg-to-raster": {
       name: "SVG to Raster",
@@ -968,6 +1003,8 @@ export const en = {
       svgDimensions: "SVG Dimensions",
       scale: "Scale",
       sizing: "Sizing",
+      svgToRaster: "Convert SVG",
+      filesCount: "files",
     },
     vectorize: {
       name: "Image to SVG",

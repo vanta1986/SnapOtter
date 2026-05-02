@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type Method = "adaptive" | "unsharp-mask" | "high-pass";
 type Denoise = "off" | "light" | "medium" | "strong";
@@ -30,6 +31,7 @@ const PRESETS: Preset[] = [
 
 export function SharpeningSettings() {
   const { files } = useFileStore();
+  const t = useTranslation().tools;
   const {
     processFiles,
     processAllFiles,
@@ -371,7 +373,9 @@ export function SharpeningSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Sharpen (${files.length} files)` : "Sharpen"}
+          {files.length > 1
+            ? `${t.sharpening?.sharpening || "Sharpen"} (${files.length} ${t.sharpening?.filesCount || "files"})`
+            : t.sharpening?.sharpening || "Sharpen"}
         </button>
       )}
 

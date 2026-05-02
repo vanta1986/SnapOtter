@@ -1,9 +1,9 @@
-import { useTranslation } from "@/stores/locale-store";
 import { Download } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 export interface ReplaceColorControlsProps {
   settings?: Record<string, unknown>;
@@ -173,8 +173,8 @@ export function ReplaceColorSettings() {
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {files.length > 1
-            ? `${t["replace-color"]?.name || "Replace Color"} (${files.length} files)`
-            : (t["replace-color"]?.name || "Replace Color")}
+            ? `${t["replace-color"]?.name || "Replace Color"} (${files.length} ${t["replace-color"]?.filesCount || "files"})`
+            : t["replace-color"]?.name || "Replace Color"}
         </button>
       )}
 

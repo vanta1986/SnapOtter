@@ -128,7 +128,9 @@ export function ConvertSettings() {
       {/* Source format */}
       {hasFile && (
         <div>
-          <p className="text-xs text-muted-foreground">{t.convert.sourceFormat || "Source Format"}</p>
+          <p className="text-xs text-muted-foreground">
+            {t.convert.sourceFormat || "Source Format"}
+          </p>
           <div className="mt-0.5 px-2 py-1.5 rounded bg-muted text-sm text-foreground uppercase font-mono">
             {sourceExt}
           </div>
@@ -143,8 +145,12 @@ export function ConvertSettings() {
       {/* Size info */}
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>{t.convert.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>{t.convert.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {t.convert.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {t.convert.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -165,7 +171,9 @@ export function ConvertSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `${t.convert.convert || "Convert"} (${files.length} files)` : t.convert.convert || "Convert"}
+          {files.length > 1
+            ? `${t.convert.convert || "Convert"} (${files.length} ${t.convert.filesCount || "files"})`
+            : t.convert.convert || "Convert"}
         </button>
       )}
 

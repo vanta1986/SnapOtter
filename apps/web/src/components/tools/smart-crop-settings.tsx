@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type CropMode = "subject" | "face" | "trim";
 type SubjectTab = "presets" | "custom";
@@ -547,6 +548,7 @@ export function SmartCropControls({ settings: initialSettings, onChange }: Smart
 
 export function SmartCropSettings() {
   const { files } = useFileStore();
+  const t = useTranslation().tools["smart-crop"];
   const { processFiles, processAllFiles, processing, error, progress } =
     useToolProcessor("smart-crop");
 
@@ -577,7 +579,11 @@ export function SmartCropSettings() {
   };
 
   const buttonLabel =
-    mode === "face" ? "Face Crop" : mode === "trim" ? "Trim Borders" : "Smart Crop";
+    mode === "face"
+      ? t.faceCrop || "Face Crop"
+      : mode === "trim"
+        ? t.trimBorders || "Trim Borders"
+        : t.smartCrop || "Smart Crop";
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -601,7 +607,9 @@ export function SmartCropSettings() {
           disabled={!hasFile || !canProcess || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `${buttonLabel} (${files.length} files)` : buttonLabel}
+          {files.length > 1
+            ? `${buttonLabel} (${files.length} ${t.filesCount || "files"})`
+            : buttonLabel}
         </button>
       )}
     </form>

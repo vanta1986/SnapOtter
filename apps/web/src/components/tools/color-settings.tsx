@@ -235,7 +235,13 @@ export function ColorControls({
           max={100}
           hint={t["adjust-colors"].greenMagenta || "green / magenta"}
         />
-        <SliderControl label={t["adjust-colors"].hue || "Hue"} value={hue} onChange={setHue} min={-180} max={180} />
+        <SliderControl
+          label={t["adjust-colors"].hue || "Hue"}
+          value={hue}
+          onChange={setHue}
+          min={-180}
+          max={180}
+        />
       </div>
 
       {/* Detail section */}
@@ -277,7 +283,11 @@ export function ColorControls({
       >
         {channelsOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
         {t["adjust-colors"].colorChannels || "Color Channels"}
-        {hasChannelChanges && <span className="ml-auto text-primary text-[10px]">{t["adjust-colors"].modified || "modified"}</span>}
+        {hasChannelChanges && (
+          <span className="ml-auto text-primary text-[10px]">
+            {t["adjust-colors"].modified || "modified"}
+          </span>
+        )}
       </button>
       {channelsOpen && (
         <div className="space-y-2 pl-1">
@@ -387,8 +397,12 @@ export function ColorSettings({ toolId, onPreviewFilter }: ColorSettingsProps) {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>{t["adjust-colors"].original || "Original"}: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>{t["adjust-colors"].processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {t["adjust-colors"].original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {t["adjust-colors"].processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -408,7 +422,9 @@ export function ColorSettings({ toolId, onPreviewFilter }: ColorSettingsProps) {
           disabled={!hasFile || !hasChanges || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `${t["adjust-colors"].apply || "Apply"} (${files.length} files)` : t["adjust-colors"].apply || "Apply"}
+          {files.length > 1
+            ? `${t["adjust-colors"].apply || "Apply"} (${files.length} ${t["adjust-colors"].filesCount || "files"})`
+            : t["adjust-colors"].apply || "Apply"}
         </button>
       )}
 

@@ -324,7 +324,9 @@ export function RotateSettings({ onPreviewTransform }: RotateSettingsProps) {
           disabled={!hasFile || !hasChanges || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `${t.rotate?.rotate || "Apply"} (${files.length} files)` : (t.rotate?.rotate || "Apply")}
+          {files.length > 1
+            ? `${t.rotate?.rotate || "Apply"} (${files.length} ${t.rotate?.filesCount || "files"})`
+            : t.rotate?.rotate || "Apply"}
         </button>
       )}
     </form>

@@ -9,7 +9,7 @@ import { useTranslation } from "@/stores/locale-store";
 type ResizeTab = "presets" | "custom" | "scale";
 type FitMode = "cover" | "contain" | "fill";
 
-const FIT_LABELS = (t: (ReturnType<typeof useTranslation>)["tools"]) : Record<FitMode, string> => ({
+const FIT_LABELS = (t: ReturnType<typeof useTranslation>["tools"]): Record<FitMode, string> => ({
   cover: t.resize?.cropToFit || "Crop to fit",
   contain: t.resize?.fitInside || "Fit inside",
   fill: t.resize?.stretch || "Stretch",
@@ -149,7 +149,11 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
         type="button"
         onClick={() => setLockAspect(!lockAspect)}
         className="p-1.5 rounded border border-border text-muted-foreground hover:text-foreground"
-        title={lockAspect ? (t.resize?.unlockAspect || "Unlock aspect ratio") : (t.resize?.lockAspect || "Lock aspect ratio")}
+        title={
+          lockAspect
+            ? t.resize?.unlockAspect || "Unlock aspect ratio"
+            : t.resize?.lockAspect || "Lock aspect ratio"
+        }
       >
         {lockAspect ? <Link className="h-4 w-4" /> : <Unlink className="h-4 w-4" />}
       </button>
@@ -310,7 +314,9 @@ export function ResizeControls({ settings: initialSettings, onChange }: ResizeCo
       <div className="border-t border-border pt-3">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-xs font-medium text-muted-foreground">{t.resize?.contentAware || "Content-aware"}</span>
+            <span className="text-xs font-medium text-muted-foreground">
+              {t.resize?.contentAware || "Content-aware"}
+            </span>
           </div>
           <button
             type="button"
@@ -467,7 +473,9 @@ export function ResizeSettings() {
           disabled={!canProcess}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `${t.resize?.resize || "Resize"} (${files.length} files)` : (t.resize?.resize || "Resize")}
+          {files.length > 1
+            ? `${t.resize?.resize || "Resize"} (${files.length} ${t.resize?.filesCount || "files"})`
+            : t.resize?.resize || "Resize"}
         </button>
       )}
 

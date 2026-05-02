@@ -121,7 +121,10 @@ const ISSUE_TO_TOGGLE: Record<string, string> = {
   noisy: "denoise",
 };
 
-const MODE_LABELS: Record<EnhancementMode, keyof ReturnType<typeof useTranslation>["tools"]["image-enhancement"]> = {
+const MODE_LABELS: Record<
+  EnhancementMode,
+  keyof ReturnType<typeof useTranslation>["tools"]["image-enhancement"]
+> = {
   auto: "auto",
   portrait: "portrait",
   landscape: "landscape",
@@ -436,10 +439,10 @@ export function ImageEnhancementSettings({
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
           <p>
-            {(t.original || "Original")}: {(originalSize / 1024).toFixed(1)} KB
+            {t.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
           </p>
           <p>
-            {(t.enhanced || "Enhanced")}: {(processedSize / 1024).toFixed(1)} KB
+            {t.enhanced || "Enhanced"}: {(processedSize / 1024).toFixed(1)} KB
           </p>
         </div>
       )}
@@ -451,7 +454,7 @@ export function ImageEnhancementSettings({
           label={
             files.length > 1
               ? `${t.enhancing || "Enhancing"} ${files.length} images`
-              : (t.enhancing || "Enhancing image")
+              : t.enhancing || "Enhancing image"
           }
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -464,8 +467,8 @@ export function ImageEnhancementSettings({
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {files.length > 1
-            ? `${t.enhance || "Enhance"} (${files.length} files)`
-            : (t.enhance || "Enhance")}
+            ? `${t.enhance || "Enhance"} (${files.length} ${t.filesCount || "files"})`
+            : t.enhance || "Enhance"}
         </button>
       )}
 

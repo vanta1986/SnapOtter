@@ -12,6 +12,7 @@ import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type SubjectType = "people" | "products" | "general";
 type Quality = "fast" | "balanced" | "best" | "ultra";
@@ -527,6 +528,7 @@ interface RemoveBgSettingsProps {
 
 export function RemoveBgSettings({ onBgPreview }: RemoveBgSettingsProps = {}) {
   const { files } = useFileStore();
+  const t = useTranslation().tools["remove-background"];
   const {
     processFiles,
     processAllFiles,
@@ -812,7 +814,9 @@ export function RemoveBgSettings({ onBgPreview }: RemoveBgSettingsProps = {}) {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Remove Background (${files.length} files)` : "Remove Background"}
+          {files.length > 1
+            ? `${t.removeBackground || "Remove Background"} (${files.length} ${t.filesCount || "files"})`
+            : t.removeBackground || "Remove Background"}
         </button>
       ) : null}
 

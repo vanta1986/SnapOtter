@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type OutputFormat = "png" | "jpg" | "webp" | "avif" | "tiff" | "gif" | "heif";
 type SizingMode = "scale" | "custom";
@@ -49,6 +50,7 @@ function parseSvgDimensions(file: File): Promise<SvgDims | null> {
 
 export function SvgToRasterSettings() {
   const { files } = useFileStore();
+  const t = useTranslation().tools;
   const { processFiles, processAllFiles, processing, error, downloadUrl, progress } =
     useToolProcessor("svg-to-raster");
 
@@ -361,7 +363,9 @@ export function SvgToRasterSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {files.length > 1 ? `Convert (${files.length} files)` : "Convert SVG"}
+          {files.length > 1
+            ? `${t["svg-to-raster"]?.svgToRaster || "Convert SVG"} (${files.length} ${t["svg-to-raster"]?.filesCount || "files"})`
+            : t["svg-to-raster"]?.svgToRaster || "Convert SVG"}
         </button>
       )}
 

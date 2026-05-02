@@ -112,8 +112,12 @@ export function ColorizeSettings() {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>{t.colorize.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>{t.colorize.colorized || "Colorized"}: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {t.colorize.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {t.colorize.colorized || "Colorized"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -121,7 +125,11 @@ export function ColorizeSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={hasMultiple ? `${t.colorize.colorizing || "Colorizing"} (${files.length} files)` : t.colorize.colorizing || "Colorizing"}
+          label={
+            hasMultiple
+              ? `${t.colorize.colorizing || "Colorizing"} (${files.length} ${t.colorize.filesCount || "files"})`
+              : t.colorize.colorizing || "Colorizing"
+          }
           stage={progress.stage}
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -133,7 +141,9 @@ export function ColorizeSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          {hasMultiple ? `${t.colorize.colorize || "Colorize"} (${files.length} files)` : t.colorize.colorize || "Colorize"}
+          {hasMultiple
+            ? `${t.colorize.colorize || "Colorize"} (${files.length} ${t.colorize.filesCount || "files"})`
+            : t.colorize.colorize || "Colorize"}
         </button>
       )}
 
