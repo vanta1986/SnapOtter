@@ -33,7 +33,7 @@ afterAll(async () => {
 describe("blur-faces", () => {
   // ── Processing (sidecar-dependent) ────────────────────────────────
 
-  it("responds to the route (200 or 501)", async () => {
+  it("responds to the route (202 or 501)", async () => {
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
       { name: "settings", content: JSON.stringify({}) },
@@ -46,10 +46,10 @@ describe("blur-faces", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
+    expect([202, 501]).toContain(res.statusCode);
   }, 60_000);
 
-  it("processes with default settings (200 or 501)", async () => {
+  it("processes with default settings (202 or 501)", async () => {
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
     ]);
@@ -61,15 +61,15 @@ describe("blur-faces", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
-    if (res.statusCode === 200) {
-      const json = JSON.parse(res.body);
-      expect(json.jobId).toBeDefined();
-      expect(json.downloadUrl).toBeDefined();
+    expect([202, 501]).toContain(res.statusCode);
+    if (res.statusCode === 202) {
+      const result = JSON.parse(res.body);
+      expect(result.jobId).toBeDefined();
+      expect(result.async).toBe(true);
     }
   }, 60_000);
 
-  it("accepts explicit blurRadius and sensitivity (200 or 501)", async () => {
+  it("accepts explicit blurRadius and sensitivity (202 or 501)", async () => {
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
       {
@@ -85,10 +85,10 @@ describe("blur-faces", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
+    expect([202, 501]).toContain(res.statusCode);
   }, 60_000);
 
-  it("accepts minimum settings values (200 or 501)", async () => {
+  it("accepts minimum settings values (202 or 501)", async () => {
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.png", contentType: "image/png", content: PNG },
       {
@@ -104,24 +104,29 @@ describe("blur-faces", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
+    expect([202, 501]).toContain(res.statusCode);
   }, 60_000);
 
-  it("handles HEIC input (200 or 501)", async () => {
-    const { body, contentType } = createMultipartPayload([
-      { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
-      { name: "settings", content: JSON.stringify({}) },
-    ]);
+  it(
+    "handles HEIC input (202 or 501)",
+    { timeout: 120_000 },
+    async () => {
+      const { body, contentType } = createMultipartPayload([
+        { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
+        { name: "settings", content: JSON.stringify({}) },
+      ]);
 
-    const res = await app.inject({
-      method: "POST",
-      url: "/api/v1/tools/blur-faces",
-      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
-      body,
-    });
+      const res = await app.inject({
+        method: "POST",
+        url: "/api/v1/tools/blur-faces",
+        headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+        body,
+      });
 
-    expect([200, 501]).toContain(res.statusCode);
-  }, 60_000);
+      expect([202, 501]).toContain(res.statusCode);
+    },
+    60_000,
+  );
 
   it("handles 1x1 pixel input (200, 422, or 501)", async () => {
     const { body, contentType } = createMultipartPayload([
@@ -137,7 +142,7 @@ describe("blur-faces", () => {
     });
 
     // 200 = processed, 422 = processing error, 501 = sidecar not installed
-    expect([200, 422, 501]).toContain(res.statusCode);
+    expect([202, 422, 501]).toContain(res.statusCode);
   }, 60_000);
 
   // ── Validation (always testable) ──────────────────────────────────

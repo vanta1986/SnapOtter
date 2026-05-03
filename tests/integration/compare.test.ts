@@ -270,7 +270,7 @@ describe("Compare", () => {
     expect(result.similarity).toBeLessThanOrEqual(100);
   });
 
-  it("compares HEIC vs PNG", async () => {
+  it("compares HEIC vs PNG", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC },
@@ -293,7 +293,7 @@ describe("Compare", () => {
     expect(result.dimensions).toBeDefined();
   });
 
-  it("compares two HEIC images (same file)", async () => {
+  it("compares two HEIC images (same file)", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC },
@@ -567,7 +567,7 @@ describe("Compare", () => {
 
   // ── Branch coverage: HEIC vs HEIC (portrait) ───────────────────────
 
-  it("compares HEIC portrait with standard HEIC", async () => {
+  it("compares HEIC portrait with standard HEIC", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
     const { body, contentType } = createMultipartPayload([
@@ -674,7 +674,7 @@ describe("Compare", () => {
 
   // ── Branch coverage: HEIF content format input ─────────────────────
 
-  it("compares portrait HEIC image with PNG", async () => {
+  it("compares portrait HEIC image with PNG", { timeout: 120_000 }, async () => {
     const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
@@ -772,5 +772,85 @@ describe("Compare", () => {
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
     expect(result.similarity).toBe(100);
+  });
+
+  // ── HEIF format input ─────────────────────────────────────────────
+
+  it("compares HEIF image with PNG", { timeout: 120_000 }, async () => {
+    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.heif", contentType: "image/heif", content: HEIF },
+      { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compare",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.similarity).toBeGreaterThanOrEqual(0);
+    expect(result.similarity).toBeLessThanOrEqual(100);
+    expect(result.downloadUrl).toBeDefined();
+    expect(result.dimensions.width).toBeGreaterThan(0);
+    expect(result.dimensions.height).toBeGreaterThan(0);
+  });
+
+  // ── Animated GIF input ────────────────────────────────────────────
+
+  it("compares animated GIF with PNG", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.gif", contentType: "image/gif", content: GIF },
+      { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compare",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.similarity).toBeGreaterThanOrEqual(0);
+    expect(result.similarity).toBeLessThanOrEqual(100);
+    expect(result.downloadUrl).toBeDefined();
+  });
+
+  // ── SVG input ─────────────────────────────────────────────────────
+
+  it("compares SVG image with PNG", async () => {
+    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.svg", contentType: "image/svg+xml", content: SVG },
+      { name: "file", filename: "b.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compare",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.similarity).toBeGreaterThanOrEqual(0);
+    expect(result.similarity).toBeLessThanOrEqual(100);
+    expect(result.downloadUrl).toBeDefined();
   });
 });

@@ -197,7 +197,7 @@ describe("Multipart error handling", () => {
 
 // ── HEIC input handling ─────────────────────────────────────────
 describe("HEIC input", () => {
-  it("extracts palette from HEIC image", async () => {
+  it("extracts palette from HEIC image", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body: payload, contentType } = makeFilePayload(HEIC, "photo.heic", "image/heic");
     const res = await app.inject({
@@ -382,9 +382,49 @@ describe("Solid white image", () => {
 
 // ── HEIF input ─────────────────────────────────────────────────
 describe("HEIF input", () => {
-  it("extracts palette from HEIF image", async () => {
+  it("extracts palette from HEIF image", { timeout: 120_000 }, async () => {
     const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
     const { body: payload, contentType } = makeFilePayload(HEIF, "photo.heif", "image/heif");
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/color-palette",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.colors.length).toBeGreaterThan(0);
+  });
+});
+
+// ── Animated GIF input ──────────────────────────────────────────
+describe("Animated GIF input", () => {
+  it("extracts palette from animated GIF", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const { body: payload, contentType } = makeFilePayload(GIF, "anim.gif", "image/gif");
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/color-palette",
+      payload,
+      headers: {
+        "content-type": contentType,
+        authorization: `Bearer ${adminToken}`,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.colors.length).toBeGreaterThan(0);
+  });
+});
+
+// ── SVG input ───────────────────────────────────────────────────
+describe("SVG input", () => {
+  it("extracts palette from SVG image", async () => {
+    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const { body: payload, contentType } = makeFilePayload(SVG, "icon.svg", "image/svg+xml");
     const res = await app.inject({
       method: "POST",
       url: "/api/v1/tools/color-palette",

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import cors from "@fastify/cors";
 import rateLimit from "@fastify/rate-limit";
-import { getDispatcherStatus, isGpuAvailable } from "@snapotter/ai";
+import { getDispatcherStatus, initDispatcher, isGpuAvailable } from "@snapotter/ai";
 import { APP_VERSION } from "@snapotter/shared";
 import { eq } from "drizzle-orm";
 import Fastify from "fastify";
@@ -84,13 +84,25 @@ const app = Fastify({
   routerOptions: { maxParamLength: 500 },
 });
 
+app.removeContentTypeParser("application/json");
+app.addContentTypeParser("application/json", { parseAs: "string" }, (_request, body, done) => {
+  try {
+    const str = typeof body === "string" ? body : (body as Buffer).toString();
+    done(null, str.length > 0 ? JSON.parse(str) : {});
+  } catch (err) {
+    done(err as Error, undefined);
+  }
+});
+
 app.setErrorHandler((error: Error & { statusCode?: number }, request, reply) => {
   const statusCode = error.statusCode ?? 500;
   request.log.error(
     { err: error, url: request.url, method: request.method },
     "Unhandled request error",
   );
-  captureException(error);
+  if (statusCode >= 500) {
+    captureException(error, request);
+  }
   const isProduction = process.env.NODE_ENV === "production";
   reply.status(statusCode).send({
     error: statusCode >= 500 ? "Internal server error" : error.message,
@@ -242,12 +254,13 @@ const cleanupCron = startCleanupCron();
 // Start
 try {
   await app.listen({ port: env.PORT, host: "0.0.0.0" });
-  const dispatcherStatus = getDispatcherStatus();
-  const gpuLine = !dispatcherStatus.ready
-    ? "[INFO] GPU status: waiting for AI sidecar startup..."
-    : dispatcherStatus.gpu
-      ? "[INFO] GPU detected — AI tools will use CUDA acceleration"
-      : "[WARN] No GPU detected — AI tools will use CPU (slower)";
+
+  const dispatcherResult = await initDispatcher();
+  const gpuLine = dispatcherResult.ready
+    ? dispatcherResult.gpu
+      ? "[INFO] GPU detected -- AI tools will use CUDA acceleration"
+      : "[WARN] No GPU detected -- AI tools will use CPU (slower)"
+    : "[WARN] AI sidecar did not start -- AI tools will use per-request Python (slower)";
   console.log(
     [
       `SnapOtter v${APP_VERSION} running on port ${env.PORT}`,

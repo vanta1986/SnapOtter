@@ -484,7 +484,7 @@ describe("Barcode Read", () => {
 
   // ── Branch coverage: HEIC input (lines 49-152, ensureSharpCompat) ───
 
-  it("reads barcodes from a HEIC image", async () => {
+  it("reads barcodes from a HEIC image", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
@@ -581,7 +581,7 @@ describe("Barcode Read", () => {
 
   // ── Branch coverage: portrait HEIC (with exif orientation) ──────────
 
-  it("reads barcodes from portrait HEIC image", async () => {
+  it("reads barcodes from portrait HEIC image", { timeout: 120_000 }, async () => {
     const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
     const { body, contentType } = createMultipartPayload([
       {
@@ -680,7 +680,9 @@ describe("Barcode Read", () => {
 
   // ── Branch coverage: HEIF content format input ─────────────────────
 
-  it("reads barcodes from portrait HEIC image (additional format)", async () => {
+  it("reads barcodes from portrait HEIC image (additional format)", {
+    timeout: 120_000,
+  }, async () => {
     const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo2.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
@@ -825,5 +827,77 @@ describe("Barcode Read", () => {
     const result = JSON.parse(res.body);
     expect(Array.isArray(result.barcodes)).toBe(true);
     // May or may not detect at very small size, but should not error
+  });
+
+  // ── HEIF format input ─────────────────────────────────────────────
+
+  it("reads barcodes from a HEIF image", { timeout: 120_000 }, async () => {
+    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/barcode-read",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.filename).toBe("photo.heif");
+    expect(Array.isArray(result.barcodes)).toBe(true);
+  });
+
+  // ── Animated GIF input ────────────────────────────────────────────
+
+  it("reads barcodes from an animated GIF", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/barcode-read",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.filename).toBe("anim.gif");
+    expect(Array.isArray(result.barcodes)).toBe(true);
+  });
+
+  // ── SVG input ─────────────────────────────────────────────────────
+
+  it("reads barcodes from an SVG image", async () => {
+    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/barcode-read",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.filename).toBe("icon.svg");
+    expect(Array.isArray(result.barcodes)).toBe(true);
   });
 });

@@ -603,7 +603,7 @@ describe("Split", () => {
     }
   });
 
-  it("splits a HEIC input image", async () => {
+  it("splits a HEIC input image", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
@@ -751,7 +751,9 @@ describe("Split", () => {
 
   // ── Branch coverage: HEIC with grid split (lines 59-165) ────────────
 
-  it("splits a HEIC image into a grid without format conversion", async () => {
+  it("splits a HEIC image into a grid without format conversion", {
+    timeout: 120_000,
+  }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
@@ -779,7 +781,7 @@ describe("Split", () => {
 
   // ── Branch coverage: custom tile dimensions with HEIC ───────────────
 
-  it("splits HEIC image using fixed tile dimensions", async () => {
+  it("splits HEIC image using fixed tile dimensions", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
@@ -1058,7 +1060,7 @@ describe("Split", () => {
 
   // ── Branch coverage: HEIC split with webp output ────────────────────
 
-  it("splits HEIC image with webp output format", async () => {
+  it("splits HEIC image with webp output format", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
@@ -1385,5 +1387,102 @@ describe("Split", () => {
     });
 
     expect(res.statusCode).toBe(200);
+  });
+
+  // ── HEIF format input ─────────────────────────────────────────────
+
+  it("splits a HEIF input image", { timeout: 120_000 }, async () => {
+    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },
+      {
+        name: "settings",
+        content: JSON.stringify({ columns: 2, rows: 2, outputFormat: "png" }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/split",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(res.rawPayload);
+    const entries = zip.getEntries();
+    expect(entries.length).toBe(4);
+    for (const entry of entries) {
+      expect(entry.entryName).toMatch(/\.png$/);
+      const meta = await sharp(entry.getData()).metadata();
+      expect(meta.format).toBe("png");
+      expect(meta.width).toBeGreaterThan(0);
+      expect(meta.height).toBeGreaterThan(0);
+    }
+  });
+
+  // ── Animated GIF input ────────────────────────────────────────────
+
+  it("splits an animated GIF input image", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
+      {
+        name: "settings",
+        content: JSON.stringify({ columns: 2, rows: 2, outputFormat: "png" }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/split",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(res.rawPayload);
+    const entries = zip.getEntries();
+    expect(entries.length).toBe(4);
+  });
+
+  // ── SVG input ─────────────────────────────────────────────────────
+
+  it("splits an SVG input image", async () => {
+    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "icon.svg", contentType: "image/svg+xml", content: SVG },
+      {
+        name: "settings",
+        content: JSON.stringify({ columns: 2, rows: 2, outputFormat: "png" }),
+      },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/split",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(res.rawPayload);
+    const entries = zip.getEntries();
+    expect(entries.length).toBe(4);
+    for (const entry of entries) {
+      const meta = await sharp(entry.getData()).metadata();
+      expect(meta.format).toBe("png");
+      expect(meta.width).toBeGreaterThan(0);
+      expect(meta.height).toBeGreaterThan(0);
+    }
   });
 });

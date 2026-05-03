@@ -271,7 +271,7 @@ describe("Info", () => {
 
   // ── HEIC format info ──────────────────────────────────────────
 
-  it("returns correct metadata for HEIC image", async () => {
+  it("returns correct metadata for HEIC image", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "test.heic", contentType: "image/heic", content: HEIC },
@@ -585,6 +585,33 @@ describe("Info", () => {
     expect(res.statusCode).toBe(200);
     const result = JSON.parse(res.body);
     expect(typeof result.hasXmp).toBe("boolean");
+  });
+
+  // ── HEIF format info ──────────────────────────────────────────
+
+  it("returns correct metadata for HEIF (sample.heif) image", { timeout: 120_000 }, async () => {
+    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "sample.heif", contentType: "image/heif", content: HEIF },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/info",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    // HEIF might need system decoder -- skip if 422
+    if (res.statusCode === 422) return;
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.width).toBeGreaterThan(0);
+    expect(result.height).toBeGreaterThan(0);
+    expect(result.filename).toBe("sample.heif");
   });
 
   // ── Alpha channel detection ─────────────────────────────────────

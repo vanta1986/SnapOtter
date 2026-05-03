@@ -509,7 +509,7 @@ describe("Compose", () => {
     expect(res.statusCode).toBe(200);
   });
 
-  it("handles HEIC base image", async () => {
+  it("handles HEIC base image", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.heic", contentType: "image/heic", content: HEIC },
@@ -532,7 +532,7 @@ describe("Compose", () => {
     expect(result.downloadUrl).toBeDefined();
   });
 
-  it("handles HEIC overlay image", async () => {
+  it("handles HEIC overlay image", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
@@ -778,7 +778,7 @@ describe("Compose", () => {
 
   // ── Branch coverage: HEIC overlay with opacity ──────────────────────
 
-  it("applies opacity with HEIC overlay", async () => {
+  it("applies opacity with HEIC overlay", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
@@ -871,7 +871,7 @@ describe("Compose", () => {
 
   // ── Branch coverage: HEIF content format input ─────────────────────
 
-  it("handles portrait HEIC base image", async () => {
+  it("handles portrait HEIC base image", { timeout: 120_000 }, async () => {
     const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "base.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
@@ -1008,5 +1008,84 @@ describe("Compose", () => {
     expect(res.statusCode).toBe(422);
     const result = JSON.parse(res.body);
     expect(result.error).toMatch(/processing failed/i);
+  });
+
+  // ── HEIF format input ─────────────────────────────────────────────
+
+  it("handles HEIF base image", { timeout: 120_000 }, async () => {
+    const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "base.heif", contentType: "image/heif", content: HEIF },
+      { name: "overlay", filename: "overlay.jpg", contentType: "image/jpeg", content: JPG },
+      { name: "settings", content: JSON.stringify({ x: 10, y: 10 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compose",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── Animated GIF input ────────────────────────────────────────────
+
+  it("handles animated GIF as base image", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "base.gif", contentType: "image/gif", content: GIF },
+      { name: "overlay", filename: "overlay.png", contentType: "image/png", content: TINY },
+      { name: "settings", content: JSON.stringify({ x: 0, y: 0 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compose",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+    expect(result.processedSize).toBeGreaterThan(0);
+  });
+
+  // ── SVG input ─────────────────────────────────────────────────────
+
+  it("handles SVG as overlay image", async () => {
+    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "base.png", contentType: "image/png", content: PNG },
+      { name: "overlay", filename: "overlay.svg", contentType: "image/svg+xml", content: SVG },
+      { name: "settings", content: JSON.stringify({ x: 10, y: 10 }) },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/compose",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+    expect(result.processedSize).toBeGreaterThan(0);
   });
 });

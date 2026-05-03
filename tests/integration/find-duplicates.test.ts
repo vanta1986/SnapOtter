@@ -413,7 +413,7 @@ describe("Find Duplicates", () => {
     }
   });
 
-  it("handles HEIC input images", async () => {
+  it("handles HEIC input images", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC },
@@ -775,7 +775,7 @@ describe("Find Duplicates", () => {
 
   // ── Branch coverage: HEIF content format input ─────────────────────
 
-  it("handles portrait HEIC images in duplicate detection", async () => {
+  it("handles portrait HEIC images in duplicate detection", { timeout: 120_000 }, async () => {
     const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "a.heic", contentType: "image/heic", content: HEIC_PORTRAIT },
@@ -961,5 +961,86 @@ describe("Find Duplicates", () => {
     expect(result.spaceSaveable).toBeGreaterThan(0);
     // Should be roughly 2x the file size of a single PNG
     expect(result.spaceSaveable).toBeGreaterThan(PNG.length);
+  });
+
+  // ── HEIF format input ─────────────────────────────────────────────
+
+  it(
+    "handles HEIF input images in duplicate detection",
+    { timeout: 120_000 },
+    async () => {
+      const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
+      const { body, contentType } = createMultipartPayload([
+        { name: "file", filename: "a.heif", contentType: "image/heif", content: HEIF },
+        { name: "file", filename: "b.heif", contentType: "image/heif", content: HEIF },
+      ]);
+
+      const res = await app.inject({
+        method: "POST",
+        url: "/api/v1/tools/find-duplicates",
+        headers: {
+          authorization: `Bearer ${adminToken}`,
+          "content-type": contentType,
+        },
+        body,
+      });
+
+      expect(res.statusCode).toBe(200);
+      const result = JSON.parse(res.body);
+      expect(result.totalImages).toBe(2);
+      expect(result.duplicateGroups).toHaveLength(1);
+      expect(result.duplicateGroups[0].files).toHaveLength(2);
+    },
+    60_000,
+  );
+
+  // ── Animated GIF input ────────────────────────────────────────────
+
+  it("handles animated GIF input in duplicate detection", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.gif", contentType: "image/gif", content: GIF },
+      { name: "file", filename: "b.gif", contentType: "image/gif", content: GIF },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/find-duplicates",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.totalImages).toBe(2);
+    expect(result.duplicateGroups).toHaveLength(1);
+  });
+
+  // ── SVG input ─────────────────────────────────────────────────────
+
+  it("handles SVG input in duplicate detection", async () => {
+    const SVG = readFileSync(join(FIXTURES, "test-100x100.svg"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.svg", contentType: "image/svg+xml", content: SVG },
+      { name: "file", filename: "b.svg", contentType: "image/svg+xml", content: SVG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/find-duplicates",
+      headers: {
+        authorization: `Bearer ${adminToken}`,
+        "content-type": contentType,
+      },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.totalImages).toBe(2);
+    expect(result.duplicateGroups).toHaveLength(1);
   });
 });

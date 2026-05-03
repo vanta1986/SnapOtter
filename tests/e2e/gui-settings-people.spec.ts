@@ -1,4 +1,4 @@
-import { expect, test } from "./helpers";
+import { expect, openSettings, test } from "./helpers";
 
 const API = process.env.API_URL || "http://localhost:13490";
 
@@ -64,7 +64,7 @@ const UID = Date.now().toString(36);
 
 test.describe("GUI Settings - People Tab", () => {
   test("displays user count and user table", async ({ loggedInPage: page }) => {
-    await page.locator("aside").getByText("Settings").click();
+    await openSettings(page);
     await page.getByRole("button", { name: /people/i }).click();
 
     // User count
@@ -80,7 +80,7 @@ test.describe("GUI Settings - People Tab", () => {
   });
 
   test("search filters users and shows empty state", async ({ loggedInPage: page }) => {
-    await page.locator("aside").getByText("Settings").click();
+    await openSettings(page);
     await page.getByRole("button", { name: /people/i }).click();
     await page.waitForTimeout(500);
 
@@ -96,7 +96,7 @@ test.describe("GUI Settings - People Tab", () => {
   test("Add Members opens form with username, password, role, team fields", async ({
     loggedInPage: page,
   }) => {
-    await page.locator("aside").getByText("Settings").click();
+    await openSettings(page);
     await page.getByRole("button", { name: /people/i }).click();
     await page.waitForTimeout(500);
 
@@ -124,7 +124,7 @@ test.describe("GUI Settings - People Tab", () => {
     let adminToken: string;
 
     try {
-      await page.locator("aside").getByText("Settings").click();
+      await openSettings(page);
       await page.getByRole("button", { name: /people/i }).click();
       await page.waitForTimeout(500);
 
@@ -155,7 +155,7 @@ test.describe("GUI Settings - People Tab", () => {
       });
 
       // Try to create same username via GUI
-      await page.locator("aside").getByText("Settings").click();
+      await openSettings(page);
       await page.getByRole("button", { name: /people/i }).click();
       await page.waitForTimeout(500);
 
@@ -174,7 +174,7 @@ test.describe("GUI Settings - People Tab", () => {
   test("three-dot menu shows Edit Role/Team, Reset Password, and Delete", async ({
     loggedInPage: page,
   }) => {
-    await page.locator("aside").getByText("Settings").click();
+    await openSettings(page);
     await page.getByRole("button", { name: /people/i }).click();
     await page.waitForTimeout(500);
 
@@ -187,7 +187,7 @@ test.describe("GUI Settings - People Tab", () => {
   });
 
   test("cannot delete yourself via the menu", async ({ loggedInPage: page }) => {
-    await page.locator("aside").getByText("Settings").click();
+    await openSettings(page);
     await page.getByRole("button", { name: /people/i }).click();
     await page.waitForTimeout(500);
 
@@ -203,11 +203,88 @@ test.describe("GUI Settings - People Tab", () => {
       timeout: 5_000,
     });
   });
+
+  test("deleting a non-admin user removes them from the table", async ({ loggedInPage: page }) => {
+    const username = `guidelete-${UID}`;
+    const adminToken = await getAdminToken();
+
+    try {
+      // Create user via API first
+      await fetch(`${API}/api/auth/register`, {
+        method: "POST",
+        headers: authJson(adminToken),
+        body: JSON.stringify({ username, password: "TestPass123!", role: "user" }),
+      });
+
+      await openSettings(page);
+      await page.getByRole("button", { name: /people/i }).click();
+      await page.waitForTimeout(500);
+
+      // Verify the user appears
+      await expect(page.getByText(username)).toBeVisible({ timeout: 5_000 });
+
+      // Open the actions menu for the test user (last Actions button)
+      await page.getByTitle("Actions").last().click();
+
+      // Accept the confirm dialog and click Delete User
+      page.on("dialog", (d) => d.accept());
+      await page.getByText("Delete User").click();
+
+      // User should be removed from the list
+      await expect(page.getByText(username)).not.toBeVisible({ timeout: 5_000 });
+    } finally {
+      await cleanupUsersByPrefix(adminToken, "guidelete-");
+    }
+  });
+
+  test("cannot demote your own admin role via Edit Role / Team", async ({ loggedInPage: page }) => {
+    await openSettings(page);
+    await page.getByRole("button", { name: /people/i }).click();
+    await page.waitForTimeout(500);
+
+    // The admin row should have an Actions button
+    await page.getByTitle("Actions").first().click();
+    await page.getByText("Edit Role / Team").click();
+
+    // The edit form should appear with current role
+    await expect(page.getByText(/edit admin/i)).toBeVisible();
+
+    // Change admin role to user
+    const roleSelect = page.locator("form select").first();
+    await roleSelect.selectOption("user");
+
+    // Click Save
+    await page.getByRole("button", { name: /^save$/i }).click();
+
+    // Should show an error about not being able to remove own admin role
+    await expect(page.getByText(/cannot remove your own admin role|failed/i).first()).toBeVisible({
+      timeout: 5_000,
+    });
+  });
+
+  test("Reset Password opens the reset form for a user", async ({ loggedInPage: page }) => {
+    await openSettings(page);
+    await page.getByRole("button", { name: /people/i }).click();
+    await page.waitForTimeout(500);
+
+    // Open the actions menu on the first user row
+    await page.getByTitle("Actions").first().click();
+    await page.getByText("Reset Password").click();
+
+    // The reset form should appear
+    await expect(page.getByText(/reset password for/i)).toBeVisible();
+    await expect(page.getByPlaceholder(/new password/i)).toBeVisible();
+    await expect(page.getByRole("button", { name: /reset password/i })).toBeVisible();
+
+    // Cancel closes the form
+    await page.getByRole("button", { name: /cancel/i }).click();
+    await expect(page.getByText(/reset password for/i)).not.toBeVisible();
+  });
 });
 
 test.describe("GUI Settings - Teams Tab", () => {
   test("displays team list with Default team", async ({ loggedInPage: page }) => {
-    await page.locator("aside").getByText("Settings").click();
+    await openSettings(page);
     await page.getByRole("button", { name: /teams/i }).click();
 
     await expect(page.locator("h3").filter({ hasText: "Teams" })).toBeVisible();
@@ -223,7 +300,7 @@ test.describe("GUI Settings - Teams Tab", () => {
     const adminToken = await getAdminToken();
 
     try {
-      await page.locator("aside").getByText("Settings").click();
+      await openSettings(page);
       await page.getByRole("button", { name: /teams/i }).click();
 
       await page.getByRole("button", { name: /create new team/i }).click();
@@ -251,7 +328,7 @@ test.describe("GUI Settings - Teams Tab", () => {
         body: JSON.stringify({ name: teamName }),
       });
 
-      await page.locator("aside").getByText("Settings").click();
+      await openSettings(page);
       await page.getByRole("button", { name: /teams/i }).click();
       await page.waitForTimeout(500);
 
@@ -276,7 +353,7 @@ test.describe("GUI Settings - Teams Tab", () => {
 
 test.describe("GUI Settings - Roles Tab", () => {
   test("displays built-in roles with Built-in badge", async ({ loggedInPage: page }) => {
-    await page.locator("aside").getByText("Settings").click();
+    await openSettings(page);
     await page.getByRole("button", { name: /^roles$/i }).click();
 
     await expect(page.locator("h3").filter({ hasText: "Roles" })).toBeVisible();
@@ -292,7 +369,7 @@ test.describe("GUI Settings - Roles Tab", () => {
   });
 
   test("built-in roles do not show edit or delete buttons", async ({ loggedInPage: page }) => {
-    await page.locator("aside").getByText("Settings").click();
+    await openSettings(page);
     await page.getByRole("button", { name: /^roles$/i }).click();
 
     await expect(page.getByText("Built-in").first()).toBeVisible();
@@ -309,7 +386,7 @@ test.describe("GUI Settings - Roles Tab", () => {
   });
 
   test("Create Custom Role button is visible", async ({ loggedInPage: page }) => {
-    await page.locator("aside").getByText("Settings").click();
+    await openSettings(page);
     await page.getByRole("button", { name: /^roles$/i }).click();
 
     await expect(page.getByRole("button", { name: /create custom role/i })).toBeVisible();

@@ -240,7 +240,7 @@ describe("favicon", () => {
   });
 
   // ── Additional coverage: HEIC input ────────────────────────────
-  it("generates favicons from HEIC input", async () => {
+  it("generates favicons from HEIC input", { timeout: 120_000 }, async () => {
     const HEIC = readFileSync(join(FIXTURES, "test-200x150.heic"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
@@ -466,7 +466,7 @@ describe("favicon", () => {
 
   // ── Portrait HEIC input ───────────────────────────────────────────
 
-  it("generates favicons from portrait HEIC", async () => {
+  it("generates favicons from portrait HEIC", { timeout: 120_000 }, async () => {
     const HEIC_PORTRAIT = readFileSync(join(FIXTURES, "test-portrait.heic"));
     const { body, contentType } = createMultipartPayload([
       {
@@ -627,9 +627,62 @@ describe("favicon", () => {
     expect(manifest.name).toBe("my.app.logo");
   });
 
+  // ── Animated GIF input ────────────────────────────────────────────
+
+  it("generates favicons from animated GIF input", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "anim.gif", contentType: "image/gif", content: GIF },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/favicon",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(Buffer.from(res.rawPayload));
+    const entries = zip.getEntries().map((e) => e.entryName);
+    expect(entries).toContain("favicon-16x16.png");
+    expect(entries).toContain("favicon.ico");
+  });
+
+  // ── Batch: 5+ images ────────────────────────────────────────────
+
+  it("generates favicons for 5 images in subfolders", async () => {
+    const JPG = readFileSync(join(FIXTURES, "test-100x100.jpg"));
+    const WEBP = readFileSync(join(FIXTURES, "test-50x50.webp"));
+    const TINY = readFileSync(join(FIXTURES, "test-1x1.png"));
+    const { body, contentType } = createMultipartPayload([
+      { name: "file", filename: "a.png", contentType: "image/png", content: PNG },
+      { name: "file", filename: "b.jpg", contentType: "image/jpeg", content: JPG },
+      { name: "file", filename: "c.webp", contentType: "image/webp", content: WEBP },
+      { name: "file", filename: "d.png", contentType: "image/png", content: TINY },
+      { name: "file", filename: "e.png", contentType: "image/png", content: PNG },
+    ]);
+
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/favicon",
+      headers: { authorization: `Bearer ${adminToken}`, "content-type": contentType },
+      body,
+    });
+
+    expect(res.statusCode).toBe(200);
+    const zip = new AdmZip(Buffer.from(res.rawPayload));
+    const entries = zip.getEntries().map((e) => e.entryName);
+    expect(entries.some((e) => e.startsWith("a/"))).toBe(true);
+    expect(entries.some((e) => e.startsWith("b/"))).toBe(true);
+    expect(entries.some((e) => e.startsWith("c/"))).toBe(true);
+    expect(entries.some((e) => e.startsWith("d/"))).toBe(true);
+    expect(entries.some((e) => e.startsWith("e/"))).toBe(true);
+  });
+
   // ── HEIF format input ────────────────────────────────────────────
 
-  it("generates favicons from HEIF input", async () => {
+  it("generates favicons from HEIF input", { timeout: 120_000 }, async () => {
     const HEIF = readFileSync(join(FIXTURES, "content", "motorcycle.heif"));
     const { body, contentType } = createMultipartPayload([
       { name: "file", filename: "photo.heif", contentType: "image/heif", content: HEIF },

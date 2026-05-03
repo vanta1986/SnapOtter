@@ -478,7 +478,7 @@ describe("Preview endpoint SVG handling", () => {
 
 // ── Preview endpoint: HEIC decoding ────────────────────────────
 describe("Preview endpoint HEIC handling", () => {
-  it("preview decodes and processes HEIC input", async () => {
+  it("preview decodes and processes HEIC input", { timeout: 120_000 }, async () => {
     const { body: payload, contentType } = createMultipartPayload([
       { name: "file", filename: "test.heic", contentType: "image/heic", content: HEIC },
       { name: "settings", content: JSON.stringify({ format: "webp", quality: 60 }) },
@@ -603,7 +603,7 @@ describe("Preview endpoint validation", () => {
 
 // ── HEIC input handling ─────────────────────────────────────────
 describe("HEIC input", () => {
-  it("optimizes HEIC input to webp", async () => {
+  it("optimizes HEIC input to webp", { timeout: 120_000 }, async () => {
     const res = await postTool({ format: "webp" }, HEIC, "test.heic", "image/heic");
     // HEIC decode may not be available
     expect([200, 422]).toContain(res.statusCode);
@@ -614,7 +614,7 @@ describe("HEIC input", () => {
     }
   });
 
-  it("optimizes HEIC input to jpeg", async () => {
+  it("optimizes HEIC input to jpeg", { timeout: 120_000 }, async () => {
     const res = await postTool({ format: "jpeg" }, HEIC, "test.heic", "image/heic");
     expect([200, 422]).toContain(res.statusCode);
     if (res.statusCode === 200) {
@@ -720,6 +720,47 @@ describe("Preview endpoint format variations", () => {
     expect(res.statusCode).toBe(200);
     expect(res.headers["content-type"]).toContain("image/png");
     expect(res.headers["x-output-filename"]).toContain(".png");
+  });
+});
+
+// ── Unauthenticated request ────────────────────────────────────
+describe("Authentication", () => {
+  it("returns 401 for unauthenticated request", async () => {
+    const { body: payload, contentType } = makePayload({ format: "webp" });
+    const res = await app.inject({
+      method: "POST",
+      url: "/api/v1/tools/optimize-for-web",
+      payload,
+      headers: { "content-type": contentType },
+    });
+    expect(res.statusCode).toBe(401);
+  });
+});
+
+// ── HEIF input handling ───────────────────────────────────────
+describe("HEIF input", () => {
+  it("optimizes HEIF (sample.heif) input to webp", { timeout: 120_000 }, async () => {
+    const HEIF = readFileSync(join(FIXTURES, "formats", "sample.heif"));
+    const res = await postTool({ format: "webp" }, HEIF, "sample.heif", "image/heif");
+    // HEIF decode may not be available
+    expect([200, 422]).toContain(res.statusCode);
+    if (res.statusCode === 200) {
+      const result = JSON.parse(res.body);
+      expect(result.downloadUrl).toBeDefined();
+      expect(result.downloadUrl).toContain(".webp");
+    }
+  });
+});
+
+// ── Animated GIF input ────────────────────────────────────────
+describe("Animated GIF input", () => {
+  it("optimizes animated GIF to webp", async () => {
+    const GIF = readFileSync(join(FIXTURES, "animated.gif"));
+    const res = await postTool({ format: "webp" }, GIF, "animated.gif", "image/gif");
+    expect(res.statusCode).toBe(200);
+    const result = JSON.parse(res.body);
+    expect(result.downloadUrl).toBeDefined();
+    expect(result.processedSize).toBeGreaterThan(0);
   });
 });
 

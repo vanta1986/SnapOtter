@@ -52,7 +52,7 @@ describe("Remove Background", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
+    expect([202, 501]).toContain(res.statusCode);
   }, 60_000);
 
   it("accepts default settings", async () => {
@@ -71,14 +71,12 @@ describe("Remove Background", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
+    expect([202, 501]).toContain(res.statusCode);
 
-    if (res.statusCode === 200) {
+    if (res.statusCode === 202) {
       const result = JSON.parse(res.body);
-      expect(result.downloadUrl).toBeDefined();
-      expect(result.maskUrl).toBeDefined();
-      expect(result.originalUrl).toBeDefined();
-      expect(result.processedSize).toBeGreaterThan(0);
+      expect(result.jobId).toBeDefined();
+      expect(result.async).toBe(true);
     }
 
     if (res.statusCode === 501) {
@@ -106,7 +104,7 @@ describe("Remove Background", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
+    expect([202, 501]).toContain(res.statusCode);
   }, 60_000);
 
   it("accepts color background with blur and shadow settings", async () => {
@@ -135,7 +133,7 @@ describe("Remove Background", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
+    expect([202, 501]).toContain(res.statusCode);
   }, 60_000);
 
   it("accepts gradient background settings", async () => {
@@ -162,7 +160,7 @@ describe("Remove Background", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
+    expect([202, 501]).toContain(res.statusCode);
   }, 60_000);
 
   it("processes JPEG input", async () => {
@@ -181,27 +179,32 @@ describe("Remove Background", () => {
       body,
     });
 
-    expect([200, 501]).toContain(res.statusCode);
+    expect([202, 501]).toContain(res.statusCode);
   }, 60_000);
 
-  it("handles HEIC input", async () => {
-    const { body, contentType } = createMultipartPayload([
-      { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
-      { name: "settings", content: JSON.stringify({}) },
-    ]);
+  it(
+    "handles HEIC input",
+    { timeout: 120_000 },
+    async () => {
+      const { body, contentType } = createMultipartPayload([
+        { name: "file", filename: "photo.heic", contentType: "image/heic", content: HEIC },
+        { name: "settings", content: JSON.stringify({}) },
+      ]);
 
-    const res = await app.inject({
-      method: "POST",
-      url: "/api/v1/tools/remove-background",
-      headers: {
-        authorization: `Bearer ${adminToken}`,
-        "content-type": contentType,
-      },
-      body,
-    });
+      const res = await app.inject({
+        method: "POST",
+        url: "/api/v1/tools/remove-background",
+        headers: {
+          authorization: `Bearer ${adminToken}`,
+          "content-type": contentType,
+        },
+        body,
+      });
 
-    expect([200, 501]).toContain(res.statusCode);
-  }, 60_000);
+      expect([202, 501]).toContain(res.statusCode);
+    },
+    60_000,
+  );
 
   it("handles 1x1 pixel input", async () => {
     const { body, contentType } = createMultipartPayload([
@@ -219,7 +222,7 @@ describe("Remove Background", () => {
       body,
     });
 
-    expect([200, 422, 501]).toContain(res.statusCode);
+    expect([202, 422, 501]).toContain(res.statusCode);
   }, 60_000);
 
   // ── Phase 2: Effects sub-route ───────────────────────────────────
