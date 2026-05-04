@@ -631,6 +631,7 @@ export const zh = {
       name: "人脸增强",
       description: "用 AI 修复和增强人脸",
       enhanceFaces: "增强人脸",
+      enhanced: "已增强",
       fewerFaces: "更少人脸",
       maximum: "最多",
       moreFaces: "更多人脸",

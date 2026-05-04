@@ -462,7 +462,9 @@ export function EditMetadataSettings() {
               placeholder="e.g. Lightroom, Photoshop"
             />
             <div className="border-t border-border pt-2 mt-2">
-              <p className="text-[10px] font-medium text-muted-foreground mb-2">{t["edit-metadata"]?.iptc || "IPTC"}</p>
+              <p className="text-[10px] font-medium text-muted-foreground mb-2">
+                {t["edit-metadata"]?.iptc || "IPTC"}
+              </p>
               <div className="space-y-2.5">
                 <LabeledInput
                   id="em-iptc-title"
@@ -586,7 +588,10 @@ export function EditMetadataSettings() {
 
       {/* Section 3: Location (GPS) */}
       {hasFile && (
-        <CollapsibleSection title={t["edit-metadata"]?.locationGps || "Location (GPS)"} warning={!!gpsCoords}>
+        <CollapsibleSection
+          title={t["edit-metadata"]?.locationGps || "Location (GPS)"}
+          warning={!!gpsCoords}
+        >
           <div className="space-y-2.5">
             {gpsCoords && (
               <div className="flex items-start gap-2 px-2.5 py-2 rounded-md bg-amber-500/10 border border-amber-500/20">
@@ -771,7 +776,9 @@ export function EditMetadataSettings() {
       {/* Section 6: Templates */}
       {hasFile && (
         <div className="space-y-2 border-t border-border pt-3">
-          <p className="text-xs font-medium text-muted-foreground">{t["edit-metadata"]?.templates || "Templates"}</p>
+          <p className="text-xs font-medium text-muted-foreground">
+            {t["edit-metadata"]?.templates || "Templates"}
+          </p>
           {templates.length > 0 && (
             <div className="space-y-1">
               {templates.map((t) => (
@@ -819,7 +826,9 @@ export function EditMetadataSettings() {
       {!hasFile && (
         <div className="flex flex-col items-center gap-2 py-6 text-center text-muted-foreground">
           <PenLine className="h-8 w-8 opacity-30" />
-          <p className="text-sm">{t["edit-metadata"]?.uploadToEdit || "Upload an image to edit its metadata."}</p>
+          <p className="text-sm">
+            {t["edit-metadata"]?.uploadToEdit || "Upload an image to edit its metadata."}
+          </p>
         </div>
       )}
 
@@ -839,8 +848,12 @@ export function EditMetadataSettings() {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Processed: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {tCommon.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 

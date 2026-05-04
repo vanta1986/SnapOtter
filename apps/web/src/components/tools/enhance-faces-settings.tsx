@@ -185,8 +185,12 @@ export function EnhanceFacesSettings() {
       {/* Size info */}
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Enhanced: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {t["enhance-faces"]?.enhanced || "Enhanced"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 

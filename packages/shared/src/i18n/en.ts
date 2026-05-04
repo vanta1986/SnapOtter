@@ -647,6 +647,7 @@ export const en = {
       enhancingN: "Enhancing",
       enhancingFaces: "Enhancing faces",
       enhanceFaces: "Enhance Faces",
+      enhanced: "Enhanced",
       filesCount: "files",
     },
     "smart-crop": {
