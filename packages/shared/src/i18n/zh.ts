@@ -747,6 +747,7 @@ export const zh = {
       restoringPhotos: "正在修复 (n) 张照片",
       restorePhotos: "修复照片",
       restorePhoto: "修复照片",
+      restored: "已修复",
     },
     "content-aware-resize": {
       name: "内容感知缩放",

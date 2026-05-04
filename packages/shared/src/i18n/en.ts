@@ -756,6 +756,7 @@ export const en = {
       restoringPhotos: "Restoring (n) photos",
       restorePhotos: "Restore Photos",
       restorePhoto: "Restore Photo",
+      restored: "Restored",
     },
     "content-aware-resize": {
       name: "Content-Aware Resize",
