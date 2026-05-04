@@ -62,6 +62,8 @@ export function SmartCropControls({ settings: initialSettings, onChange }: Smart
   // Shared
   const [quality, setQuality] = useState(95);
 
+  const t = useTranslation().tools["smart-crop"];
+
   const initializedRef = useRef(false);
   useEffect(() => {
     if (!initialSettings || initializedRef.current) return;
@@ -428,8 +430,8 @@ export function SmartCropControls({ settings: initialSettings, onChange }: Smart
               className="w-full mt-1"
             />
             <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-              <span>More faces</span>
-              <span>Fewer false positives</span>
+              <span>{t.moreFaces || "More faces"}</span>
+              <span>{t.fewerFalsePositives || "Fewer false positives"}</span>
             </div>
           </div>
 

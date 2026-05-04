@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 export interface BlurFacesControlsProps {
   settings?: Record<string, unknown>;
@@ -10,6 +11,7 @@ export interface BlurFacesControlsProps {
 }
 
 export function BlurFacesControls({ settings: initialSettings, onChange }: BlurFacesControlsProps) {
+  const t = useTranslation().tools["blur-faces"];
   const [blurRadius, setBlurRadius] = useState(30);
   const [sensitivity, setSensitivity] = useState(50);
 
@@ -74,8 +76,8 @@ export function BlurFacesControls({ settings: initialSettings, onChange }: BlurF
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>More faces</span>
-          <span>Fewer faces</span>
+          <span>{t.moreFaces || "More faces"}</span>
+          <span>{t.fewerFaces || "Fewer faces"}</span>
         </div>
       </div>
     </div>
