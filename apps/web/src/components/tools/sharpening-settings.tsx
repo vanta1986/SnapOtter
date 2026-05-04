@@ -32,6 +32,7 @@ const PRESETS: Preset[] = [
 export function SharpeningSettings() {
   const { files } = useFileStore();
   const t = useTranslation().tools;
+  const tSharp = t.sharpening as Record<string, string>;
   const {
     processFiles,
     processAllFiles,
@@ -105,7 +106,7 @@ export function SharpeningSettings() {
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       {/* Method selector */}
-      <SectionLabel>Method</SectionLabel>
+      <SectionLabel>{tSharp.method || "Method"}</SectionLabel>
       <div className="grid grid-cols-3 gap-1">
         {(["adaptive", "unsharp-mask", "high-pass"] as const).map((m) => (
           <button
@@ -121,7 +122,11 @@ export function SharpeningSettings() {
                 : "bg-muted text-muted-foreground hover:bg-primary/10"
             }`}
           >
-            {m === "adaptive" ? "Adaptive" : m === "unsharp-mask" ? "Unsharp Mask" : "High-Pass"}
+            {m === "adaptive"
+              ? tSharp.adaptive || "Adaptive"
+              : m === "unsharp-mask"
+                ? tSharp.unsharpMask || "Unsharp Mask"
+                : tSharp.highPass || "High-Pass"}
           </button>
         ))}
       </div>
@@ -129,7 +134,7 @@ export function SharpeningSettings() {
       {/* Presets (adaptive only) */}
       {method === "adaptive" && (
         <>
-          <SectionLabel>Presets</SectionLabel>
+          <SectionLabel>{tSharp.presets || "Presets"}</SectionLabel>
           <div className="grid grid-cols-4 gap-1">
             {PRESETS.map((p) => (
               <button
@@ -201,7 +206,7 @@ export function SharpeningSettings() {
       </div>
 
       {/* Noise reduction */}
-      <SectionLabel>Noise Reduction</SectionLabel>
+      <SectionLabel>{tSharp.noiseReduction || "Noise Reduction"}</SectionLabel>
       <div className="grid grid-cols-4 gap-1">
         {(["off", "light", "medium", "strong"] as const).map((d) => (
           <button
@@ -323,7 +328,7 @@ export function SharpeningSettings() {
           )}
           {method === "high-pass" && (
             <>
-              <SectionLabel>Kernel Size</SectionLabel>
+              <SectionLabel>{tSharp.kernelSize || "Kernel Size"}</SectionLabel>
               <div className="grid grid-cols-2 gap-1">
                 {([3, 5] as const).map((k) => (
                   <button
