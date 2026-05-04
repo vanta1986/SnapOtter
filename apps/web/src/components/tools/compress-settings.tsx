@@ -151,10 +151,15 @@ export function CompressSettings() {
       {/* Size info */}
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Processed: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {tCommon.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
           <p className="font-medium text-foreground">
-            Saved: {originalSize > 0 ? ((1 - processedSize / originalSize) * 100).toFixed(1) : "0"}%
+            {t.compress?.saved || "Saved"}:{" "}
+            {originalSize > 0 ? ((1 - processedSize / originalSize) * 100).toFixed(1) : "0"}%
           </p>
         </div>
       )}

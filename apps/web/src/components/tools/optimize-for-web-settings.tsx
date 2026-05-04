@@ -31,6 +31,7 @@ function formatSize(bytes: number): string {
 export function OptimizeForWebSettings() {
   const { files, entries, selectedIndex } = useFileStore();
   const t = useTranslation().tools["optimize-for-web"];
+  const tCommon = useTranslation().common;
   const { processFiles, processAllFiles, processing, error, downloadUrl, progress } =
     useToolProcessor("optimize-for-web");
 
@@ -320,17 +321,19 @@ export function OptimizeForWebSettings() {
       {(preview.originalSize || preview.loading) && (
         <div className="rounded-lg border border-border bg-muted/50 p-3 space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-muted-foreground">Size Comparison</span>
+            <span className="text-xs font-medium text-muted-foreground">
+              {t.sizeComparison || "Size Comparison"}
+            </span>
             {preview.loading && <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />}
           </div>
           {preview.originalSize != null && (
             <div className="text-xs text-muted-foreground">
-              Original: {formatSize(preview.originalSize)}
+              {t.original || "Original"}: {formatSize(preview.originalSize)}
             </div>
           )}
           {preview.processedSize != null && (
             <div className="text-xs text-muted-foreground">
-              Optimized: {formatSize(preview.processedSize)}
+              {t.optimized || "Optimized"}: {formatSize(preview.processedSize)}
               <span className="ml-1 font-medium uppercase text-[10px]">
                 {FORMAT_LABELS[format]}
               </span>
@@ -342,7 +345,9 @@ export function OptimizeForWebSettings() {
                 Number(savings) > 0 ? "text-green-500" : "text-red-500"
               }`}
             >
-              {Number(savings) > 0 ? `${savings}% smaller` : `${Math.abs(Number(savings))}% larger`}
+              {Number(savings) > 0
+                ? `${savings}% ${t.smaller || "smaller"}`
+                : `${Math.abs(Number(savings))}% ${t.larger || "larger"}`}
             </div>
           )}
         </div>
@@ -368,8 +373,8 @@ export function OptimizeForWebSettings() {
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
           {files.length > 1
-            ? `Process & Download (${files.length} ${t.filesCount || "files"})`
-            : "Process & Download"}
+            ? `${t.processAndDownload || "Process & Download"} (${files.length} ${t.filesCount || "files"})`
+            : t.processAndDownload || "Process & Download"}
         </button>
       )}
 
@@ -380,7 +385,7 @@ export function OptimizeForWebSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </form>

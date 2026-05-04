@@ -141,6 +141,7 @@ export function RedEyeRemovalControls({
 export function RedEyeRemovalSettings() {
   const { files } = useFileStore();
   const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const {
     processFiles,
     processAllFiles,
@@ -174,8 +175,12 @@ export function RedEyeRemovalSettings() {
       {/* Size info */}
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Fixed: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {tCommon.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -184,7 +189,11 @@ export function RedEyeRemovalSettings() {
         <ProgressCard
           active={processing}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label={hasMultiple ? `Fixing red eye in ${files.length} images` : "Fixing red eye"}
+          label={
+            hasMultiple
+              ? `${t["red-eye-removal"]?.redEyeRemoval || "Fix Red Eye"} (${files.length} ${t["red-eye-removal"]?.filesCount || "files"})`
+              : t["red-eye-removal"]?.redEyeRemoval || "Fix Red Eye"
+          }
           percent={progress.percent}
           elapsed={progress.elapsed}
         />
@@ -211,7 +220,7 @@ export function RedEyeRemovalSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {tCommon.download || "Download"}
         </a>
       )}
     </div>

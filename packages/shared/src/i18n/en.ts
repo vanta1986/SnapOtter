@@ -40,6 +40,7 @@ export const en = {
     filesSelected: "{{count}} files selected",
     importing: "Importing...",
     import: "Import",
+    uploading: "Uploading...",
     // Login page
     login: "Login",
     logout: "Log out",
@@ -371,6 +372,7 @@ export const en = {
       compressionMode: "Compression Mode",
       smallestFile: "Smallest file",
       filesCount: "files",
+      saved: "Saved",
     },
     "optimize-for-web": {
       name: "Optimize for Web",
@@ -383,6 +385,11 @@ export const en = {
       smallestFile: "Smallest file",
       px: "px",
       filesCount: "files",
+      original: "Original",
+      optimized: "Optimized",
+      smaller: "smaller",
+      larger: "larger",
+      processAndDownload: "Process & Download",
     },
     "strip-metadata": {
       name: "Remove Metadata",
@@ -460,6 +467,11 @@ export const en = {
       orientation: "Orientation",
       preview: "Preview",
       eg: "e.g. 2",
+      creatingPdf: "Creating PDF",
+      processing: "Processing",
+      pages: "pages",
+      createPdf: "Create PDF",
+      downloadPdf: "Download PDF",
     },
     "pdf-to-image": {
       name: "PDF to Image",

@@ -38,6 +38,7 @@ export const zh = {
     filesSelected: "已选择 {{count}} 个文件",
     importing: "正在导入...",
     import: "导入",
+    uploading: "上传中...",
     // Login page
     login: "登录",
     logout: "退出登录",
@@ -365,6 +366,7 @@ export const zh = {
       compressionMode: "压缩模式",
       smallestFile: "最小文件",
       filesCount: "个文件",
+      saved: "已节省",
     },
     "optimize-for-web": {
       name: "网页优化",
@@ -376,6 +378,11 @@ export const zh = {
       smallestFile: "最小文件",
       px: "像素",
       filesCount: "个文件",
+      original: "原始",
+      optimized: "已优化",
+      smaller: "更小",
+      larger: "更大",
+      processAndDownload: "处理并下载",
     },
     "strip-metadata": {
       name: "移除元数据",
@@ -453,6 +460,11 @@ export const zh = {
       orientation: "方向",
       preview: "预览",
       eg: "例如：2",
+      creatingPdf: "创建 PDF 中",
+      processing: "处理中",
+      pages: "页",
+      createPdf: "创建 PDF",
+      downloadPdf: "下载 PDF",
     },
     "pdf-to-image": {
       name: "PDF 转图片",

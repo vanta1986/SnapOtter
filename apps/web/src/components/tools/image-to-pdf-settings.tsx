@@ -4,6 +4,7 @@ import { flushSync } from "react-dom";
 import { ProgressCard } from "@/components/common/progress-card";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 const PAGE_SIZES: Record<string, [number, number]> = {
   A4: [595.28, 841.89],
@@ -107,6 +108,8 @@ function PdfPagePreview({
 }
 export function ImageToPdfSettings() {
   const { files, selectedIndex, entries, error, setProcessing, setError } = useFileStore();
+  const t = useTranslation().tools;
+  const tCommon = useTranslation().common;
   const [pageSize, setPageSize] = useState<"A4" | "Letter" | "A3" | "A5">("A4");
   const [orientation, setOrientation] = useState<"portrait" | "landscape">("portrait");
   const [margin, setMargin] = useState(20);
@@ -357,11 +360,11 @@ export function ImageToPdfSettings() {
         <ProgressCard
           active={busy}
           phase={progress.phase === "idle" ? "uploading" : progress.phase}
-          label="Creating PDF"
+          label={t["image-to-pdf"]?.creatingPdf || "Creating PDF"}
           stage={
             progress.phase === "uploading"
-              ? "Uploading images..."
-              : `Processing ${files.length} pages...`
+              ? tCommon.uploading || "Uploading images..."
+              : `${t["image-to-pdf"]?.processing || "Processing"} ${files.length} ${t["image-to-pdf"]?.pages || "pages"}...`
           }
           percent={progress.percent}
           elapsed={progress.elapsed}
@@ -374,7 +377,8 @@ export function ImageToPdfSettings() {
           disabled={!hasFiles || busy}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          Create PDF ({files.length} pages)
+          {t["image-to-pdf"]?.createPdf || "Create PDF"} ({files.length}{" "}
+          {t["image-to-pdf"]?.pages || "pages"})
         </button>
       )}
 
@@ -386,7 +390,7 @@ export function ImageToPdfSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download PDF
+          {t["image-to-pdf"]?.downloadPdf || "Download PDF"}
         </a>
       )}
 
