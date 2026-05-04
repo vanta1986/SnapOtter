@@ -248,7 +248,7 @@ export function BarcodeReadSettings() {
       </p>
 
       {/* Thorough scan toggle */}
-      <SectionLabel>Options</SectionLabel>
+      <SectionLabel>{t["barcode-read"]?.options || "Options"}</SectionLabel>
       <label className="flex items-center gap-2 cursor-pointer">
         <input
           type="checkbox"
