@@ -1036,6 +1036,7 @@ export const en = {
       detail: "Detail",
       fewerColors: "Fewer colors",
       flatColors: "Flat colors",
+      gradientStep: "Gradient Step",
       invertColors: "Invert Colors",
       moreBlack: "More black",
       moreColors: "More colors",
@@ -1045,6 +1046,7 @@ export const en = {
       smoothGradients: "Smooth gradients",
       smoother: "Smoother",
       smoothing: "Smoothing",
+      threshold: "Threshold",
     },
     "gif-tools": {
       name: "GIF Tools",

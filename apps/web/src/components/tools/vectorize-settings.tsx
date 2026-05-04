@@ -2,6 +2,7 @@ import { Download, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 type ColorMode = "bw" | "color";
 type PathMode = "none" | "polygon" | "spline";
@@ -73,6 +74,7 @@ function speckleToDetail(speckle: number): Detail {
 export function VectorizeSettings() {
   const { files, processing, error, setProcessing, setError, setProcessedUrl, setSizes, setJobId } =
     useFileStore();
+  const t = useTranslation().tools.vectorize as Record<string, string>;
 
   const [preset, setPreset] = useState<Preset>("logo");
   const [colorMode, setColorMode] = useState<ColorMode>("bw");
@@ -281,15 +283,15 @@ export function VectorizeSettings() {
               className="w-full mt-1"
             />
             <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-              <span>Fewer colors</span>
-              <span>More colors</span>
+              <span>{t.fewerColors || "Fewer colors"}</span>
+              <span>{t.moreColors || "More colors"}</span>
             </div>
           </div>
 
           <div>
             <div className="flex justify-between items-center">
               <label htmlFor="vectorize-layer-diff" className="text-xs text-muted-foreground">
-                Gradient Step
+                {t.gradientStep || "Gradient Step"}
               </label>
               <span className="text-xs font-mono text-foreground">{layerDifference}</span>
             </div>
@@ -303,8 +305,8 @@ export function VectorizeSettings() {
               className="w-full mt-1"
             />
             <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-              <span>Smooth gradients</span>
-              <span>Flat colors</span>
+              <span>{t.smoothGradients || "Smooth gradients"}</span>
+              <span>{t.flatColors || "Flat colors"}</span>
             </div>
           </div>
         </>
@@ -315,7 +317,7 @@ export function VectorizeSettings() {
         <div>
           <div className="flex justify-between items-center">
             <label htmlFor="vectorize-threshold" className="text-xs text-muted-foreground">
-              Threshold
+              {t.threshold || "Threshold"}
             </label>
             <span className="text-xs font-mono text-foreground">{threshold}</span>
           </div>
@@ -329,8 +331,8 @@ export function VectorizeSettings() {
             className="w-full mt-1"
           />
           <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-            <span>More white</span>
-            <span>More black</span>
+            <span>{t.moreWhite || "More white"}</span>
+            <span>{t.moreBlack || "More black"}</span>
           </div>
         </div>
       )}
@@ -339,7 +341,7 @@ export function VectorizeSettings() {
 
       {/* Detail */}
       <div>
-        <p className="text-xs text-muted-foreground">Detail</p>
+        <p className="text-xs text-muted-foreground">{t.detail || "Detail"}</p>
         <div className="grid grid-cols-3 gap-1 mt-1">
           {(["low", "medium", "high"] as const).map((d) => (
             <button
@@ -356,7 +358,7 @@ export function VectorizeSettings() {
 
       {/* Smoothing */}
       <div>
-        <p className="text-xs text-muted-foreground">Smoothing</p>
+        <p className="text-xs text-muted-foreground">{t.smoothing || "Smoothing"}</p>
         <div className="grid grid-cols-3 gap-1 mt-1">
           {(["none", "polygon", "spline"] as const).map((m) => (
             <button
@@ -376,7 +378,7 @@ export function VectorizeSettings() {
         <div>
           <div className="flex justify-between items-center">
             <label htmlFor="vectorize-corner" className="text-xs text-muted-foreground">
-              Corner Threshold
+              {t.moreCorners || "Corner Threshold"}
             </label>
             <span className="text-xs font-mono text-foreground">{cornerThreshold}deg</span>
           </div>
@@ -390,15 +392,15 @@ export function VectorizeSettings() {
             className="w-full mt-1"
           />
           <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-            <span>More corners</span>
-            <span>Smoother</span>
+            <span>{t.moreCorners || "More corners"}</span>
+            <span>{t.smoother || "Smoother"}</span>
           </div>
         </div>
       )}
 
       {/* Invert toggle */}
       <div className="flex items-center justify-between">
-        <span className="text-xs text-muted-foreground">Invert Colors</span>
+        <span className="text-xs text-muted-foreground">{t.invertColors || "Invert Colors"}</span>
         <button
           type="button"
           onClick={() => updateSetting(setInvert)(!invert)}
