@@ -16,6 +16,7 @@ export function RedEyeRemovalControls({
   settings: initialSettings,
   onChange,
 }: RedEyeRemovalControlsProps) {
+  const t = useTranslation().tools["red-eye-removal"] as Record<string, string>;
   const [sensitivity, setSensitivity] = useState(50);
   const [strength, setStrength] = useState(70);
   const [outputFormat, setOutputFormat] = useState<"original" | "png" | "jpeg" | "webp" | "avif">(
@@ -58,7 +59,9 @@ export function RedEyeRemovalControls({
       {/* Sensitivity slider */}
       <div>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-muted-foreground">Sensitivity</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            {t.sensitivity || "Sensitivity"}
+          </p>
           <span className="text-sm font-mono tabular-nums font-medium">{sensitivity}</span>
         </div>
         <input
@@ -71,15 +74,17 @@ export function RedEyeRemovalControls({
           className="w-full h-1.5 rounded-full appearance-none bg-muted accent-primary"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>Strict</span>
-          <span>Aggressive</span>
+          <span>{t.strict || "Strict"}</span>
+          <span>{t.aggressive || "Aggressive"}</span>
         </div>
       </div>
 
       {/* Correction Strength slider */}
       <div>
         <div className="flex justify-between items-center">
-          <p className="text-sm font-medium text-muted-foreground">Correction Strength</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            {t.correctionStrength || "Correction Strength"}
+          </p>
           <span className="text-sm font-mono tabular-nums font-medium">{strength}</span>
         </div>
         <input
@@ -92,8 +97,8 @@ export function RedEyeRemovalControls({
           className="w-full h-1.5 rounded-full appearance-none bg-muted accent-primary"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>Subtle</span>
-          <span>Dark</span>
+          <span>{t.subtle || "Subtle"}</span>
+          <span>{t.dark || "Dark"}</span>
         </div>
       </div>
 
@@ -101,7 +106,7 @@ export function RedEyeRemovalControls({
 
       {/* Output format */}
       <div>
-        <p className="text-xs text-muted-foreground mb-1">Output Format</p>
+        <p className="text-xs text-muted-foreground mb-1">{t.outputFormat || "Output Format"}</p>
         <div className="grid grid-cols-5 gap-1">
           {(["original", "png", "jpeg", "webp", "avif"] as const).map((f) => (
             <button
@@ -110,7 +115,7 @@ export function RedEyeRemovalControls({
               onClick={() => setOutputFormat(f)}
               className={tabClass(outputFormat === f)}
             >
-              {f === "original" ? "Original" : f.toUpperCase()}
+              {f === "original" ? t.original || "Original" : f.toUpperCase()}
             </button>
           ))}
         </div>
@@ -120,7 +125,7 @@ export function RedEyeRemovalControls({
       {LOSSY_FORMATS.has(outputFormat) && (
         <div>
           <div className="flex justify-between items-center">
-            <p className="text-sm font-medium text-muted-foreground">Quality</p>
+            <p className="text-sm font-medium text-muted-foreground">{t.quality || "Quality"}</p>
             <span className="text-sm font-mono tabular-nums font-medium">{quality}</span>
           </div>
           <input
