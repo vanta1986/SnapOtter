@@ -157,8 +157,12 @@ export function ComposeSettings() {
 
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Processed: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {tCommon.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -170,7 +174,7 @@ export function ComposeSettings() {
         className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {processing && <Loader2 className="h-4 w-4 animate-spin" />}
-        {processing ? (t.compose.processing || "Processing...") : (t.compose.compose || "Compose")}
+        {processing ? t.compose.processing || "Processing..." : t.compose.compose || "Compose"}
       </button>
 
       {downloadUrl && (
