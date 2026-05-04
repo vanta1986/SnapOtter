@@ -611,6 +611,7 @@ export const zh = {
       enhanceBeforeScan: "扫描前增强",
       extractedText: "提取的文字",
       quality: "质量",
+      language: "语言",
       ocrDescription: "扫描前自动校正倾斜、增强对比度、去除噪点并放大图像以获得更好的准确率。",
     },
     "blur-faces": {

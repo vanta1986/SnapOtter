@@ -616,6 +616,7 @@ export const en = {
       enhanceBeforeScan: "Enhance before scanning",
       extractedText: "Extracted Text",
       quality: "Quality",
+      language: "Language",
       ocrDescription:
         "Automatically deskews, enhances contrast, removes noise, and upscales the image before scanning for better accuracy.",
       ocr: "Extract Text",

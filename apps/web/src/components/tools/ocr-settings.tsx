@@ -103,6 +103,7 @@ function ocrOneFile(
 export function OcrSettings() {
   const { files, processing, error, setProcessing, setError } = useFileStore();
   const t = useTranslation().tools;
+  const tCommon = useTranslation().common as Record<string, string>;
 
   const [quality, setQuality] = useState<OcrQuality>("balanced");
   const [language, setLanguage] = useState("auto");
@@ -221,7 +222,7 @@ export function OcrSettings() {
   return (
     <div className="space-y-3">
       {/* Quality selector */}
-      <SectionLabel>Quality</SectionLabel>
+      <SectionLabel>{t["ocr"]?.quality || "Quality"}</SectionLabel>
       <div className="grid grid-cols-3 gap-1.5">
         {QUALITY_OPTIONS.map((opt) => (
           <button
@@ -247,7 +248,9 @@ export function OcrSettings() {
           onChange={(e) => handleEnhanceToggle(e.target.checked)}
           className="rounded border-border accent-primary"
         />
-        <span className="text-sm text-muted-foreground">Enhance before scanning</span>
+        <span className="text-sm text-muted-foreground">
+          {t["ocr"]?.enhanceBeforeScan || "Enhance before scanning"}
+        </span>
         <span
           title="Automatically deskews, enhances contrast, removes noise, and upscales the image before scanning for better accuracy."
           className="inline-flex items-center justify-center w-4 h-4 rounded-full border border-muted-foreground/40 text-muted-foreground/60 text-[10px] cursor-help"
@@ -264,7 +267,7 @@ export function OcrSettings() {
           className="flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70 hover:text-foreground w-full pt-1"
         >
           {langOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-          Language
+          {t["ocr"]?.language || "Language"}
           <span className="ml-auto text-primary text-[10px] normal-case font-normal">
             {langLabel}
           </span>
@@ -324,7 +327,7 @@ export function OcrSettings() {
                   className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
                 >
                   <Download className="h-3 w-3" />
-                  Download
+                  {tCommon.download || "Download"}
                 </button>
               )}
               <button
