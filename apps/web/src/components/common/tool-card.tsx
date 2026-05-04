@@ -6,12 +6,15 @@ import { Link } from "react-router-dom";
 import { ICON_MAP } from "@/lib/icon-map";
 import { cn } from "@/lib/utils";
 import { useFeaturesStore } from "@/stores/features-store";
+import { useTranslation } from "@/stores/locale-store";
 
 interface ToolCardProps {
   tool: Tool;
 }
 
 export function ToolCard({ tool }: ToolCardProps) {
+  const tTools = useTranslation().tools as Record<string, { name?: string; description?: string }>;
+  const tCommon = useTranslation().common;
   const IconComponent =
     (ICON_MAP[tool.icon] as React.ComponentType<{ className?: string }>) ?? FileImage;
 
@@ -47,10 +50,12 @@ export function ToolCard({ tool }: ToolCardProps) {
         )}
       >
         <IconComponent className="h-5 w-5 text-muted-foreground" />
-        <span className="text-sm font-medium text-foreground">{tool.name}</span>
+        <span className="text-sm font-medium text-foreground">
+          {tTools[tool.id]?.name || tool.name}
+        </span>
         {tool.experimental && (
           <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600 font-medium">
-            Experimental
+            {tCommon.experimental || "Experimental"}
           </span>
         )}
         {aiStatus === "not_installed" && <Download className="h-3.5 w-3.5 text-muted-foreground" />}

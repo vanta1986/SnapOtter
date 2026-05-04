@@ -41,6 +41,7 @@ export const en = {
     importing: "Importing...",
     import: "Import",
     uploading: "Uploading...",
+    experimental: "Experimental",
     // Login page
     login: "Login",
     logout: "Log out",

@@ -115,7 +115,7 @@ export function FullscreenGridPage() {
           >
             {showDetails ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             <span className="hidden sm:inline">
-              {showDetails ? (t.hideDetails || "Hide Details") : (t.showDetails || "Show Details")}
+              {showDetails ? t.hideDetails || "Hide Details" : t.showDetails || "Show Details"}
             </span>
           </button>
 
@@ -166,6 +166,9 @@ function CategoryCard({
   tools: Tool[];
   showDetails: boolean;
 }) {
+  const tTools = useTranslation().tools as Record<string, { name?: string; description?: string }>;
+  const tCategories = useTranslation().categories as Record<string, string>;
+  const tCommon = useTranslation().common;
   const CategoryIcon =
     (ICON_MAP[category.icon] as React.ComponentType<{ className?: string }>) ?? LayoutGrid;
 
@@ -183,7 +186,9 @@ function CategoryCard({
           <CategoryIcon className="h-5 w-5" />
         </div>
         <div className="flex-1">
-          <h3 className="font-semibold text-foreground text-sm">{category.name}</h3>
+          <h3 className="font-semibold text-foreground text-sm">
+            {tCategories[category.id] || category.name}
+          </h3>
         </div>
         <span
           className="text-xs font-medium px-2 py-0.5 rounded-full"
@@ -209,16 +214,18 @@ function CategoryCard({
             >
               <ToolIcon className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-foreground">{tool.name}</p>
+                <p className="text-sm font-medium text-foreground">
+                  {tTools[tool.id]?.name || tool.name}
+                </p>
                 {showDetails && (
                   <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                    {tool.description}
+                    {tTools[tool.id]?.description || tool.description}
                   </p>
                 )}
               </div>
               {tool.experimental && (
                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 font-medium shrink-0">
-                  Experimental
+                  {tCommon.experimental || "Experimental"}
                 </span>
               )}
             </Link>

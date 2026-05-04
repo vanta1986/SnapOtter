@@ -39,6 +39,7 @@ export const zh = {
     importing: "正在导入...",
     import: "导入",
     uploading: "上传中...",
+    experimental: "实验性",
     // Login page
     login: "登录",
     logout: "退出登录",
