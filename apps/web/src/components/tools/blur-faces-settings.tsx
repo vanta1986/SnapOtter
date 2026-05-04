@@ -39,7 +39,7 @@ export function BlurFacesControls({ settings: initialSettings, onChange }: BlurF
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="blur-faces-blur-radius" className="text-xs text-muted-foreground">
-            Blur Radius
+            {t.blurRadius || "Blur Radius"}
           </label>
           <span className="text-xs font-mono text-foreground">{blurRadius}</span>
         </div>
@@ -53,8 +53,8 @@ export function BlurFacesControls({ settings: initialSettings, onChange }: BlurF
           className="w-full mt-1"
         />
         <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
-          <span>Light</span>
-          <span>Heavy</span>
+          <span>{t.light || "Light"}</span>
+          <span>{t.heavy || "Heavy"}</span>
         </div>
       </div>
 
@@ -62,7 +62,7 @@ export function BlurFacesControls({ settings: initialSettings, onChange }: BlurF
       <div>
         <div className="flex justify-between items-center">
           <label htmlFor="blur-faces-sensitivity" className="text-xs text-muted-foreground">
-            Detection Sensitivity
+            {t.detectionSensitivity || "Detection Sensitivity"}
           </label>
           <span className="text-xs font-mono text-foreground">{sensitivity}%</span>
         </div>
@@ -86,6 +86,8 @@ export function BlurFacesControls({ settings: initialSettings, onChange }: BlurF
 
 export function BlurFacesSettings() {
   const { files } = useFileStore();
+  const tCommon = useTranslation().common as Record<string, string>;
+  const t = useTranslation().tools["blur-faces"] as Record<string, string>;
   const {
     processFiles,
     processAllFiles,
@@ -120,8 +122,12 @@ export function BlurFacesSettings() {
       {/* Size info */}
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Processed: {(processedSize / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original || "Original"}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {tCommon.processed || "Processed"}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 
@@ -142,7 +148,7 @@ export function BlurFacesSettings() {
           disabled={!hasFile || processing}
           className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          Blur Faces
+          {t.blurFaces || "Blur Faces"}
         </button>
       )}
 
@@ -155,7 +161,7 @@ export function BlurFacesSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download
+          {t.download || "Download"}
         </a>
       )}
     </div>

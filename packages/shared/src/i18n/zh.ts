@@ -623,6 +623,8 @@ export const zh = {
       moreFaces: "检测更多人脸",
       fewerFaces: "更少人脸",
       blurringFaces: "模糊人脸中",
+      blurFaces: "模糊人脸",
+      download: "下载",
     },
     "enhance-faces": {
       name: "人脸增强",

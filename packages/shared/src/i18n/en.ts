@@ -631,6 +631,8 @@ export const en = {
       moreFaces: "More faces",
       fewerFaces: "Fewer faces",
       blurringFaces: "Blurring faces",
+      blurFaces: "Blur Faces",
+      download: "Download",
     },
     "enhance-faces": {
       name: "Face Enhancement",
