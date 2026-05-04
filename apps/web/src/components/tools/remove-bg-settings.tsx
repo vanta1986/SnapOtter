@@ -85,6 +85,7 @@ export interface RemoveBgControlsProps {
 }
 
 export function RemoveBgControls({ settings: _settings, onChange }: RemoveBgControlsProps) {
+  const t = useTranslation().tools["remove-background"] as Record<string, string>;
   const [subject, setSubject] = useState<SubjectType>("people");
   const [quality, setQuality] = useState<Quality>("balanced");
   const [isPassport, setIsPassport] = useState(true);
@@ -168,7 +169,7 @@ export function RemoveBgControls({ settings: _settings, onChange }: RemoveBgCont
   return (
     <div className="space-y-3">
       {/* Subject type */}
-      <SectionLabel>Subject</SectionLabel>
+      <SectionLabel>{t.subject || "Subject"}</SectionLabel>
       <div className="grid grid-cols-3 gap-1.5">
         {SUBJECT_OPTIONS.map((opt) => {
           const Icon = opt.icon;
@@ -208,7 +209,7 @@ export function RemoveBgControls({ settings: _settings, onChange }: RemoveBgCont
       )}
 
       {/* Quality */}
-      <SectionLabel>Quality</SectionLabel>
+      <SectionLabel>{t.quality || "Quality"}</SectionLabel>
       <div className={`grid gap-1.5 ${qualityOptions.length > 3 ? "grid-cols-4" : "grid-cols-3"}`}>
         {qualityOptions.map((opt) => (
           <button
@@ -227,7 +228,7 @@ export function RemoveBgControls({ settings: _settings, onChange }: RemoveBgCont
       </div>
 
       {/* Background */}
-      <SectionLabel>Background</SectionLabel>
+      <SectionLabel>{t.background || "Background"}</SectionLabel>
       <div className="space-y-2">
         {/* Type buttons */}
         <div className="flex gap-1.5 flex-wrap">
