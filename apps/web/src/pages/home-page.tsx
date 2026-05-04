@@ -8,14 +8,15 @@ import { AppLayout } from "@/components/layout/app-layout";
 import { ICON_MAP } from "@/lib/icon-map";
 import { useFeaturesStore } from "@/stores/features-store";
 import { useFileStore } from "@/stores/file-store";
-import { useSettingsStore } from "@/stores/settings-store";
 import { useTranslation } from "@/stores/locale-store";
+import { useSettingsStore } from "@/stores/settings-store";
 
 // Tools shown prominently as "quick actions" at the top
 const QUICK_ACTION_IDS = ["resize", "compress", "convert", "remove-background"];
 
 export function HomePage() {
   const t = useTranslation().common;
+  const tTools = useTranslation().tools as Record<string, { name?: string; description?: string }>;
   const {
     setFiles,
     files,
@@ -122,7 +123,9 @@ export function HomePage() {
                     <div className="p-1.5 rounded-lg bg-primary/10 text-primary">
                       <Icon className="h-4 w-4" />
                     </div>
-                    <span className="text-xs font-medium text-foreground">{tool.name}</span>
+                    <span className="text-xs font-medium text-foreground">
+                      {tTools[tool.id]?.name || tool.name}
+                    </span>
                     {status === "not_installed" && (
                       <Download className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
                     )}
@@ -168,7 +171,7 @@ export function HomePage() {
                           className="flex items-center gap-2.5 w-full py-1.5 px-2 rounded-lg text-left transition-colors hover:bg-muted text-foreground"
                         >
                           <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
-                          <span className="text-sm">{tool.name}</span>
+                          <span className="text-sm">{tTools[tool.id]?.name || tool.name}</span>
                           {status === "not_installed" && (
                             <Download className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
                           )}
@@ -195,7 +198,9 @@ export function HomePage() {
           ) : currentEntry?.previewLoading ? (
             <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
               <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
-              <p className="text-sm text-muted-foreground">{t.generatingPreview || "Generating preview..."}</p>
+              <p className="text-sm text-muted-foreground">
+                {t.generatingPreview || "Generating preview..."}
+              </p>
               <p className="text-xs text-muted-foreground/60">{selectedFileName}</p>
             </div>
           ) : originalBlobUrl ? (

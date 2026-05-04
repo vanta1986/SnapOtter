@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { formatFileSize, triggerDownload } from "@/lib/download";
 import { ICON_MAP } from "@/lib/icon-map";
 import { getSuggestedTools } from "@/lib/suggested-tools";
+import { useTranslation } from "@/stores/locale-store";
 
 interface ReviewPanelProps {
   filename: string;
@@ -28,6 +29,7 @@ export function ReviewPanel({
   const [isExpanded, setIsExpanded] = useState(true);
   const [isSuggestionsExpanded, setIsSuggestionsExpanded] = useState(true);
   const navigate = useNavigate();
+  const tTools = useTranslation().tools as Record<string, { name?: string; description?: string }>;
 
   const suggestedToolIds = useMemo(() => getSuggestedTools(currentToolId), [currentToolId]);
 
@@ -134,7 +136,9 @@ export function ReviewPanel({
                         className="flex items-center gap-2 w-full px-2 py-1.5 rounded text-xs text-muted-foreground hover:text-foreground hover:bg-muted group"
                       >
                         <ToolIcon className="h-3.5 w-3.5 shrink-0" />
-                        <span className="flex-1 text-left">{tool.name}</span>
+                        <span className="flex-1 text-left">
+                          {tTools[tool.id]?.name || tool.name}
+                        </span>
                         <ArrowRight className="h-3 w-3 opacity-0 group-hover:opacity-100 shrink-0" />
                       </button>
                     );

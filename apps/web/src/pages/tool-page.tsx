@@ -32,10 +32,10 @@ import { useCollageStore } from "@/stores/collage-store";
 import { useDuplicateStore } from "@/stores/duplicate-store";
 import { useFeaturesStore } from "@/stores/features-store";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 import { usePdfToImageStore } from "@/stores/pdf-to-image-store";
 import { useQrStore } from "@/stores/qr-store";
 import { useSplitStore } from "@/stores/split-store";
-import { useTranslation } from "@/stores/locale-store";
 
 /** Formats that browsers can render in <img> tags. */
 const BROWSER_PREVIEWABLE_EXTS = new Set([
@@ -82,7 +82,9 @@ function FileSelectionInfo({
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-foreground">{tc.files || "Files"} ({files.length})</span>
+        <span className="text-xs font-medium text-foreground">
+          {tc.files || "Files"} ({files.length})
+        </span>
         <button
           type="button"
           onClick={onAddMore}
@@ -130,6 +132,7 @@ export function ToolPage() {
   const { hasPermission } = useAuth();
   const isAdmin = hasPermission("settings:write");
   const t = useTranslation().common;
+  const tTools = useTranslation().tools as Record<string, { name?: string; description?: string }>;
 
   useEffect(() => {
     if (isAiTool) fetchFeatures();
@@ -661,13 +664,15 @@ export function ToolPage() {
             <div className="p-2 rounded-lg bg-primary text-primary-foreground">
               <IconComponent className="h-5 w-5" />
             </div>
-            <h2 className="font-semibold text-lg text-foreground flex-1">{tool.name}</h2>
+            <h2 className="font-semibold text-lg text-foreground flex-1">
+              {tTools[tool.id as keyof typeof tTools]?.name || tool.name}
+            </h2>
             <button
               type="button"
               onClick={() => setMobileSettingsOpen(!mobileSettingsOpen)}
               className="px-3 py-1.5 rounded-lg border border-border text-xs text-muted-foreground hover:bg-muted"
             >
-              {mobileSettingsOpen ? (t.hideSettings || "Hide Settings") : t.settings}
+              {mobileSettingsOpen ? t.hideSettings || "Hide Settings" : t.settings}
             </button>
           </div>
 

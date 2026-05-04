@@ -18,6 +18,7 @@ import { TOOLS } from "@snapotter/shared";
 import { FileImage, GripVertical, X } from "lucide-react";
 import { ICON_MAP } from "@/lib/icon-map";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/stores/locale-store";
 import type { PipelineStep } from "@/stores/pipeline-store";
 import { PipelineStepSettings } from "./pipeline-step-settings";
 import { getSettingsSummary } from "./pipeline-step-summary";
@@ -55,6 +56,7 @@ function SortableStep({
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: step.id,
   });
+  const tTools = useTranslation().tools as Record<string, { name?: string; description?: string }>;
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -108,7 +110,9 @@ function SortableStep({
 
           {/* Tool icon + name */}
           <Icon className="h-4 w-4 text-muted-foreground shrink-0" />
-          <span className="text-sm font-medium text-foreground">{tool.name}</span>
+          <span className="text-sm font-medium text-foreground">
+            {tTools[tool.id]?.name || tool.name}
+          </span>
 
           {/* Settings summary when collapsed */}
           {!isExpanded && summary && (
