@@ -717,6 +717,7 @@ export const zh = {
       strict: "严格",
       subtle: "轻微",
       filesCount: "个文件",
+      original: "原图",
     },
     "restore-photo": {
       name: "照片修复",

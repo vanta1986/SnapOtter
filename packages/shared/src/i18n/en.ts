@@ -726,6 +726,7 @@ export const en = {
       subtle: "Subtle",
       redEyeRemoval: "Fix Red Eye",
       filesCount: "files",
+      original: "Original",
     },
     "restore-photo": {
       name: "Photo Restoration",
