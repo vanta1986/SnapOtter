@@ -23,6 +23,7 @@ import { ProgressCard } from "@/components/common/progress-card";
 import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { formatHeaders } from "@/lib/api";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -337,6 +338,7 @@ function CountryOption({
 
 export function PassportPhotoSettings() {
   const { files } = useFileStore();
+  const t = useTranslation().tools["passport-photo"] as Record<string, string>;
   const { error } = useToolProcessor("passport-photo");
 
   const {
@@ -559,7 +561,7 @@ export function PassportPhotoSettings() {
   return (
     <div className="space-y-4">
       {/* Country selector */}
-      <SectionLabel>Country</SectionLabel>
+      <SectionLabel>{t.country || "Country"}</SectionLabel>
       <div ref={dropdownRef} className="relative">
         <button
           ref={buttonRef}
@@ -604,7 +606,7 @@ export function PassportPhotoSettings() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search countries..."
+                  placeholder={t.searchCountries || "Search countries..."}
                   className="w-full pl-7 pr-2 py-1.5 rounded border border-border bg-background text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                 />
               </div>
@@ -626,7 +628,9 @@ export function PassportPhotoSettings() {
                   }`}
                 >
                   <span>{"\u2699\uFE0F"}</span>
-                  <span className="flex-1 text-left">Custom Dimensions</span>
+                  <span className="flex-1 text-left">
+                    {t.customDimensions || "Custom Dimensions"}
+                  </span>
                   {isCustom && <Check className="h-3 w-3 text-primary shrink-0" />}
                 </button>
               )}
