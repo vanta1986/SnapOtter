@@ -75,7 +75,9 @@ function FileSelectionInfo({
   const tc = useTranslation().common;
   if (files.length === 0) {
     return (
-      <p className="text-xs text-muted-foreground italic">Drop or upload an image to get started</p>
+      <p className="text-xs text-muted-foreground italic">
+        {tc.dropFiles || "Drop or upload an image to get started"}
+      </p>
     );
   }
 
@@ -369,7 +371,7 @@ export function ToolPage() {
       }
       return (
         <div className="text-center text-muted-foreground">
-          <p className="text-sm">Configure settings and generate.</p>
+          <p className="text-sm">{t.configureSettings || "Configure settings and generate."}</p>
         </div>
       );
     }
@@ -457,7 +459,7 @@ export function ToolPage() {
             <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <p className="text-sm font-medium">Conversion complete</p>
+            <p className="text-sm font-medium">{t.conversionComplete || "Conversion complete"}</p>
             <p className="text-xs text-muted-foreground mt-1">{processedFileName}</p>
             {processedSize != null && (
               <p className="text-xs text-muted-foreground">
@@ -540,7 +542,9 @@ export function ToolPage() {
       return (
         <div className="flex flex-col items-center justify-center h-full gap-3 text-center">
           <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
-          <p className="text-sm text-muted-foreground">Generating preview...</p>
+          <p className="text-sm text-muted-foreground">
+            {t.generatingPreview || "Generating preview..."}
+          </p>
           <p className="text-xs text-muted-foreground/60">{selectedFileName}</p>
         </div>
       );

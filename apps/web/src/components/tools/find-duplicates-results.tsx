@@ -2,6 +2,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Crown, Search } from "lucide-reac
 import { formatFileSize } from "@/lib/download";
 import type { DuplicateFileInfo } from "@/stores/duplicate-store";
 import { useDuplicateStore } from "@/stores/duplicate-store";
+import { useTranslation } from "@/stores/locale-store";
 
 function getBestIndex(
   files: DuplicateFileInfo[],
@@ -14,6 +15,7 @@ function getBestIndex(
 
 function OverviewGrid() {
   const { results, setSelectedGroup } = useDuplicateStore();
+  const t = useTranslation().tools["find-duplicates"];
   if (!results) return null;
 
   return (
@@ -21,24 +23,24 @@ function OverviewGrid() {
       {/* Summary bar */}
       <div className="flex flex-wrap gap-4 px-4 py-3 bg-muted rounded-lg text-xs items-center">
         <div className="flex items-center gap-1.5">
-          <span className="text-muted-foreground">Scanned:</span>
+          <span className="text-muted-foreground">{t.scanned || "Scanned"}:</span>
           <span className="text-foreground font-semibold">{results.totalImages}</span>
         </div>
         <div className="w-px h-4 bg-border" />
         <div className="flex items-center gap-1.5">
-          <span className="text-muted-foreground">Duplicate groups:</span>
+          <span className="text-muted-foreground">{t.duplicateGroups || "Duplicate groups"}:</span>
           <span className="text-yellow-500 font-semibold">{results.duplicateGroups.length}</span>
         </div>
         <div className="w-px h-4 bg-border" />
         <div className="flex items-center gap-1.5">
-          <span className="text-muted-foreground">Unique:</span>
+          <span className="text-muted-foreground">{t.unique || "Unique"}:</span>
           <span className="text-green-500 font-semibold">{results.uniqueImages}</span>
         </div>
         {results.spaceSaveable > 0 && (
           <>
             <div className="w-px h-4 bg-border" />
             <div className="flex items-center gap-1.5">
-              <span className="text-muted-foreground">Space saveable:</span>
+              <span className="text-muted-foreground">{t.spaceSaveable || "Space saveable"}:</span>
               <span className="text-primary font-semibold">
                 {formatFileSize(results.spaceSaveable)}
               </span>
@@ -52,9 +54,14 @@ function OverviewGrid() {
           <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
             <Search className="h-6 w-6 text-green-600 dark:text-green-400" />
           </div>
-          <p className="text-sm font-medium text-foreground">No duplicates found</p>
+          <p className="text-sm font-medium text-foreground">
+            {t.noDuplicatesFound || "No duplicates found"}
+          </p>
           <p className="text-xs text-muted-foreground">
-            All {results.totalImages} images are unique.
+            {(t.allImagesUnique || "All {{count}} images are unique.").replace(
+              "{{count}}",
+              String(results.totalImages),
+            )}
           </p>
         </div>
       ) : (
@@ -93,7 +100,9 @@ function OverviewGrid() {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-xs text-muted-foreground">No preview</span>
+                      <span className="text-xs text-muted-foreground">
+                        {t.noPreview || "No preview"}
+                      </span>
                     )}
                     {file.isBest && (
                       <span className="absolute top-1 left-1 bg-green-500 text-green-950 text-[9px] px-1.5 py-0.5 rounded font-bold">
@@ -127,6 +136,7 @@ function DetailComparison() {
     setSelectedGroup,
     overrideBest,
   } = useDuplicateStore();
+  const tCommon = useTranslation().common as Record<string, string>;
   if (!results || results.duplicateGroups.length === 0) return null;
 
   const group = results.duplicateGroups[selectedGroupIndex];
@@ -218,15 +228,17 @@ function DetailComparison() {
               <div className="mt-2 p-2.5 rounded-lg bg-muted border border-border text-xs space-y-1.5">
                 <p className="font-medium text-foreground truncate">{file.filename}</p>
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                  <span className="text-muted-foreground">Dimensions</span>
+                  <span className="text-muted-foreground">
+                    {tCommon.dimensions || "Dimensions"}
+                  </span>
                   <span className="text-foreground text-right">
                     {file.width} x {file.height}
                   </span>
-                  <span className="text-muted-foreground">File size</span>
+                  <span className="text-muted-foreground">{tCommon.fileSize || "File size"}</span>
                   <span className="text-foreground text-right">
                     {formatFileSize(file.fileSize)}
                   </span>
-                  <span className="text-muted-foreground">Format</span>
+                  <span className="text-muted-foreground">{tCommon.format || "Format"}</span>
                   <span className="text-foreground text-right">{file.format.toUpperCase()}</span>
                   <span className="text-muted-foreground">Similarity</span>
                   <span
@@ -253,12 +265,16 @@ function DetailComparison() {
 
 export function FindDuplicatesResults() {
   const { results, scanning, viewMode } = useDuplicateStore();
+  const t = useTranslation().tools["find-duplicates"];
+  const tCommon = useTranslation().common as Record<string, string>;
 
   if (scanning) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-3">
         <div className="h-8 w-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-muted-foreground">Scanning for duplicates...</p>
+        <p className="text-sm text-muted-foreground">
+          {t.scanningForDuplicates || "Scanning for duplicates..."}
+        </p>
       </div>
     );
   }
@@ -268,7 +284,8 @@ export function FindDuplicatesResults() {
       <div className="flex flex-col items-center justify-center h-full gap-3 text-center px-4">
         <Search className="h-10 w-10 text-muted-foreground/50" />
         <p className="text-sm text-muted-foreground">
-          Choose a detection mode and click "Scan" to find duplicates.
+          {t.chooseModeAndClickScan ||
+            'Choose a detection mode and click "Scan" to find duplicates.'}
         </p>
       </div>
     );
