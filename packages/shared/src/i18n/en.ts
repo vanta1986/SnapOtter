@@ -1047,6 +1047,10 @@ export const en = {
       smoother: "Smoother",
       smoothing: "Smoothing",
       threshold: "Threshold",
+      blackAndWhite: "Black & White",
+      vectorizeButton: "Vectorize",
+      vectorizingButton: "Vectorizing...",
+      downloadSvg: "Download SVG",
     },
     "gif-tools": {
       name: "GIF Tools",

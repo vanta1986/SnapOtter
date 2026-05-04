@@ -1036,6 +1036,10 @@ export const zh = {
       smoother: "更平滑",
       smoothing: "平滑度",
       threshold: "阈值",
+      blackAndWhite: "黑白",
+      vectorizeButton: "转换为 SVG",
+      vectorizingButton: "转换中...",
+      downloadSvg: "下载 SVG",
     },
     "gif-tools": {
       name: "GIF 工具",

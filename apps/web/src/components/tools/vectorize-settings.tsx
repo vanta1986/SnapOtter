@@ -217,7 +217,7 @@ export function VectorizeSettings() {
     <div className="space-y-4">
       {/* Preset */}
       <div>
-        <p className="text-xs text-muted-foreground">Preset</p>
+        <p className="text-xs text-muted-foreground">{t.preset || "Preset"}</p>
         <div className="grid grid-cols-3 gap-1 mt-1">
           {(["logo", "illustration", "photo"] as const).map((p) => (
             <button
@@ -248,7 +248,7 @@ export function VectorizeSettings() {
 
       {/* Color Mode */}
       <div>
-        <p className="text-xs text-muted-foreground">Color Mode</p>
+        <p className="text-xs text-muted-foreground">{t.colorMode || "Color Mode"}</p>
         <div className="flex gap-1 mt-1">
           {(["bw", "color"] as const).map((m) => (
             <button
@@ -257,7 +257,7 @@ export function VectorizeSettings() {
               onClick={() => updateSetting(setColorMode)(m)}
               className={`flex-1 text-xs py-1.5 rounded ${colorMode === m ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"}`}
             >
-              {m === "bw" ? "Black & White" : "Color"}
+              {m === "bw" ? t.blackAndWhite || "Black & White" : "Color"}
             </button>
           ))}
         </div>
@@ -434,7 +434,7 @@ export function VectorizeSettings() {
         className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
       >
         {processing && <Loader2 className="h-4 w-4 animate-spin" />}
-        {processing ? "Vectorizing..." : "Vectorize"}
+        {processing ? t.vectorizingButton || "Vectorizing..." : t.vectorizeButton || "Vectorize"}
       </button>
 
       {/* Download */}
@@ -446,7 +446,7 @@ export function VectorizeSettings() {
           className="w-full py-2.5 rounded-lg border border-primary text-primary font-medium flex items-center justify-center gap-2 hover:bg-primary/5"
         >
           <Download className="h-4 w-4" />
-          Download SVG
+          {t.downloadSvg || "Download SVG"}
         </a>
       )}
     </div>
