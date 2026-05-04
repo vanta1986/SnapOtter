@@ -9,6 +9,7 @@ import { useToolProcessor } from "@/hooks/use-tool-processor";
 import { formatHeaders } from "@/lib/api";
 import { EXIF_LABELS, SKIP_KEYS } from "@/lib/metadata-utils";
 import { useFileStore } from "@/stores/file-store";
+import { useTranslation } from "@/stores/locale-store";
 
 /** Interactive Leaflet map with a red circle marker. */
 function MiniMap({ lat, lon, zoom = 15 }: { lat: number; lon: number; zoom?: number }) {
@@ -207,6 +208,8 @@ export function StripMetadataSettings() {
     processedSize,
     progress,
   } = useToolProcessor("strip-metadata");
+  const tCommon = useTranslation().common;
+  const t = useTranslation().tools;
 
   const [stripSettings, setStripSettings] = useState<Record<string, unknown>>({
     stripAll: true,
@@ -406,9 +409,16 @@ export function StripMetadataSettings() {
       {/* Size info */}
       {originalSize != null && processedSize != null && (
         <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>Original: {(originalSize / 1024).toFixed(1)} KB</p>
-          <p>Processed: {(processedSize / 1024).toFixed(1)} KB</p>
-          <p>Metadata removed: {((originalSize - processedSize) / 1024).toFixed(1)} KB</p>
+          <p>
+            {tCommon.original}: {(originalSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {tCommon.processed}: {(processedSize / 1024).toFixed(1)} KB
+          </p>
+          <p>
+            {t["strip-metadata"]?.metadataRemoved || "Metadata removed"}:{" "}
+            {((originalSize - processedSize) / 1024).toFixed(1)} KB
+          </p>
         </div>
       )}
 

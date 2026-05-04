@@ -396,6 +396,7 @@ export const zh = {
       xmp: "XMP",
       currentMetadata: "当前元数据",
       removingMetadata: "移除元数据中",
+      metadataRemoved: "已移除元数据",
     },
     "edit-metadata": {
       name: "编辑元数据",

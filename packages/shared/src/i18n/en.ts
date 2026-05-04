@@ -403,6 +403,7 @@ export const en = {
       xmp: "XMP",
       currentMetadata: "Current Metadata",
       removingMetadata: "Removing metadata",
+      metadataRemoved: "Metadata removed",
     },
     "edit-metadata": {
       name: "Edit Metadata",
