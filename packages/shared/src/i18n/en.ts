@@ -290,6 +290,8 @@ export const en = {
     toolPalette: "Tool Palette",
     clickToAdd: "Click to add to pipeline",
     saved: "Saved",
+    step: "step",
+    steps: "steps",
     files: "Files",
     original: "Original",
     processed: "Processed",

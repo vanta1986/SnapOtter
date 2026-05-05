@@ -286,6 +286,11 @@ export const zh = {
     processed: "处理后",
     yes: "是",
     no: "否",
+    toolPalette: "工具面板",
+    clickToAdd: "点击添加到流水线",
+    saved: "已保存",
+    step: "步",
+    steps: "步",
   },
   tools: {
     resize: {

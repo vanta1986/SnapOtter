@@ -525,7 +525,9 @@ export function AutomatePage() {
                       >
                         {p.name}
                         <span className="text-muted-foreground ml-1">
-                          ({p.steps.length} step{p.steps.length !== 1 ? "s" : ""})
+                          ({p.steps.length}{" "}
+                          {p.steps.length !== 1 ? tCommon.steps || "steps" : tCommon.step || "step"}
+                          )
                         </span>
                       </button>
                       <button
