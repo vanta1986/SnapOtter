@@ -280,10 +280,13 @@ export function AutomatePage() {
           {/* Mobile header */}
           <div className="flex items-center gap-2 px-4 py-3 border-b border-border shrink-0">
             <Workflow className="h-5 w-5 text-primary" />
-            <h1 className="text-base font-semibold text-foreground flex-1">Automate</h1>
+            <h1 className="text-base font-semibold text-foreground flex-1">
+              {tCommon.automate || "Automate"}
+            </h1>
             {hasFile && (
               <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                {files.length} file{files.length !== 1 ? "s" : ""}
+                {files.length}{" "}
+                {files.length !== 1 ? tCommon.files || "files" : tCommon.file || "file"}
               </span>
             )}
           </div>
@@ -459,7 +462,9 @@ export function AutomatePage() {
               />
               <div className="fixed inset-x-0 bottom-0 z-50 bg-background border-t border-border rounded-t-2xl shadow-xl max-h-[70vh] flex flex-col animate-in slide-in-from-bottom">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
-                  <h2 className="text-sm font-semibold text-foreground">Add Tool</h2>
+                  <h2 className="text-sm font-semibold text-foreground">
+                    {tCommon.addTool || "Add Tool"}
+                  </h2>
                   <button
                     type="button"
                     onClick={() => setMobileToolPaletteOpen(false)}
@@ -581,7 +586,9 @@ export function AutomatePage() {
           <div className="flex items-center gap-3 px-5 py-3 border-b border-border shrink-0">
             <Workflow className="h-5 w-5 text-primary" />
             <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-semibold text-foreground">Pipeline Builder</h1>
+              <h1 className="text-lg font-semibold text-foreground">
+                {tCommon.pipelineBuilder || "Pipeline Builder"}
+              </h1>
               <p className="text-xs text-muted-foreground">
                 {steps.length === 0
                   ? "Add tools from the palette to get started"
@@ -628,7 +635,9 @@ export function AutomatePage() {
               </div>
             ) : (
               <div className="flex items-center gap-2 shrink-0">
-                <span className="text-xs text-muted-foreground italic">No files loaded</span>
+                <span className="text-xs text-muted-foreground italic">
+                  {tCommon.noFilesLoaded || "No files loaded"}
+                </span>
                 <button
                   type="button"
                   onClick={() => setLibraryModalOpen(true)}

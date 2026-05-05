@@ -292,11 +292,16 @@ export const en = {
     saved: "Saved",
     step: "step",
     steps: "steps",
-    files: "Files",
     original: "Original",
     processed: "Processed",
     yes: "Yes",
     no: "No",
+    files: "Files",
+    automate: "Automate",
+    file: "file",
+    addTool: "Add Tool",
+    pipelineBuilder: "Pipeline Builder",
+    noFilesLoaded: "No files loaded",
   },
   tools: {
     resize: {
