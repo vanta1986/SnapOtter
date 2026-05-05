@@ -31,10 +31,11 @@ import { formatHeaders, getFileDownloadUrl } from "@/lib/api";
 import { formatFileSize } from "@/lib/download";
 import { cn } from "@/lib/utils";
 import { useFileStore } from "@/stores/file-store";
-import { type SavedPipeline, usePipelineStore } from "@/stores/pipeline-store";
 import { useTranslation } from "@/stores/locale-store";
+import { type SavedPipeline, usePipelineStore } from "@/stores/pipeline-store";
 
 export function AutomatePage() {
+  const tCommon = useTranslation().common as Record<string, string>;
   const {
     files,
     entries,
@@ -495,8 +496,12 @@ export function AutomatePage() {
               <Layers className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-foreground">Tool Palette</h2>
-              <p className="text-xs text-muted-foreground">Click to add to pipeline</p>
+              <h2 className="text-sm font-semibold text-foreground">
+                {tCommon.toolPalette || "Tool Palette"}
+              </h2>
+              <p className="text-xs text-muted-foreground">
+                {tCommon.clickToAdd || "Click to add to pipeline"}
+              </p>
             </div>
           </div>
 
@@ -507,7 +512,7 @@ export function AutomatePage() {
           {savedPipelines.length > 0 && (
             <div className="px-3 py-2 border-t border-border shrink-0">
               <h3 className="text-xs font-semibold uppercase text-muted-foreground tracking-wider mb-1.5">
-                Saved
+                {tCommon.saved || "Saved"}
               </h3>
               {showAllSaved ? (
                 <div className="space-y-1 max-h-36 overflow-y-auto">

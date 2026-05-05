@@ -26,6 +26,8 @@ export const zh = {
     copied: "已复制！",
     noResults: "未找到结果",
     recent: "最近",
+    myFiles: "我的文件",
+    uploadFiles: "上传文件",
     fileDetails: "文件详情",
     toggleTheme: "切换主题",
     language: "语言",
@@ -251,6 +253,8 @@ export const zh = {
     // Help dialog
     help: "帮助",
     gettingStarted: "入门指南",
+    gettingStartedDesc:
+      "从侧边栏选择工具或按 Ctrl+K 搜索。上传图片可通过拖拽或点击上传区域。调整设置后下载结果。",
     keyboardShortcuts: "键盘快捷键",
     resources: "资源",
     githubRepo: "GitHub 仓库",

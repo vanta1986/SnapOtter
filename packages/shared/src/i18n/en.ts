@@ -29,6 +29,8 @@ export const en = {
     copied: "Copied!",
     noResults: "No results found",
     recent: "Recent",
+    myFiles: "My Files",
+    uploadFiles: "Upload Files",
     fileDetails: "File Details",
     toggleTheme: "Toggle Theme",
     language: "Language",
@@ -257,6 +259,8 @@ export const en = {
     // Help dialog
     help: "Help",
     gettingStarted: "Getting Started",
+    gettingStartedDesc:
+      "Select a tool from the sidebar or search for one with Ctrl+K. Upload an image by dragging it onto the page or clicking the upload area. Adjust settings and download your result.",
     keyboardShortcuts: "Keyboard Shortcuts",
     resources: "Resources",
     githubRepo: "GitHub Repository",
@@ -283,6 +287,9 @@ export const en = {
     shortcutGoToImageInfo: "Go to Image Info",
     // Common tool labels
     renaming: "Renaming...",
+    toolPalette: "Tool Palette",
+    clickToAdd: "Click to add to pipeline",
+    saved: "Saved",
     files: "Files",
     original: "Original",
     processed: "Processed",

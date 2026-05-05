@@ -66,9 +66,8 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
               <h3 className="text-sm font-semibold">{t.gettingStarted || "Getting Started"}</h3>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Select a tool from the sidebar or search for one with <Kbd keys="mod+k" />. Upload an
-              image by dragging it onto the page or clicking the upload area. Adjust settings and
-              download your result.
+              {t.gettingStartedDesc ||
+                "Select a tool from the sidebar or search for one with Ctrl+K. Upload an image by dragging it onto the page or clicking the upload area. Adjust settings and download your result."}
             </p>
           </section>
 
@@ -76,7 +75,9 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
           <section className="space-y-3">
             <div className="flex items-center gap-2 text-foreground">
               <Keyboard className="h-4 w-4" />
-              <h3 className="text-sm font-semibold">{t.keyboardShortcuts || "Keyboard Shortcuts"}</h3>
+              <h3 className="text-sm font-semibold">
+                {t.keyboardShortcuts || "Keyboard Shortcuts"}
+              </h3>
             </div>
             <div className="rounded-lg border border-border overflow-hidden">
               {SHORTCUTS.map((s, i) => (
@@ -86,7 +87,9 @@ export function HelpDialog({ open, onClose }: HelpDialogProps) {
                     i !== SHORTCUTS.length - 1 ? "border-b border-border" : ""
                   }`}
                 >
-                  <span className="text-muted-foreground">{(t as Record<string, string>)[s.descKey] || s.descKey}</span>
+                  <span className="text-muted-foreground">
+                    {(t as Record<string, string>)[s.descKey] || s.descKey}
+                  </span>
                   <Kbd keys={s.keys} />
                 </div>
               ))}
