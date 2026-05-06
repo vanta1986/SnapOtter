@@ -1,0 +1,125 @@
+# SnapOtter Full Stack Deployment
+#
+# Includes PostgreSQL (for future use) and Redis (for session cache).
+# The API currently runs SQLite but this compose file is ready for PostgreSQL migration.
+#
+# Usage:
+#   cp .env.example .env    # edit .env with your settings
+#   docker compose -f docker/docker-compose.full.yml up -d
+
+name: snapotter-full
+
+services:
+  # ─── Database ─────────────────────────────────────────────────────────────
+  # Note: API currently uses SQLite (DB_PATH=/data/snapotter.db).
+  # This PostgreSQL service is here for future migration.
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: snapotter
+      POSTGRES_USER: ${POSTGRES_USER:-snapotter}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?postgres password required}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-snapotter} -d snapotter"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - snapotter
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # ─── Redis (session/cache) ───────────────────────────────────────────────
+  # Reserved for future session management (currently not used by API)
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save 60 1
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - snapotter
+
+  # ─── SnapOtter (API + Web) ──────────────────────────────────────────────
+  # Main application container. Uses SQLite by default.
+  snapotter:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: snapotter:latest
+    container_name: SnapOtter
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-1349}:1349"
+    environment:
+      # Database — currently SQLite (file path)
+      # To migrate to PostgreSQL: change to postgresql://user:pass@postgres:5432/snapotter
+      DB_PATH: /data/snapotter.db
+      FILES_STORAGE_PATH: /data/files
+      WORKSPACE_PATH: /tmp/workspace
+      # Auth
+      AUTH_ENABLED: ${AUTH_ENABLED:-true}
+      DEFAULT_USERNAME: ${DEFAULT_USERNAME:-admin}
+      DEFAULT_PASSWORD: ${DEFAULT_PASSWORD:-admin}
+      SKIP_MUST_CHANGE_PASSWORD: ${SKIP_MUST_CHANGE_PASSWORD:-false}
+      # Storage
+      STORAGE_MODE: local
+      # Limits
+      MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-0}
+      MAX_BATCH_SIZE: ${MAX_BATCH_SIZE:-0}
+      MAX_MEGAPIXELS: ${MAX_MEGAPIXELS:-0}
+      CONCURRENT_JOBS: ${CONCURRENT_JOBS:-0}
+      MAX_WORKER_THREADS: ${MAX_WORKER_THREADS:-0}
+      PROCESSING_TIMEOUT_S: ${PROCESSING_TIMEOUT_S:-0}
+      MAX_PIPELINE_STEPS: ${MAX_PIPELINE_STEPS:-0}
+      MAX_CANVAS_PIXELS: ${MAX_CANVAS_PIXELS:-0}
+      MAX_SVG_SIZE_MB: ${MAX_SVG_SIZE_MB:-0}
+      MAX_PDF_PAGES: ${MAX_PDF_PAGES:-0}
+      RATE_LIMIT_PER_MIN: ${RATE_LIMIT_PER_MIN:-0}
+      MAX_USERS: ${MAX_USERS:-0}
+      SESSION_DURATION_HOURS: ${SESSION_DURATION_HOURS:-168}
+      TRUST_PROXY: ${TRUST_PROXY:-true}
+      # Analytics
+      ANALYTICS_ENABLED: ${ANALYTICS_ENABLED:-false}
+    volumes:
+      - snapotter_data:/data
+      - snapotter_workspace:/tmp/workspace
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1349/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 90s
+      retries: 3
+    shm_size: 2gb
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
+    networks:
+      - snapotter
+
+volumes:
+  postgres_data:
+  redis_data:
+  snapotter_data:
+  snapotter_workspace:
+
+networks:
+  snapotter:
+    driver: bridge
