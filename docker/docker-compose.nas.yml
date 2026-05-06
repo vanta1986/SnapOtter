@@ -1,0 +1,114 @@
+# SnapOtter NAS 部署模板
+#
+# 适用于：威联通（QNAP）、绿联（UGREEN）、或其他 Linux NAS
+#
+# 使用前：
+#   1. 确认你的 NAS 数据存储路径（见下方 ### 修改这里 ###）
+#   2. 复制到 NAS：scp docker-compose.nas.yml admin@nas:/share/Container/snapotter/docker-compose.yml
+#   3. cd /share/Container/snapotter && docker compose up -d
+#
+# 访问：http://<NAS_IP>:1349
+# 默认账号：admin / admin（首次登录后请修改密码）
+
+name: snapotter-nas
+
+services:
+  # ─── SnapOtter 主容器 ────────────────────────────────────────────────────
+  # 把 API 和前端打包在一起，单容器简化部署
+  snapotter:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: snapotter:latest
+    container_name: SnapOtter
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-1349}:1349"
+
+    # ══════════════════ 修改这里 ══════════════════
+    # 数据存储根目录 —— 根据你的 NAS 实际路径修改
+    # 威联通示例：/share/Container/snapotter/data
+    # 绿联示例：/mnt/storage/snapotter/data
+    volumes:
+      - ${DATA_ROOT}/snapotter/data:/data
+      - ${DATA_ROOT}/snapotter/workspace:/tmp/workspace
+    # ═══════════════════════════════════════════════
+
+    environment:
+      # ══════════════════ 修改这里 ══════════════════
+      # 数据库文件路径（用 SQLite，外置存储）
+      DB_PATH: ${DATA_ROOT}/snapotter/data/snapotter.db
+      FILES_STORAGE_PATH: /data/files
+      WORKSPACE_PATH: /tmp/workspace
+      # ═══════════════════════════════════════════════
+
+      # ── 认证 ──
+      AUTH_ENABLED: ${AUTH_ENABLED:-true}
+      DEFAULT_USERNAME: ${DEFAULT_USERNAME:-admin}
+      DEFAULT_PASSWORD: ${DEFAULT_PASSWORD:-admin}
+      SKIP_MUST_CHANGE_PASSWORD: ${SKIP_MUST_CHANGE_PASSWORD:-false}
+
+      # ── 存储模式 ──
+      STORAGE_MODE: local
+
+      # ── 限制 ──（0 = 不限制，生产环境建议填具体值）
+      MAX_UPLOAD_SIZE_MB: ${MAX_UPLOAD_SIZE_MB:-100}
+      MAX_BATCH_SIZE: ${MAX_BATCH_SIZE:-50}
+      MAX_MEGAPIXELS: ${MAX_MEGAPIXELS:-100}
+      MAX_PIPELINE_STEPS: ${MAX_PIPELINE_STEPS:-20}
+      MAX_CANVAS_PIXELS: ${MAX_CANVAS_PIXELS:-50000000}
+      MAX_SVG_SIZE_MB: ${MAX_SVG_SIZE_MB:-10}
+      MAX_PDF_PAGES: ${MAX_PDF_PAGES:-100}
+      RATE_LIMIT_PER_MIN: ${RATE_LIMIT_PER_MIN:-0}
+      MAX_USERS: ${MAX_USERS:-0}
+      SESSION_DURATION_HOURS: ${SESSION_DURATION_HOURS:-168}
+      TRUST_PROXY: ${TRUST_PROXY:-true}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+
+      # ── 分析 ──
+      ANALYTICS_ENABLED: ${ANALYTICS_ENABLED:-false}
+
+    # ── 健康检查 ──
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1349/api/v1/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 90s
+      retries: 3
+
+    # ── 资源限制（按需调整）──
+    shm_size: 2gb
+    mem_limit: 4gb
+    mem_reservation: 1gb
+    cpu_shares: 512
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+    networks:
+      - snapotter
+
+volumes:
+  # ══════════════════ 修改这里 ══════════════════
+  # 命名卷 —— 绑定到宿主机的实际目录
+  # 先在 NAS 上创建对应目录，再启动
+  snapotter_data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_ROOT}/snapotter/data
+  snapotter_workspace:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${DATA_ROOT}/snapotter/workspace
+  # ═══════════════════════════════════════════════
+
+networks:
+  snapotter:
+    driver: bridge
